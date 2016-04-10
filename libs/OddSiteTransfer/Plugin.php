@@ -19,7 +19,7 @@
 		protected function create_additional_hooks() {
 			//echo("\OddSiteTransfer\Plugin::create_additional_hooks<br />");
 			
-			
+			$this->add_additional_hook(new \OddSiteTransfer\Admin\TransferHooks());
 		}
 		
 		protected function create_rest_api_end_points() {
