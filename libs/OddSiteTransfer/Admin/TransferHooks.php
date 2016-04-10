@@ -23,7 +23,7 @@
 		}
 		
 		public function hook_save_post($post_id, $post, $update) {
-			//echo("\OddSiteTransfer\Admin\TransferHooks::hook_save_post<br />");
+			echo("\OddSiteTransfer\Admin\TransferHooks::hook_save_post<br />");
 			
 			if(wp_is_post_revision($post_id)) {
 				return;
@@ -34,6 +34,8 @@
 			$current_page_name = $post->post_type;
 			
 			//METODO
+			
+			die; //MEDEBUG
 		}
 		
 		public function hook_created_term($term_id, $tt_id, $taxonomy) {

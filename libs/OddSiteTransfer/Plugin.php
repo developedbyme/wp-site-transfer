@@ -16,6 +16,12 @@
 			
 		}
 		
+		protected function create_custom_post_types() {
+			//echo("\BtdmParallaxAds\Plugin::create_custom_post_types<br />");
+			
+			$this->add_custom_post_type(new  \OddSiteTransfer\Admin\CustomPostTypes\ServerTransferCustomPostType());
+		}
+		
 		protected function create_additional_hooks() {
 			//echo("\OddSiteTransfer\Plugin::create_additional_hooks<br />");
 			
