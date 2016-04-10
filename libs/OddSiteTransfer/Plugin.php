@@ -16,6 +16,12 @@
 			
 		}
 		
+		protected function create_additional_hooks() {
+			//echo("\OddSiteTransfer\Plugin::create_additional_hooks<br />");
+			
+			
+		}
+		
 		protected function create_rest_api_end_points() {
 			//echo("\OddSiteTransfer\Plugin::create_rest_api_end_points<br />");
 			

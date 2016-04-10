@@ -12,6 +12,7 @@
 		protected $_shortcodes = null;
 		protected $_meta_boxes = null;
 		protected $_filters = null;
+		protected $_additional_hooks = null;
 		
 		function __construct() {
 			//echo("\OddSiteTransfer\OddCore\PluginBase::__construct<br />");
@@ -44,6 +45,37 @@
 			$this->create_pages();
 			
 			return $this->_pages;
+		}
+		
+		protected function add_additional_hook($additional_hook) {
+			//echo("\OddSiteTransfer\OddCore\PluginBase::add_additional_hook<br />");
+			
+			$this->_additional_hooks[] = $additional_hook;
+		}
+		
+		protected function create_additional_hooks() {
+			//echo("\OddSiteTransfer\OddCore\PluginBase::create_additional_hooks<br />");
+			
+			//MENOTE: should be overridden
+		}
+		
+		protected function register_additional_hooks() {
+			//echo("\OddSiteTransfer\OddCore\PluginBase::register_additional_hooks<br />");
+			
+			$this->_additional_hooks = array();
+			
+			$this->create_additional_hooks();
+			
+			return $this->_additional_hooks;
+		}
+		
+		protected function get_additional_hooks() {
+			//echo("\OddSiteTransfer\OddCore\PluginBase::get_additional_hooks<br />");
+			
+			if(!isset($this->_additional_hooks)) {
+				$this->register_additional_hooks();
+			}
+			return $this->_additional_hooks;
 		}
 		
 		protected function add_custom_post_type($custom_post_type) {
@@ -270,6 +302,11 @@
 			$filters = $this->get_filters();
 			foreach($filters as $filter) {
 				$filter->register();
+			}
+			
+			$additional_hooks = $this->get_additional_hooks();
+			foreach($additional_hooks as $additional_hook) {
+				$additional_hook->register();
 			}
 		}
 		
