@@ -52,7 +52,7 @@
 				
 				$post_ids = array(
 					'ID' => $post->ID
-				)
+				);
 				
 				$post_data = array(
 					'post_title' => $post->post_title,
@@ -60,7 +60,7 @@
 				);
 				
 				//METODO
-				$url = $base_url.'/wp-json/odd-site-transfer/v1/sync/post';
+				$url = $base_url.'sync/post';
 				
 				$fields_string = http_build_query(array('ids' => $post_ids, 'data' => $post_data));
 				
