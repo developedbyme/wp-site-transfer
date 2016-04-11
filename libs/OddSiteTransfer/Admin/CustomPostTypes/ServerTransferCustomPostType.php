@@ -11,7 +11,7 @@
 			
 			parent::__construct();
 			
-			$this->set_names("server-transfer", 'server transfer');
+			$this->set_names('server-transfer', 'server transfer');
 			$this->_arguments['supports'] = array('title');
 			
 			//$this->add_css('wallpaper-ad', plugins_url('assets/css/admin/wallpaper-ad.css', BTDM_PARALLAX_ADS_MAIN_FILE));
