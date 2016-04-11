@@ -25,7 +25,7 @@
 		}
 		
 		public function hook_save_post($post_id, $post, $update) {
-			echo("\OddSiteTransfer\Admin\TransferHooks::hook_save_post<br />");
+			//echo("\OddSiteTransfer\Admin\TransferHooks::hook_save_post<br />");
 			
 			if(wp_is_post_revision($post_id)) {
 				return;
@@ -54,10 +54,12 @@
 					//echo("++++");
 					$base_url = get_post_meta($server_transfer_post_id, 'url', true);
 					//echo($base_url);
-				
+					
+					$local_id = get_post_meta($post_id, '_odd_server_transfer_remote_id_'.$server_transfer_post_id, true);
+					
 					$post_ids = array(
 						'origin_id' => $post->ID,
-						'local_id' => NULL
+						'local_id' => $local_id
 					);
 				
 					$post_data = array(
@@ -86,6 +88,19 @@
 				
 					echo($httpcode);
 					echo($data);
+					
+					$return_data_array = json_decode($data);
+					
+					var_dump($return_data_array);
+					echo($return_data_array->code);
+					
+					if($return_data_array->code === 'success') {
+						$remote_id = $return_data_array->data;
+						echo($remote_id);
+						add_post_meta($post_id, '_odd_server_transfer_remote_id_'.$server_transfer_post_id, $remote_id, true);
+					}
+					
+					
 					
 					die; //MEDEBUG
 				}
