@@ -31,6 +31,18 @@
 			}
 			else {
 				
+				$data['ID'] = $local_id;
+				
+				$new_id = wp_update_post($data);
+				
+				if(is_wp_error($new_id)) {
+					$error_string = '';
+					$errors = $new_id->get_error_messages();
+					foreach ($errors as $error) {
+						$error_string .= $error;
+					}
+					return $this->output_error($error_string);
+				}
 			}
 			
 			if($new_id) {
