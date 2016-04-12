@@ -26,7 +26,6 @@
 			remove_all_actions('save_post'); //MEDEBUG
 			
 			if(!$local_id) {
-				
 				$new_id = wp_insert_post($data);
 			}
 			else {

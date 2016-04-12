@@ -31,6 +31,11 @@
 		protected function create_rest_api_end_points() {
 			//echo("\OddSiteTransfer\Plugin::create_rest_api_end_points<br />");
 			
+			$sync_user_end_point = new \OddSiteTransfer\RestApi\SyncUserEndPoint();
+			$sync_user_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
+			$sync_user_end_point->setup('sync/user', 'odd-site-transfer', 1, 'POST');
+			//METODO: security
+			$this->_rest_api_end_points[] = $sync_user_end_point;	
 			
 			$sync_post_end_point = new \OddSiteTransfer\RestApi\SyncPostEndPoint();
 			$sync_post_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
