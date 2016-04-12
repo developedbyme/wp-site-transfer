@@ -23,9 +23,9 @@
 			
 			$new_id = NULL;
 			
+			remove_all_actions('save_post'); //MEDEBUG
+			
 			if(!$local_id) {
-				
-				remove_all_actions('save_post'); //MEDEBUG
 				
 				$new_id = wp_insert_post($data);
 			}
@@ -34,6 +34,11 @@
 				$data['ID'] = $local_id;
 				
 				$new_id = wp_update_post($data);
+				//echo('.'.$local_id.'--'.$new_id);
+				if($new_id == 0) {
+					unset($data['ID']);
+					$new_id = wp_insert_post($data);
+				}
 				
 				if(is_wp_error($new_id)) {
 					$error_string = '';
