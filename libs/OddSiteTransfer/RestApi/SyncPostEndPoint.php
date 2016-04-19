@@ -124,6 +124,12 @@
 					}
 				}
 				
+				
+				if(isset($meta_data['post_thumbnail_id'])) {
+					//METODO: test removal of thumbnail
+					set_post_thumbnail($new_id, $meta_data['post_thumbnail_id']);
+				}
+				
 				if($post_data['post_type'] === 'attachment') {
 					
 					$base_file = wp_upload_dir()['basedir'].'/'.$meta_data['meta']['_wp_attached_file'];
