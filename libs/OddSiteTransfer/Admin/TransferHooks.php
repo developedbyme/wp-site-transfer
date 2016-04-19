@@ -52,6 +52,47 @@
 			return NULL;
 		}
 		
+		protected function transfer_term($term, $server_transfer_post) {
+			//echo("\OddSiteTransfer\Admin\TransferHooks::transfer_term<br />");
+			//var_dump($term);
+			//echo('<br /><br />');
+			
+			$server_transfer_post_id = $server_transfer_post->ID;
+			
+			$base_url = get_post_meta($server_transfer_post_id, 'url', true);
+			$url = $base_url.'sync/term';
+			
+			$term_id = $term->term_id;
+			$term_local_id = get_term_meta($term_id, '_odd_server_transfer_remote_id_'.$server_transfer_post_id, true);
+			
+			$term_ids = array(
+				'origin_id' => $term_id,
+				'local_id' => $term_local_id
+			);
+			
+			//var_dump($term_ids);
+			//echo('<br /><br />');
+			
+			//METODO: do parent
+			
+			$term_data = array(
+				'name' => $term->name,
+				'slug' => $term->slug,
+				'description' => $term->description,
+				'taxonomy' => $term->taxonomy
+			);
+			
+			$send_data = array('ids' => $term_ids, 'data' => $term_data, 'taxonomy' => $term->taxonomy);
+			
+			//var_dump($send_data);
+			//echo('<br /><br />');
+			
+			$repsonse_data = $this->send_request($url, $send_data);
+			if($repsonse_data) {
+				update_term_meta($term_id, '_odd_server_transfer_remote_id_'.$server_transfer_post_id, $repsonse_data);
+			}
+		}
+		
 		protected function transfer_media($media, $server_transfer_post) {
 			//echo("\OddSiteTransfer\Admin\TransferHooks::transfer_media<br />");
 			
@@ -73,8 +114,7 @@
 			
 			$repsonse_data = $this->send_request($url, $send_data);
 			if($repsonse_data) {
-				echo('sent');
-				echo('<br /><br />');
+				//METODO: check that the image is sent
 			}
 			
 			$this->transfer_post($media, $server_transfer_post);
@@ -185,7 +225,7 @@
 		}
 		
 		protected function transfer_post($post, $server_transfer_post) {
-			echo("\OddSiteTransfer\Admin\TransferHooks::transfer_post<br />");
+			//echo("\OddSiteTransfer\Admin\TransferHooks::transfer_post<br />");
 			//var_dump($post);
 			//echo('<br /><br />');
 			
@@ -253,6 +293,9 @@
 						
 						$this->transfer_media($media_post, $server_transfer_post);
 					}
+					
+					$local_thumbnail_id = get_post_meta($media_post_id, '_odd_server_transfer_remote_id_'.$server_transfer_post_id, true);
+					$meta_data['post_thumbnail_id'] = $local_thumbnail_id;
 				}
 				else {
 					//METODO: should caption be here?
@@ -261,8 +304,33 @@
 					$meta_data['meta']['_wp_attachment_image_alt'] = get_post_meta($post_id, '_wp_attachment_image_alt', true);
 				}
 				
+				
+				
+				$taxonomies = array_keys(get_the_taxonomies($post_id));
+				//var_dump($taxonomies);
+				//echo('<br /><br />');
+				
+				$term_data_array = array();
+				foreach($taxonomies as $taxonomy) {
+					$current_terms = get_the_terms($post_id, $taxonomy);
+					//var_dump($current_terms);
+					//echo('<br /><br />');
+					$local_term_ids = array();
+					
+					foreach($current_terms as $current_term) {
+						$this->transfer_term($current_term, $server_transfer_post);
+						$local_term_ids[] = get_term_meta($current_term->term_id, '_odd_server_transfer_remote_id_'.$server_transfer_post_id, true);
+					}
+					
+					$term_data_array[$taxonomy] = $local_term_ids;
+					
+				}
+				
+				var_dump($term_data_array);
+				echo('<br /><br />');
+				
 				//METODO
-				$send_data = array('ids' => $post_ids, 'data' => $post_data, 'meta_data' => $meta_data);
+				$send_data = array('ids' => $post_ids, 'data' => $post_data, 'meta_data' => $meta_data, 'taxonomies' => $term_data_array);
 				$repsonse_data = $this->send_request($url, $send_data);
 				
 				if($repsonse_data) {
