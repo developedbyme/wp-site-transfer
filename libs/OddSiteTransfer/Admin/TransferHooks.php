@@ -401,10 +401,16 @@
 				$sync_index_target = intval(get_post_meta($post->ID, '_odd_server_transfer_sync_index_target', true));
 				
 				if($sync_index_target > $sync_index) {
+					
+					$element_id = sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
 					?>
-						<div class="notice">
-							<p>Check sync</p>
+						
+						<div class="notice" id="<?php echo($element_id); ?>">
+							<script type="text/javascript">
+								window.OA.reactModuleCreator.createModule("checkSyncNotice", document.getElementById("<?php echo($element_id); ?>"), {"id": "<?php echo($post->ID); ?>"});
+							</script>
 						</div>
+						
 					<?php
 				}
 			}

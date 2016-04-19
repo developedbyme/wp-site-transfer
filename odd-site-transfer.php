@@ -11,6 +11,7 @@
 	define("OA_SITE_TRANSFER_TEXTDOMAIN", "odd-site-transfer");
 	define("OA_SITE_TRANSFER_MAIN_FILE", __FILE__);
 	define("OA_SITE_TRANSFER_DIR", untrailingslashit( dirname( __FILE__ )  ) );
+	define("OA_SITE_TRANSFER_URL", untrailingslashit( plugins_url('',  __FILE__ )  ) );
 	
 	require_once( OA_SITE_TRANSFER_DIR . "/libs/OddSiteTransfer/bootstrap.php" );
 	

@@ -57,6 +57,27 @@
 			
 		}
 		
+		
+		public function hook_admin_enqueue_scripts() {
+			//echo("\OddSiteTransfer\Plugin::hook_admin_enqueue_scripts<br />");
+			
+			parent::hook_admin_enqueue_scripts();
+			
+			$screen = get_current_screen();
+			
+			wp_enqueue_script( 'odd-site-transfer-admin-main', OA_SITE_TRANSFER_URL . '/assets/js/admin-main.js');
+			wp_localize_script(
+				'odd-site-transfer-admin-main',
+				'oaWpAdminData',
+				array(
+					'screen' => $screen,
+					'restApiBaseUrl' => get_home_url().'/wp-json/'
+				)
+			);
+		}
+		
+		
+		
 		public static function test_import() {
 			echo("Imported \OddSiteTransfer\Plugin<br />");
 		}
