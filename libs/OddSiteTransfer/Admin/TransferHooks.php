@@ -41,8 +41,8 @@
 			$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 			curl_close($ch);
 		
-			echo($httpcode);
-			echo($data);
+			//echo($httpcode);
+			//echo($data);
 			
 			$return_data_array = json_decode($data);
 			
@@ -304,11 +304,7 @@
 					$meta_data['meta']['_wp_attachment_image_alt'] = get_post_meta($post_id, '_wp_attachment_image_alt', true);
 				}
 				
-				
-				
 				$taxonomies = array_keys(get_the_taxonomies($post_id));
-				//var_dump($taxonomies);
-				//echo('<br /><br />');
 				
 				$term_data_array = array();
 				foreach($taxonomies as $taxonomy) {
@@ -325,9 +321,6 @@
 					$term_data_array[$taxonomy] = $local_term_ids;
 					
 				}
-				
-				var_dump($term_data_array);
-				echo('<br /><br />');
 				
 				//METODO
 				$send_data = array('ids' => $post_ids, 'data' => $post_data, 'meta_data' => $meta_data, 'taxonomies' => $term_data_array);
