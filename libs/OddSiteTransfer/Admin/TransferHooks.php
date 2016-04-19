@@ -359,7 +359,7 @@
 		}
 		
 		public function hook_created_term($term_id, $tt_id, $taxonomy) {
-			echo("\OddSiteTransfer\Admin\TransferHooks::hook_created_term<br />");
+			//echo("\OddSiteTransfer\Admin\TransferHooks::hook_created_term<br />");
 			
 			//METODO
 		}

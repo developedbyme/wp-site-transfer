@@ -79,6 +79,7 @@
 			$post_ids = $data['ids'];
 			$post_data = $data['data'];
 			$meta_data = $data['meta_data'];
+			$taxonomies = $data['taxonomies'];
 			
 			$local_id = $post_ids['local_id'];
 			
@@ -112,6 +113,16 @@
 			
 			if($new_id) {
 				
+				var_dump($taxonomies);
+				echo('<br /><br />');
+				if(isset($taxonomies)) {
+					foreach($taxonomies as $taxonomy => $term_ids) {
+						$int_term_ids = array_map('intval', $term_ids);
+						wp_set_object_terms($new_id, $int_term_ids, $taxonomy, false);
+					}
+					
+				}
+				
 				if(isset($meta_data['acf'])) {
 					foreach($meta_data['acf'] as $name => $field) {
 						$this->update_acf_field($name, $field, $new_id);
@@ -122,6 +133,12 @@
 					foreach($meta_data['meta'] as $key => $value) {
 						update_post_meta($new_id, $key, $value);
 					}
+				}
+				
+				
+				if(isset($meta_data['post_thumbnail_id'])) {
+					//METODO: test removal of thumbnail
+					set_post_thumbnail($new_id, $meta_data['post_thumbnail_id']);
 				}
 				
 				if($post_data['post_type'] === 'attachment') {
