@@ -41,8 +41,8 @@
 			$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 			curl_close($ch);
 		
-			echo($httpcode);
-			echo($data);
+			//echo($httpcode);
+			//echo($data);
 			
 			$return_data_array = json_decode($data);
 			
@@ -73,8 +73,7 @@
 			
 			$repsonse_data = $this->send_request($url, $send_data);
 			if($repsonse_data) {
-				echo('sent');
-				echo('<br /><br />');
+				//METODO: check that the image is sent
 			}
 			
 			$this->transfer_post($media, $server_transfer_post);
@@ -185,7 +184,7 @@
 		}
 		
 		protected function transfer_post($post, $server_transfer_post) {
-			echo("\OddSiteTransfer\Admin\TransferHooks::transfer_post<br />");
+			//echo("\OddSiteTransfer\Admin\TransferHooks::transfer_post<br />");
 			//var_dump($post);
 			//echo('<br /><br />');
 			
