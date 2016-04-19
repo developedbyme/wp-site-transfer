@@ -253,6 +253,9 @@
 						
 						$this->transfer_media($media_post, $server_transfer_post);
 					}
+					
+					$local_thumbnail_id = get_post_meta($media_post_id, '_odd_server_transfer_remote_id_'.$server_transfer_post_id, true);
+					$meta_data['post_thumbnail_id'] = $local_thumbnail_id;
 				}
 				else {
 					//METODO: should caption be here?
