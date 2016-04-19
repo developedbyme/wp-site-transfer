@@ -27,6 +27,7 @@
 		protected function send_request($url, $data) {
 			
 			$fields_string = http_build_query($data);
+			//echo($fields_string."<br />");
 			
 			$ch = curl_init();
 			curl_setopt($ch, CURLOPT_URL, $url);
@@ -34,13 +35,13 @@
 			curl_setopt($ch, CURLOPT_POSTFIELDS, $fields_string);
 			//curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322)');
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-			curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-			curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+			curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 60);
+			curl_setopt($ch, CURLOPT_TIMEOUT, 60);
 			$data = curl_exec($ch);
 			$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 			curl_close($ch);
 		
-			//echo($httpcode);
+			echo($httpcode);
 			echo($data);
 			
 			$return_data_array = json_decode($data);
@@ -51,8 +52,37 @@
 			return NULL;
 		}
 		
+		protected function transfer_media($media, $server_transfer_post) {
+			//echo("\OddSiteTransfer\Admin\TransferHooks::transfer_media<br />");
+			
+			$server_transfer_post_id = $server_transfer_post->ID;
+			
+			//METODO: check that image needs to be sent
+			
+			$base_url = get_post_meta($server_transfer_post_id, 'url', true);
+			$url = $base_url.'sync/image';
+			
+			$file_path = get_post_meta($media->ID, '_wp_attached_file', true);
+			
+			$file_to_load = wp_upload_dir()['basedir'].'/'.$file_path;
+			
+			$file_data = file_get_contents($file_to_load);
+			$encoded_file_data = base64_encode($file_data);
+			
+			$send_data = array('path' => $file_path, 'data' => $encoded_file_data);
+			
+			$repsonse_data = $this->send_request($url, $send_data);
+			if($repsonse_data) {
+				echo('sent');
+				echo('<br /><br />');
+			}
+			
+			$this->transfer_post($media, $server_transfer_post);
+		}
+		
+		
 		protected function transfer_user($user, $server_transfer_post) {
-			echo("\OddSiteTransfer\Admin\TransferHooks::transfer_user<br />");
+			//echo("\OddSiteTransfer\Admin\TransferHooks::transfer_user<br />");
 			
 			$server_transfer_post_id = $server_transfer_post->ID;
 			
@@ -61,7 +91,7 @@
 			
 			$user_id = $user->ID;
 			$user_local_id = get_user_meta($user_id, '_odd_server_transfer_remote_id_'.$server_transfer_post_id, true);
-			var_dump($user);
+			
 			
 			$user_ids = array(
 				'origin_id' => $user_id,
@@ -77,34 +107,100 @@
 				'last_name' => $user->last_name
 			);
 			
-			
-			
-			$send_data = array('ids' => $post_ids, 'data' => $post_data);
+			$send_data = array('ids' => $user_ids, 'data' => $user_data);
 			$repsonse_data = $this->send_request($url, $send_data);
-			var_dump($repsonse_data);
 			
 			if($repsonse_data) {
-				//update_post_meta($post_id, '_odd_server_transfer_remote_id_'.$server_transfer_post_id, $repsonse_data);
+				update_user_meta($user_id, '_odd_server_transfer_remote_id_'.$server_transfer_post_id, $repsonse_data);
+			}
+		}
+		
+		protected function encode_acf_field($acf_field, $post_id, $server_transfer_post, $override_value = NULL) {
+			//echo("\OddSiteTransfer\Admin\TransferHooks::encode_acf_field<br />");
+			//echo($acf_field['type']."<br />");
+			
+			$current_send_field = NULL;
+			
+			switch($acf_field['type']) {
+				case "repeater":
+					$rows_array = array();
+					$current_key = $acf_field['key'];
+					if(have_rows($current_key, $post_id)) {
+						while(have_rows($current_key, $post_id)) {
+							
+							the_row();
+							$current_row = get_row();
+							
+							$row_result = array();
+							
+							foreach($current_row as $key => $value) {
+								$current_row_field = get_field_object($key, $post_id, false, true);
+								$row_result[$current_row_field['name']] = $this->encode_acf_field($current_row_field, $post_id, $server_transfer_post, $value);
+							}
+							
+							array_push($rows_array, $row_result);
+						}
+					}
+					$current_send_field = array(
+						'type' => $acf_field['type'],
+						'value' => $rows_array
+					);
+					break;
+				case "post_object":
+					$linked_post_ids = $override_value ? $override_value : $acf_field['value'];
+					$linked_post_local_ids = array();
+					foreach($linked_post_ids as $linked_post_id) {
+						$linked_post_local_ids[] = $this->get_local_post_id($linked_post_id, $server_transfer_post->ID);
+					}
+					$current_send_field = array(
+						'type' => $acf_field['type'],
+						'value' => $linked_post_local_ids
+					);
+					break;
+				break;
+				default:
+					echo("Unknown type: ".$acf_field['type']."<br />");
+					var_dump($acf_field);
+				case "radio":
+				case "textarea":
+				case "url":
+				case "text":
+				case "number":
+					$current_send_field = array(
+						'type' => $acf_field['type'],
+						'value' => $acf_field['value']
+					);
+					if($override_value) {
+						$current_send_field['value'] = $override_value;
+					}
+					break;
 			}
 			
-			die; //MEDEBUG
+			//echo("// \OddSiteTransfer\Admin\TransferHooks::encode_acf_field<br />");
+			return $current_send_field;
+		}
+		
+		protected function get_local_post_id($post_id, $server_transfer_post_id) {
+			return get_post_meta($post_id, '_odd_server_transfer_remote_id_'.$server_transfer_post_id, true);
 		}
 		
 		protected function transfer_post($post, $server_transfer_post) {
 			echo("\OddSiteTransfer\Admin\TransferHooks::transfer_post<br />");
+			//var_dump($post);
+			//echo('<br /><br />');
 			
 			$post_id = $post->ID;
 			$post_type = $post->post_type;
 			
 			$server_transfer_post_id = $server_transfer_post->ID;
 			
-			if($post_type === 'post') { //METODO: make settings for this
+			if($post_type === 'post' || $post_type === 'oa_recipe' || $post_type === 'oa_product' || $post_type === 'attachment') { //METODO: make settings for this
 				//echo("++++");
 				$base_url = get_post_meta($server_transfer_post_id, 'url', true);
 				$url = $base_url.'sync/post';
 				//echo($base_url);
 				
-				$local_id = get_post_meta($post_id, '_odd_server_transfer_remote_id_'.$server_transfer_post_id, true);
+				$local_id = $this->get_local_post_id($post_id, $server_transfer_post_id);
 				
 				$post_ids = array(
 					'origin_id' => $post->ID,
@@ -115,17 +211,58 @@
 				//METODO: handle no author
 				$post_author = get_user_by('id', $author_id);
 				$this->transfer_user($post_author, $server_transfer_post);
-				$auhtor_local_id = get_user_meta($author_id, '_odd_server_transfer_remote_id_'.$server_transfer_post_id, true);
+				$author_local_id = get_user_meta($author_id, '_odd_server_transfer_remote_id_'.$server_transfer_post_id, true);
 				
 				$post_data = array(
 					'post_type' => $post->post_type,
 					'post_status' => $post->post_status,
 					'post_title' => $post->post_title,
-					'post_content' => $post->post_content
+					'post_content' => $post->post_content,
+					'post_author' => $author_local_id,
+					'post_name' => $post->post_name,
+					'post_date' => $post->post_date,
+					'post_date_gmt' => $post->post_date_gmt,
+					'post_modified' => $post->post_modified,
+					'post_modified_gmt' => $post->post_modified_gmt,
+					'comment_status' => $post->comment_status,
+					'menu_order' => $post->menu_order,
+					'post_mime_type' => $post->post_mime_type
 				);
-			
+				
+				$meta_data = array();
+				$meta_data['meta'] = array();
+				
+				if($post_type === 'oa_recipe') {
+					
+					$send_fields = array();
+					
+					$acf_fields = get_field_objects($post_id);
+					
+					foreach($acf_fields as $name => $acf_field) {
+						$send_fields[$name] = $this->encode_acf_field($acf_field, $post_id, $server_transfer_post);
+					}
+					
+					$meta_data['acf'] = $send_fields;
+				}
+				
+				if($post_type !== 'attachment') {
+					$media_post_id = get_post_thumbnail_id($post_id);
+					
+					if($media_post_id) {
+						$media_post = get_post($media_post_id);
+						
+						$this->transfer_media($media_post, $server_transfer_post);
+					}
+				}
+				else {
+					//METODO: should caption be here?
+					$meta_data['meta']['_wp_attached_file'] = get_post_meta($post_id, '_wp_attached_file', true);
+					$meta_data['meta']['_wp_attachment_metadata'] = get_post_meta($post_id, '_wp_attachment_metadata', true);
+					$meta_data['meta']['_wp_attachment_image_alt'] = get_post_meta($post_id, '_wp_attachment_image_alt', true);
+				}
+				
 				//METODO
-				$send_data = array('ids' => $post_ids, 'data' => $post_data);
+				$send_data = array('ids' => $post_ids, 'data' => $post_data, 'meta_data' => $meta_data);
 				$repsonse_data = $this->send_request($url, $send_data);
 				
 				if($repsonse_data) {
