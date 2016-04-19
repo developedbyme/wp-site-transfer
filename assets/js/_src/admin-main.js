@@ -5,6 +5,8 @@ import GenericReactClassModuleCreator from "oa/GenericReactClassModuleCreator";
 import EditorManager from "oa/admin/editor/EditorManager";
 import ShortcodeManager from "oa/admin/editor/shortcodes/ShortcodeManager";
 
+import CheckSyncNotice from "oddsitetransfer/admin/sync/CheckSyncNotice";
+
 if(!window.OA) {
 	window.OA = new Object();
 }
@@ -25,7 +27,7 @@ if(!window.OA.reactModuleCreator) {
 	window.OA.reactModuleCreator = new ReactModuleCreator();
 }
 
-//window.OA.reactModuleCreator.registerModule("checkSyncNotice", (new GenericReactClassModuleCreator()).setClass(CheckSyncNotice));
+window.OA.reactModuleCreator.registerModule("checkSyncNotice", (new GenericReactClassModuleCreator()).setClass(CheckSyncNotice));
 
 document.addEventListener("DOMContentLoaded", function(event) {
 	//console.log("admin-main.js DOMContentLoaded");

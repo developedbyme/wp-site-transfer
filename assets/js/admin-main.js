@@ -62,13 +62,15 @@
 
 	var _ShortcodeManager2 = _interopRequireDefault(_ShortcodeManager);
 
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	var _CheckSyncNotice = __webpack_require__(163);
 
-	//console.log("admin-main.js");
+	var _CheckSyncNotice2 = _interopRequireDefault(_CheckSyncNotice);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	if (!window.OA) {
 		window.OA = new Object();
-	}
+	} //console.log("admin-main.js");
 
 	if (!window.OA.externallyAvailableClasses) {
 		window.OA.externallyAvailableClasses = new Object();
@@ -86,7 +88,7 @@
 		window.OA.reactModuleCreator = new _ReactModuleCreator2.default();
 	}
 
-	//window.OA.reactModuleCreator.registerModule("checkSyncNotice", (new GenericReactClassModuleCreator()).setClass(CheckSyncNotice));
+	window.OA.reactModuleCreator.registerModule("checkSyncNotice", new _GenericReactClassModuleCreator2.default().setClass(_CheckSyncNotice2.default));
 
 	document.addEventListener("DOMContentLoaded", function (event) {
 		//console.log("admin-main.js DOMContentLoaded");
@@ -19972,6 +19974,69 @@
 	}();
 
 	exports.default = ShortcodeManager;
+
+/***/ },
+/* 163 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(3);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactDom = __webpack_require__(160);
+
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	// import CheckSyncNotice from "oddsitetransfer/admin/sync/CheckSyncNotice";
+
+	var CheckSyncNotice = function (_React$Component) {
+		_inherits(CheckSyncNotice, _React$Component);
+
+		function CheckSyncNotice(props) {
+			_classCallCheck(this, CheckSyncNotice);
+
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(CheckSyncNotice).call(this, props));
+
+			_this.state = {};
+
+			return _this;
+		}
+
+		_createClass(CheckSyncNotice, [{
+			key: "componentDidMount",
+			value: function componentDidMount() {}
+		}, {
+			key: "render",
+			value: function render() {
+
+				return _react2.default.createElement(
+					"div",
+					null,
+					"Check sync react"
+				);
+			}
+		}]);
+
+		return CheckSyncNotice;
+	}(_react2.default.Component);
+
+	exports.default = CheckSyncNotice;
 
 /***/ }
 /******/ ]);
