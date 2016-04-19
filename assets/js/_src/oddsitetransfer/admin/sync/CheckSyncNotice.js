@@ -33,16 +33,16 @@ export default class CheckSyncNotice extends React.Component {
 		
 		if(this.state.status === 1) {
 			return <div>
-				Post has been synced to all sites
+				Post has been updated on all sites.
 			</div>;
 		}
 		if(this.state.status === -1) {
 			return <div>
-				An error occured while syncing
+				An error occured while transferring.
 			</div>;
 		}
 		return <div>
-			Syncing...
+			<div className="spinner is-active" style={{"float": "none"}}></div> Transferring post to all connected sites.
 		</div>;
 		
 	}

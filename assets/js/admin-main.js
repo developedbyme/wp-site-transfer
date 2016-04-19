@@ -20042,20 +20042,21 @@
 					return _react2.default.createElement(
 						"div",
 						null,
-						"Post has been synced to all sites"
+						"Post has been updated on all sites."
 					);
 				}
 				if (this.state.status === -1) {
 					return _react2.default.createElement(
 						"div",
 						null,
-						"An error occured while syncing"
+						"An error occured while transferring."
 					);
 				}
 				return _react2.default.createElement(
 					"div",
 					null,
-					"Syncing..."
+					_react2.default.createElement("div", { className: "spinner is-active", style: { "float": "none" } }),
+					" Transferring post to all connected sites."
 				);
 			}
 		}]);
