@@ -111,9 +111,27 @@
 			}
 			
 			if($new_id) {
+				
 				if(isset($meta_data['acf'])) {
 					foreach($meta_data['acf'] as $name => $field) {
 						$this->update_acf_field($name, $field, $new_id);
+					}
+				}
+				
+				if(isset($meta_data['meta'])) {
+					foreach($meta_data['meta'] as $key => $value) {
+						update_post_meta($new_id, $key, $value);
+					}
+				}
+				
+				if($post_data['post_type'] === 'attachment') {
+					
+					$base_file = wp_upload_dir()['basedir'].'/'.$meta_data['meta']['_wp_attached_file'];
+					
+					foreach($meta_data['meta']['_wp_attachment_metadata']['sizes'] as $image_size) {
+						//METODO: check if it has size before resizing
+						$resize_result = image_make_intermediate_size($base_file, $image_size['width'], $image_size['height'], true);
+						//METODO: check that resize worked
 					}
 				}
 				

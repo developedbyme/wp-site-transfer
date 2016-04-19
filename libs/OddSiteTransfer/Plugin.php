@@ -41,7 +41,13 @@
 			$sync_post_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
 			$sync_post_end_point->setup('sync/post', 'odd-site-transfer', 1, 'POST');
 			//METODO: security
-			$this->_rest_api_end_points[] = $sync_post_end_point;	
+			$this->_rest_api_end_points[] = $sync_post_end_point;
+			
+			$sync_image_end_point = new \OddSiteTransfer\RestApi\SyncImageEndPoint();
+			$sync_image_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
+			$sync_image_end_point->setup('sync/image', 'odd-site-transfer', 1, 'POST');
+			//METODO: security
+			$this->_rest_api_end_points[] = $sync_image_end_point;
 			
 		}
 		
