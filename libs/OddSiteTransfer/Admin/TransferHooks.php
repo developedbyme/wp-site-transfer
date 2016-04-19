@@ -22,6 +22,8 @@
 			add_action('created_term', array($this, 'hook_created_term'), 10, 3);
 			add_action('edited_term', array($this, 'hook_edited_term'), 10, 3);
 			add_action('delete_term', array($this, 'hook_delete_term'), 10, 3);
+			
+			add_action('admin_notices', array($this, 'hook_admin_notices'));
 		}
 		
 		protected function send_request($url, $data) {
@@ -341,6 +343,15 @@
 			
 			remove_action('save_post', array($this, 'hook_save_post'));
 			
+			$sync_index_target = get_post_meta($post_id, '_odd_server_transfer_sync_index_target', true);
+			
+			if($sync_index_target) {
+				update_post_meta($post_id, '_odd_server_transfer_sync_index_target', intval($sync_index_target)+1);
+			}
+			else {
+				update_post_meta($post_id, '_odd_server_transfer_sync_index_target', 1);
+			}
+			
 			$args = array(
 				'post_type' => 'server-transfer',
 				'post_status' => 'publish',
@@ -374,6 +385,29 @@
 			//echo("\OddSiteTransfer\Admin\TransferHooks::hook_delete_term<br />");
 			
 			//METODO
+		}
+		
+		public function hook_admin_notices() {
+			//echo("\OddSiteTransfer\Admin\TransferHooks::hook_admin_notices<br />");
+			
+			$screen = get_current_screen();
+			//var_dump($screen);
+			
+			if($screen->base === 'post') {
+				global $post;
+				//var_dump($post);
+				
+				$sync_index = intval(get_post_meta($post->ID, '_odd_server_transfer_sync_index', true));
+				$sync_index_target = intval(get_post_meta($post->ID, '_odd_server_transfer_sync_index_target', true));
+				
+				if($sync_index_target > $sync_index) {
+					?>
+						<div class="notice">
+							<p>Check sync</p>
+						</div>
+					<?php
+				}
+			}
 		}
 		
 		public static function test_import() {
