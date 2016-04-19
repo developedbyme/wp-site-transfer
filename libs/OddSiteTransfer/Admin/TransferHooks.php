@@ -35,14 +35,14 @@
 			curl_setopt($ch, CURLOPT_POSTFIELDS, $fields_string);
 			//curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322)');
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-			curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-			curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+			curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 60);
+			curl_setopt($ch, CURLOPT_TIMEOUT, 60);
 			$data = curl_exec($ch);
 			$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 			curl_close($ch);
 		
-			//echo($httpcode);
-			//echo($data);
+			echo($httpcode);
+			echo($data);
 			
 			$return_data_array = json_decode($data);
 			
@@ -51,6 +51,35 @@
 			}
 			return NULL;
 		}
+		
+		protected function transfer_media($media, $server_transfer_post) {
+			//echo("\OddSiteTransfer\Admin\TransferHooks::transfer_media<br />");
+			
+			$server_transfer_post_id = $server_transfer_post->ID;
+			
+			//METODO: check that image needs to be sent
+			
+			$base_url = get_post_meta($server_transfer_post_id, 'url', true);
+			$url = $base_url.'sync/image';
+			
+			$file_path = get_post_meta($media->ID, '_wp_attached_file', true);
+			
+			$file_to_load = wp_upload_dir()['basedir'].'/'.$file_path;
+			
+			$file_data = file_get_contents($file_to_load);
+			$encoded_file_data = base64_encode($file_data);
+			
+			$send_data = array('path' => $file_path, 'data' => $encoded_file_data);
+			
+			$repsonse_data = $this->send_request($url, $send_data);
+			if($repsonse_data) {
+				echo('sent');
+				echo('<br /><br />');
+			}
+			
+			$this->transfer_post($media, $server_transfer_post);
+		}
+		
 		
 		protected function transfer_user($user, $server_transfer_post) {
 			//echo("\OddSiteTransfer\Admin\TransferHooks::transfer_user<br />");
@@ -156,14 +185,16 @@
 		}
 		
 		protected function transfer_post($post, $server_transfer_post) {
-			//echo("\OddSiteTransfer\Admin\TransferHooks::transfer_post<br />");
+			echo("\OddSiteTransfer\Admin\TransferHooks::transfer_post<br />");
+			//var_dump($post);
+			//echo('<br /><br />');
 			
 			$post_id = $post->ID;
 			$post_type = $post->post_type;
 			
 			$server_transfer_post_id = $server_transfer_post->ID;
 			
-			if($post_type === 'post' || $post_type === 'oa_recipe' || $post_type === 'oa_product') { //METODO: make settings for this
+			if($post_type === 'post' || $post_type === 'oa_recipe' || $post_type === 'oa_product' || $post_type === 'attachment') { //METODO: make settings for this
 				//echo("++++");
 				$base_url = get_post_meta($server_transfer_post_id, 'url', true);
 				$url = $base_url.'sync/post';
@@ -199,6 +230,7 @@
 				);
 				
 				$meta_data = array();
+				$meta_data['meta'] = array();
 				
 				if($post_type === 'oa_recipe') {
 					
@@ -211,6 +243,22 @@
 					}
 					
 					$meta_data['acf'] = $send_fields;
+				}
+				
+				if($post_type !== 'attachment') {
+					$media_post_id = get_post_thumbnail_id($post_id);
+					
+					if($media_post_id) {
+						$media_post = get_post($media_post_id);
+						
+						$this->transfer_media($media_post, $server_transfer_post);
+					}
+				}
+				else {
+					//METODO: should caption be here?
+					$meta_data['meta']['_wp_attached_file'] = get_post_meta($post_id, '_wp_attached_file', true);
+					$meta_data['meta']['_wp_attachment_metadata'] = get_post_meta($post_id, '_wp_attachment_metadata', true);
+					$meta_data['meta']['_wp_attachment_image_alt'] = get_post_meta($post_id, '_wp_attachment_image_alt', true);
 				}
 				
 				//METODO
