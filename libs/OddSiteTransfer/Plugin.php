@@ -55,6 +55,13 @@
 			//METODO: security
 			$this->_rest_api_end_points[] = $sync_term_end_point;
 			
+			
+			$transfer_post_end_point = new \OddSiteTransfer\RestApi\TransferPostEndPoint();
+			$transfer_post_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
+			$transfer_post_end_point->setup('post/(?P<id>\d+)/transfer', 'odd-site-transfer', 1, 'GET');
+			//METODO: security
+			$this->_rest_api_end_points[] = $transfer_post_end_point;
+			
 		}
 		
 		

@@ -20013,22 +20013,49 @@
 
 			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(CheckSyncNotice).call(this, props));
 
-			_this.state = {};
+			_this.state = {
+				"status": 0
+			};
 
 			return _this;
 		}
 
 		_createClass(CheckSyncNotice, [{
 			key: "componentDidMount",
-			value: function componentDidMount() {}
+			value: function componentDidMount() {
+				jQuery.get(this.props.transferUrl, function (aData) {
+					console.log(aData);
+					if (aData.code === "success") {
+						this.setState({ "status": 1 });
+					} else {
+						this.setState({ "status": -1 });
+					}
+				}.bind(this)).fail(function () {
+					this.setState({ "status": -1 });
+				}.bind(this));
+			}
 		}, {
 			key: "render",
 			value: function render() {
 
+				if (this.state.status === 1) {
+					return _react2.default.createElement(
+						"div",
+						null,
+						"Post has been synced to all sites"
+					);
+				}
+				if (this.state.status === -1) {
+					return _react2.default.createElement(
+						"div",
+						null,
+						"An error occured while syncing"
+					);
+				}
 				return _react2.default.createElement(
 					"div",
 					null,
-					"Check sync react"
+					"Syncing..."
 				);
 			}
 		}]);
