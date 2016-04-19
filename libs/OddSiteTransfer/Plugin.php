@@ -49,6 +49,12 @@
 			//METODO: security
 			$this->_rest_api_end_points[] = $sync_image_end_point;
 			
+			$sync_term_end_point = new \OddSiteTransfer\RestApi\SyncTermEndPoint();
+			$sync_term_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
+			$sync_term_end_point->setup('sync/term', 'odd-site-transfer', 1, 'POST');
+			//METODO: security
+			$this->_rest_api_end_points[] = $sync_term_end_point;
+			
 		}
 		
 		public static function test_import() {
