@@ -113,8 +113,6 @@
 			
 			if($new_id) {
 				
-				var_dump($taxonomies);
-				echo('<br /><br />');
 				if(isset($taxonomies)) {
 					foreach($taxonomies as $taxonomy => $term_ids) {
 						$int_term_ids = array_map('intval', $term_ids);
