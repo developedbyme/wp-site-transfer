@@ -72,7 +72,7 @@
 			
 			$screen = get_current_screen();
 			
-			wp_enqueue_script( 'odd-site-transfer-admin-main', OA_SITE_TRANSFER_URL . '/assets/js/admin-main.js');
+			wp_enqueue_script( 'odd-site-transfer-admin-main', ODD_SITE_TRANSFER_URL . '/assets/js/admin-main.js');
 			wp_localize_script(
 				'odd-site-transfer-admin-main',
 				'oaWpAdminData',

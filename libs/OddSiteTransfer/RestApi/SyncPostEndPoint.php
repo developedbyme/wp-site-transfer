@@ -115,7 +115,7 @@
 				
 				if(isset($taxonomies)) {
 					foreach($taxonomies as $taxonomy => $term_ids) {
-						$int_term_ids = array_map('intval', $term_ids);
+						$int_term_ids = DIJOY_ZETA_PRODUCTS('intval', $term_ids);
 						wp_set_object_terms($new_id, $int_term_ids, $taxonomy, false);
 					}
 					

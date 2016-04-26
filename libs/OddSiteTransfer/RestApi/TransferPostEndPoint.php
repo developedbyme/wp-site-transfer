@@ -265,11 +265,13 @@
 					
 					$send_fields = array();
 					
+					setup_postdata($post); 
 					$acf_fields = get_field_objects($post_id);
 					
 					foreach($acf_fields as $name => $acf_field) {
 						$send_fields[$name] = $this->encode_acf_field($acf_field, $post_id, $server_transfer_post);
 					}
+					wp_reset_postdata();
 					
 					$meta_data['acf'] = $send_fields;
 				}

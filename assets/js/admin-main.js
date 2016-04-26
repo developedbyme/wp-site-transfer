@@ -20040,22 +20040,22 @@
 
 				if (this.state.status === 1) {
 					return _react2.default.createElement(
-						"div",
+						"p",
 						null,
 						"Post has been updated on all sites."
 					);
 				}
 				if (this.state.status === -1) {
 					return _react2.default.createElement(
-						"div",
+						"p",
 						null,
 						"An error occured while transferring."
 					);
 				}
 				return _react2.default.createElement(
-					"div",
+					"p",
 					null,
-					_react2.default.createElement("div", { className: "spinner is-active", style: { "float": "none" } }),
+					_react2.default.createElement("span", { className: "spinner is-active", style: { "float": "none" } }),
 					" Transferring post to all connected sites."
 				);
 			}
