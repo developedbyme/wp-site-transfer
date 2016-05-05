@@ -31,9 +31,15 @@
 			$data = curl_exec($ch);
 			$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 			curl_close($ch);
-		
-			//echo($httpcode);
-			//echo($data);
+			
+			/*
+			echo($url);
+			echo("\n");
+			echo($httpcode);
+			echo("\n");
+			echo($data);
+			echo("\n\n");
+			*/
 			
 			$this->http_log[] = array('url' => $url, 'code' => $httpcode, 'data' => $data);
 			
@@ -336,10 +342,12 @@
 			$post_id = $data['id'];
 			$post = get_post($post_id);
 			
+			$force = ($data['force'] === '1');
+			
 			$sync_index = intval(get_post_meta($post_id, '_odd_server_transfer_sync_index', true));
 			$sync_index_target = intval(get_post_meta($post_id, '_odd_server_transfer_sync_index_target', true));
 			
-			if($sync_index_target === $sync_index) {
+			if(!$force && ($sync_index_target === $sync_index)) {
 				return $this->output_success(array('target' => $sync_index_target, 'index' => $sync_index));
 			}
 			

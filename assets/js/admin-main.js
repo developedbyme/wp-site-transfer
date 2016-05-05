@@ -20017,6 +20017,7 @@
 				"status": 0
 			};
 
+			_this.resyncBound = _this.resync.bind(_this);
 			return _this;
 		}
 
@@ -20035,6 +20036,21 @@
 				}.bind(this));
 			}
 		}, {
+			key: "resync",
+			value: function resync() {
+				this.setState({ "status": 0 });
+				jQuery.get(this.props.transferUrl + "?force=1", function (aData) {
+					console.log(aData);
+					if (aData.code === "success") {
+						this.setState({ "status": 1 });
+					} else {
+						this.setState({ "status": -1 });
+					}
+				}.bind(this)).fail(function () {
+					this.setState({ "status": -1 });
+				}.bind(this));
+			}
+		}, {
 			key: "render",
 			value: function render() {
 
@@ -20042,14 +20058,24 @@
 					return _react2.default.createElement(
 						"p",
 						null,
-						"Post has been updated on all sites."
+						"Post has been updated on all sites. ",
+						_react2.default.createElement(
+							"span",
+							{ className: "resync", onClick: this.resyncBound },
+							"(Resync)"
+						)
 					);
 				}
 				if (this.state.status === -1) {
 					return _react2.default.createElement(
 						"p",
 						null,
-						"An error occured while transferring."
+						"An error occured while transferring. ",
+						_react2.default.createElement(
+							"span",
+							{ className: "resync", onClick: this.resyncBound },
+							"(Resync)"
+						)
 					);
 				}
 				return _react2.default.createElement(
