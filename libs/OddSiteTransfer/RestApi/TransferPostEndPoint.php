@@ -340,7 +340,7 @@
 			$sync_index_target = intval(get_post_meta($post_id, '_odd_server_transfer_sync_index_target', true));
 			
 			if($sync_index_target === $sync_index) {
-				//return $this->output_success(array('target' => $sync_index_target, 'index' => $sync_index)); //MEDEBUG: //
+				return $this->output_success(array('target' => $sync_index_target, 'index' => $sync_index));
 			}
 			
 			$args = array(
