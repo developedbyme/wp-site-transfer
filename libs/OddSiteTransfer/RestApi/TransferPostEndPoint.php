@@ -15,6 +15,39 @@
 			
 		}
 		
+		protected function send_request_with_file($url, $data) {
+			
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_URL, $url);
+			curl_setopt($ch, CURLOPT_POST, TRUE);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+			//curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322)');
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+			curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 60);
+			curl_setopt($ch, CURLOPT_TIMEOUT, 60);
+			$data = curl_exec($ch);
+			$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+			curl_close($ch);
+			
+			/*
+			echo($url);
+			echo("\n");
+			echo($httpcode);
+			echo("\n");
+			echo($data);
+			echo("\n\n");
+			*/
+			
+			$this->http_log[] = array('url' => $url, 'code' => $httpcode, 'data' => $data);
+			
+			$return_data_array = json_decode($data);
+			
+			if($return_data_array->code === 'success') {
+				return $return_data_array->data;
+			}
+			return NULL;
+		}
+		
 		protected function send_request($url, $data) {
 			
 			$fields_string = http_build_query($data);
@@ -123,12 +156,10 @@
 			$image_exists = $this->compare_image($file_path, filesize($file_to_load), $server_transfer_post);
 			
 			if(!$image_exists) {
-				$file_data = file_get_contents($file_to_load);
-				$encoded_file_data = base64_encode($file_data);
 			
-				$send_data = array('path' => $file_path, 'data' => $encoded_file_data);
+				$send_data = array('path' => $file_path, 'file' => new \CURLFile($file_to_load, 'image/jpeg'));
 			
-				$repsonse_data = $this->send_request($url, $send_data);
+				$repsonse_data = $this->send_request_with_file($url, $send_data);
 				if($repsonse_data) {
 					//METODO: check that the image is sent
 				}
