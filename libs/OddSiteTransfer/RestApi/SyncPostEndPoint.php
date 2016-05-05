@@ -40,6 +40,8 @@
 					
 					$new_rows = $field['value'];
 					
+					$acf_key = acf_get_field($name)["key"];
+					
 					foreach($new_rows as $index => $row) {
 						//METODO: length is set directly to meta data
 						
@@ -61,6 +63,9 @@
 					}
 					
 					update_post_meta($post_id, $meta_value_name, count($new_rows));
+					if($acf_key) {
+						update_post_meta($post_id, '_'.$meta_value_name, $acf_key);
+					}
 					
 					break;
 			}
