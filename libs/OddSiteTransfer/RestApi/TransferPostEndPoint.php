@@ -30,8 +30,8 @@
 			$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 			curl_close($ch);
 		
-			//echo($httpcode);
-			//echo($data);
+			echo($httpcode);
+			echo($data);
 			
 			$return_data_array = json_decode($data);
 			
@@ -178,8 +178,10 @@
 				case "post_object":
 					$linked_post_ids = $override_value ? $override_value : $acf_field['value'];
 					$linked_post_local_ids = array();
-					foreach($linked_post_ids as $linked_post_id) {
-						$linked_post_local_ids[] = $this->get_local_post_id($linked_post_id, $server_transfer_post->ID);
+					if($linked_post_ids) {
+						foreach($linked_post_ids as $linked_post_id) {
+							$linked_post_local_ids[] = $this->get_local_post_id($linked_post_id, $server_transfer_post->ID);
+						}
 					}
 					$current_send_field = array(
 						'type' => $acf_field['type'],
@@ -333,7 +335,7 @@
 			$sync_index_target = intval(get_post_meta($post_id, '_odd_server_transfer_sync_index_target', true));
 			
 			if($sync_index_target === $sync_index) {
-				return $this->output_success(array('target' => $sync_index_target, 'index' => $sync_index));
+				//return $this->output_success(array('target' => $sync_index_target, 'index' => $sync_index)); //MEDEBUG: //
 			}
 			
 			$args = array(
