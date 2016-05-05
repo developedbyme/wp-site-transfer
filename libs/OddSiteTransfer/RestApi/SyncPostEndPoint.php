@@ -27,28 +27,18 @@
 				case "post_object":
 					if($repeater_path) {
 						update_sub_field($repeater_path, $field['value'], $post_id);
+						update_post_meta($post_id, implode('_', $meta_path), $field['value']);
 					}
 					else {
 						update_field($name, $field['value'], $post_id);
 					}
 					break;
 				case "repeater":
-					if(!$repeater_path) {
-						$rows = get_field($name, $post_id);
-						if($rows) {
-							$row_count = $rows ? count($rows) : 0;
-							for($i = 0; $i < $row_count; $i++) {
-								//$successful_delete = delete_row($name, $row_count-$i, $post_id);
-							}
-						}
-					}
 					
 					$new_rows = $field['value'];
 					
 					foreach($new_rows as $index => $row) {
-						//METODO: lenght is set directly to meta data
-						//$new_row_index = add_row($name, NULL, $post_id);
-						//echo($new_row_index."<br />");
+						//METODO: length is set directly to meta data
 						
 						foreach($row as $row_field_name => $row_field) {
 							$new_path = array($name, $index+1, $row_field_name);
