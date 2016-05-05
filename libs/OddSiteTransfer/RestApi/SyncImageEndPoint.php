@@ -19,17 +19,12 @@
 			ini_set('memory_limit', '512M');
 			
 			$path = $data['path'];
-			$data = $data['data'];
 			
 			$upload_dir = wp_upload_dir();
 			
 			$file_to_save = $upload_dir['basedir'].'/'.$path;
 			
-			$encoded_data = base64_decode($data);
-			
-			$save_result = file_put_contents($file_to_save, $encoded_data);
-			
-			if($save_result) {
+			if(move_uploaded_file($_FILES['file']['tmp_name'], $file_to_save)) {
 				return $this->output_success($upload_dir['baseurl'].'/'.$path);
 			}
 			return $this->output_error("Couldn't save file.");
