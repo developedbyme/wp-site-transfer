@@ -7,6 +7,8 @@
 	// \OddSiteTransfer\RestApi\TransferPostEndPoint
 	class TransferPostEndPoint extends EndPoint {
 		
+		protected $http_log = array();
+		
 		function __construct() {
 			//echo("\OddSiteTransfer\RestApi\TransferPostEndPoint::__construct<br />");
 			
@@ -30,8 +32,10 @@
 			$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 			curl_close($ch);
 		
-			echo($httpcode);
-			echo($data);
+			//echo($httpcode);
+			//echo($data);
+			
+			$this->http_log[] = array('url' => $url, 'code' => $httpcode, 'data' => $data);
 			
 			$return_data_array = json_decode($data);
 			
@@ -197,6 +201,7 @@
 				case "url":
 				case "text":
 				case "number":
+				case "wysiwyg": //METODO: get correct value from wysiwyg
 					$current_send_field = array(
 						'type' => $acf_field['type'],
 						'value' => $acf_field['value']
@@ -358,7 +363,7 @@
 			
 			update_post_meta($post_id, '_odd_server_transfer_sync_index', $sync_index);
 			
-			return $this->output_success(array('target' => $sync_index_target, 'index' => $sync_index));
+			return $this->output_success(array('target' => $sync_index_target, 'index' => $sync_index, 'httpLog' => $this->http_log));
 			
 		}
 		

@@ -16,6 +16,8 @@
 		protected function update_acf_field($name, $field, $post_id, $repeater_path = NULL, $meta_path = null) {
 			//echo("\OddSiteTransfer\RestApi\SyncPostEndPoint::update_acf_field<br />");
 			
+			if(!isset($field['value'])) return; //METODO: check that this is correct
+			
 			switch($field['type']) {
 				default:
 					echo('Unknown type:'.$field['type']);
@@ -25,6 +27,7 @@
 				case "url":
 				case "radio":
 				case "post_object":
+				case "wysiwyg":
 					if($repeater_path) {
 						update_sub_field($repeater_path, $field['value'], $post_id);
 						update_post_meta($post_id, implode('_', $meta_path), $field['value']);
