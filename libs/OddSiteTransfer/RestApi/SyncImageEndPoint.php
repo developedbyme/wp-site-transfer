@@ -16,6 +16,8 @@
 		public function perform_call($data) {
 			//echo("\OddSiteTransfer\RestApi\SyncImageEndPoint::perform_call<br />");
 			
+			ini_set('memory_limit', '512M');
+			
 			$path = $data['path'];
 			$data = $data['data'];
 			
