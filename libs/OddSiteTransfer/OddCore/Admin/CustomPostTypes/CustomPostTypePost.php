@@ -79,19 +79,19 @@
 			//METODO: fix parent_item_colon
 			
 			$this->_labels = array(
-				'name' => __( ucfirst($multiple_name), OddSiteTransfer_TEXTDOMAIN ),
-				'singular_name' => __( ucfirst($name), OddSiteTransfer_TEXTDOMAIN ),
-				'add_new' => __( 'Add New', OddSiteTransfer_TEXTDOMAIN ),
-				'add_new_item' => __( 'Add New '.ucfirst($name), OddSiteTransfer_TEXTDOMAIN ),
-				'edit_item' => __( 'Edit '.ucfirst($name), OddSiteTransfer_TEXTDOMAIN ),
-				'new_item' => __( 'New '.ucfirst($name), OddSiteTransfer_TEXTDOMAIN ),
-				'all_items' => __( 'All '.ucfirst($multiple_name), OddSiteTransfer_TEXTDOMAIN ),
-				'view_item' => __( 'View '.ucfirst($name), OddSiteTransfer_TEXTDOMAIN ),
-				'search_items' => __( 'Search '.ucfirst($multiple_name), OddSiteTransfer_TEXTDOMAIN ),
-				'not_found' => __( 'No '.$name.' found', OddSiteTransfer_TEXTDOMAIN ),
-				'not_found_in_trash' => __( 'No '.$name.' found in trash', OddSiteTransfer_TEXTDOMAIN ),
+				'name' => __( ucfirst($multiple_name), ODD_SITE_TRANSFER_TEXTDOMAIN ),
+				'singular_name' => __( ucfirst($name), ODD_SITE_TRANSFER_TEXTDOMAIN ),
+				'add_new' => __( 'Add New', ODD_SITE_TRANSFER_TEXTDOMAIN ),
+				'add_new_item' => __( 'Add New '.ucfirst($name), ODD_SITE_TRANSFER_TEXTDOMAIN ),
+				'edit_item' => __( 'Edit '.ucfirst($name), ODD_SITE_TRANSFER_TEXTDOMAIN ),
+				'new_item' => __( 'New '.ucfirst($name), ODD_SITE_TRANSFER_TEXTDOMAIN ),
+				'all_items' => __( 'All '.ucfirst($multiple_name), ODD_SITE_TRANSFER_TEXTDOMAIN ),
+				'view_item' => __( 'View '.ucfirst($name), ODD_SITE_TRANSFER_TEXTDOMAIN ),
+				'search_items' => __( 'Search '.ucfirst($multiple_name), ODD_SITE_TRANSFER_TEXTDOMAIN ),
+				'not_found' => __( 'No '.$name.' found', ODD_SITE_TRANSFER_TEXTDOMAIN ),
+				'not_found_in_trash' => __( 'No '.$name.' found in trash', ODD_SITE_TRANSFER_TEXTDOMAIN ),
 				'parent_item_colon' => '',
-				'menu_name' => __( ucfirst($multiple_name), OddSiteTransfer_TEXTDOMAIN )
+				'menu_name' => __( ucfirst($multiple_name), ODD_SITE_TRANSFER_TEXTDOMAIN )
 			);
 		}
 		

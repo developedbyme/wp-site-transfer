@@ -55,7 +55,35 @@
 			//METODO: security
 			$this->_rest_api_end_points[] = $sync_term_end_point;
 			
+			
+			$transfer_post_end_point = new \OddSiteTransfer\RestApi\TransferPostEndPoint();
+			$transfer_post_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
+			$transfer_post_end_point->setup('post/(?P<id>\d+)/transfer', 'odd-site-transfer', 1, 'GET');
+			//METODO: security
+			$this->_rest_api_end_points[] = $transfer_post_end_point;
+			
 		}
+		
+		
+		public function hook_admin_enqueue_scripts() {
+			//echo("\OddSiteTransfer\Plugin::hook_admin_enqueue_scripts<br />");
+			
+			parent::hook_admin_enqueue_scripts();
+			
+			$screen = get_current_screen();
+			
+			wp_enqueue_script( 'odd-site-transfer-admin-main', ODD_SITE_TRANSFER_URL . '/assets/js/admin-main.js');
+			wp_localize_script(
+				'odd-site-transfer-admin-main',
+				'oaWpAdminData',
+				array(
+					'screen' => $screen,
+					'restApiBaseUrl' => get_home_url().'/wp-json/'
+				)
+			);
+		}
+		
+		
 		
 		public static function test_import() {
 			echo("Imported \OddSiteTransfer\Plugin<br />");

@@ -40,7 +40,7 @@
 			
 			add_meta_box( 
 				$this->_system_name, 
-				__($this->_box->get_name(), OddSiteTransfer_TEXTDOMAIN), 
+				__($this->_box->get_name(), ODD_SITE_TRANSFER_TEXTDOMAIN), 
 				array($this->_box, 'output_registered_box'), 
 				$this->_post_type, 
 				$this->_context, 

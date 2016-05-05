@@ -49,7 +49,7 @@
 		public function output_box_start($post) {
 			?>
 				<div id="recipe-metadata" class="postbox">
-					<h3><span><?php _e($this->_display_name, OddSiteTransfer_TEXTDOMAIN) ?></span></h3>
+					<h3><span><?php _e($this->_display_name, ODD_SITE_TRANSFER_TEXTDOMAIN) ?></span></h3>
 					<div class="inside" id="<?php echo($this->_holder_id); ?>">
 			<?php
 		}
