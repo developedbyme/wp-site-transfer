@@ -92,6 +92,20 @@
 			}
 		}
 		
+		protected function compare_image($file_path, $file_size, $server_transfer_post) {
+			
+			$server_transfer_post_id = $server_transfer_post->ID;
+			
+			$base_url = get_post_meta($server_transfer_post_id, 'url', true);
+			$url = $base_url.'compare/image';
+			
+			$send_data = array('path' => $file_path, 'size' => $file_size);
+			
+			$repsonse_data = $this->send_request($url, $send_data);
+			
+			return $repsonse_data->match;
+		}
+		
 		protected function transfer_media($media, $server_transfer_post) {
 			//echo("\OddSiteTransfer\Admin\TransferHooks::transfer_media<br />");
 			
@@ -106,14 +120,18 @@
 			
 			$file_to_load = wp_upload_dir()['basedir'].'/'.$file_path;
 			
-			$file_data = file_get_contents($file_to_load);
-			$encoded_file_data = base64_encode($file_data);
+			$image_exists = $this->compare_image($file_path, filesize($file_to_load), $server_transfer_post);
 			
-			$send_data = array('path' => $file_path, 'data' => $encoded_file_data);
+			if(!$image_exists) {
+				$file_data = file_get_contents($file_to_load);
+				$encoded_file_data = base64_encode($file_data);
 			
-			$repsonse_data = $this->send_request($url, $send_data);
-			if($repsonse_data) {
-				//METODO: check that the image is sent
+				$send_data = array('path' => $file_path, 'data' => $encoded_file_data);
+			
+				$repsonse_data = $this->send_request($url, $send_data);
+				if($repsonse_data) {
+					//METODO: check that the image is sent
+				}
 			}
 			
 			$this->transfer_post($media, $server_transfer_post);
