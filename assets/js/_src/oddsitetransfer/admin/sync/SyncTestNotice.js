@@ -26,12 +26,12 @@ export default class SyncTestNotice extends React.Component {
 				Connected to site running version {info.version}
 			</p>;
 		}
-		else if(this.props.status === "connectinWorks") {
+		else if(this.props.status === "connectionWorks") {
 			
 			var info = this.props.info;
 			
 			return <p>
-				Connected is available to site running version {info.version}
+				Connection is available to site running version {info.version}
 			</p>;
 		}
 		
