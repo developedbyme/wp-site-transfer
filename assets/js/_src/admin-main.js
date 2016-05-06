@@ -7,6 +7,7 @@ import ShortcodeManager from "oa/admin/editor/shortcodes/ShortcodeManager";
 
 import CheckSyncNotice from "oddsitetransfer/admin/sync/CheckSyncNotice";
 import IncomingSyncNotice from "oddsitetransfer/admin/sync/IncomingSyncNotice";
+import SyncTestNotice from "oddsitetransfer/admin/sync/SyncTestNotice";
 
 if(!window.OA) {
 	window.OA = new Object();
@@ -30,6 +31,7 @@ if(!window.OA.reactModuleCreator) {
 
 window.OA.reactModuleCreator.registerModule("checkSyncNotice", (new GenericReactClassModuleCreator()).setClass(CheckSyncNotice));
 window.OA.reactModuleCreator.registerModule("incomingSyncNotice", (new GenericReactClassModuleCreator()).setClass(IncomingSyncNotice));
+window.OA.reactModuleCreator.registerModule("syncTestNotice", (new GenericReactClassModuleCreator()).setClass(SyncTestNotice));
 
 document.addEventListener("DOMContentLoaded", function(event) {
 	//console.log("admin-main.js DOMContentLoaded");
