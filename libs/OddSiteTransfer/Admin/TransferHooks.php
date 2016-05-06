@@ -2,6 +2,7 @@
 	namespace OddSiteTransfer\Admin;
 	
 	use \WP_Query;
+	use \OddSiteTransfer\OddCore\Utils\HttpLoading as HttpLoading;
 	
 	// \OddSiteTransfer\Admin\TransferHooks
 	class TransferHooks {
@@ -63,11 +64,11 @@
 			//METODO
 		}
 		
-		protected function output_notice($module_name, $data) {
+		protected function output_notice($module_name, $data, $type = '') {
 			$element_id = sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
 			?>
 				
-				<div class="notice" id="<?php echo($element_id); ?>">
+				<div class="notice <?php echo($type); ?>" id="<?php echo($element_id); ?>">
 					<script type="text/javascript">
 						window.OA.reactModuleCreator.createModule("<?php echo($module_name); ?>", document.getElementById("<?php echo($element_id); ?>"), <?php echo(json_encode($data)); ?>);
 					</script>
@@ -82,8 +83,53 @@
 			$screen = get_current_screen();
 			//var_dump($screen);
 			
-			if($screen->base === 'post') {
-				global $post;
+			if(!$screen) {
+				return;
+			}
+			
+			global $post;
+			
+			if($screen->base === 'post' && $screen->post_type === 'server-transfer') {
+				
+				if($post->post_status === 'publish' || $post->post_status === 'draft') {
+					
+					$module_data = array('id' => $post->ID);
+					
+					$base_url = get_post_meta($post->ID, 'url', true);
+					
+					if($post->post_status !== 'draft' || $base_url) {
+						$url = $base_url.'info';
+					
+						$result_data = HttpLoading::load($url, array());
+					
+						$module_data['status'] = 'notConencted';
+						$module_data['info'] = null;
+						$module_data['httpCode'] = $result_data['code'];
+						$module_data['loadedData'] = $result_data['data'];
+						$notice_type = 'error';
+					
+						if($result_data['code'] == '200') {
+							$loaded_data = json_decode($result_data['data']);
+							if($loaded_data->code === 'success') {
+								$module_data['info'] = $loaded_data->data;
+								
+								if($post->post_status !== 'draft') {
+									$module_data['status'] = 'connected';
+									$notice_type = 'updated';
+								}
+								else {
+									$module_data['status'] = 'connectionWorks';
+									$notice_type = '';
+								}
+							}
+						}
+						
+						$this->output_notice('syncTestNotice', $module_data, $notice_type);
+					}
+				}
+			}
+			else if($screen->base === 'post') {
+				
 				//var_dump($post);
 				
 				$is_incoming_link = get_post_meta($post->ID, '_odd_server_transfer_is_incoming', true);
