@@ -256,7 +256,8 @@
 				case "url":
 				case "text":
 				case "number":
-				case "wysiwyg": //METODO: get correct value from wysiwyg
+				case "wysiwyg":
+				case "true_false":
 					$current_send_field = array(
 						'type' => $acf_field['type'],
 						'value' => $acf_field['value']
