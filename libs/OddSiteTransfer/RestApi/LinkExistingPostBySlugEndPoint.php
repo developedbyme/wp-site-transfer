@@ -6,13 +6,13 @@
 	
 	use \OddSiteTransfer\OddCore\Utils\HttpLoading as HttpLoading;
 	
-	// \OddSiteTransfer\RestApi\TransferPostEndPoint
-	class TransferPostEndPoint extends EndPoint {
+	// \OddSiteTransfer\RestApi\IdentifyPostEndPoint
+	class IdentifyPostEndPoint extends EndPoint {
 		
 		protected $http_log = array();
 		
 		function __construct() {
-			//echo("\OddSiteTransfer\RestApi\TransferPostEndPoint::__construct<br />");
+			//echo("\OddSiteTransfer\RestApi\IdentifyPostEndPoint::__construct<br />");
 			
 			
 		}
@@ -110,15 +110,13 @@
 				
 				$repsonse_data = HttpLoading::load($url);
 				
-				
+				var_dump($repsonse_data);
 				//update_post_meta($post_id, '_odd_server_transfer_remote_id_'.$server_transfer_post_id, $repsonse_data);
 			}
-			
-			return $local_id;
 		}
 		
 		public function perform_call($data) {
-			//echo("\OddSiteTransfer\RestApi\TransferPostEndPoint::perform_call<br />");
+			//echo("\OddSiteTransfer\RestApi\IdentifyPostEndPoint::perform_call<br />");
 			
 			$post_id = $data['id'];
 			$post = get_post($post_id);
@@ -144,7 +142,7 @@
 		}
 		
 		public static function test_import() {
-			echo("Imported \OddSiteTransfer\RestApi\TransferPostEndPoint<br />");
+			echo("Imported \OddSiteTransfer\RestApi\IdentifyPostEndPoint<br />");
 		}
 	}
 ?>
