@@ -34,11 +34,6 @@
 			$current_end_point = new \OddSiteTransfer\RestApi\GetTransferInfoEndPoint();
 			$current_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
 			$current_end_point->setup('info', 'odd-site-transfer', 1, 'GET');
-			$this->_rest_api_end_points[] = $current_end_point;	
-			
-			$current_end_point = new \OddSiteTransfer\RestApi\IdentifyPostEndPoint();
-			$current_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
-			$current_end_point->setup('post/(?P<id>\d+)/link', 'odd-site-transfer', 1, 'POST');
 			$this->_rest_api_end_points[] = $current_end_point;
 			
 			$this->create_rest_api_end_point(new \OddSiteTransfer\OddCore\RestApi\IdentifyPostEndPoint(), 'identify/(?P<postType>[a-zA-Z0-9_\-.]+)/(?P<searchType>[a-zA-Z0-9_\-.]+)/(?P<identifier>[a-zA-Z0-9_\-.]+)', 'odd-site-transfer', array('Access-Control-Allow-Origin' => '*'));
@@ -80,6 +75,11 @@
 			$transfer_post_end_point->setup('post/(?P<id>\d+)/transfer', 'odd-site-transfer', 1, 'GET');
 			//METODO: security
 			$this->_rest_api_end_points[] = $transfer_post_end_point;
+			
+			$current_end_point = new \OddSiteTransfer\RestApi\LinkExistingPostBySlugEndPoint();
+			$current_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
+			$current_end_point->setup('post/(?P<id>\d+)/link', 'odd-site-transfer', 1, 'GET');
+			$this->_rest_api_end_points[] = $current_end_point;
 			
 		}
 		
