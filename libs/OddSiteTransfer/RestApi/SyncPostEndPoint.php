@@ -84,7 +84,7 @@
 			
 			$new_id = NULL;
 			
-			remove_all_actions('save_post'); //MEDEBUG
+			//remove_all_actions('save_post'); //MEDEBUG
 			
 			if(!$local_id) {
 				$new_id = wp_insert_post($post_data);
@@ -141,11 +141,14 @@
 				if($post_data['post_type'] === 'attachment') {
 					
 					$base_file = wp_upload_dir()['basedir'].'/'.$meta_data['meta']['_wp_attached_file'];
+					$attachment_metadata = $meta_data['meta']['_wp_attachment_metadata'];
 					
-					foreach($meta_data['meta']['_wp_attachment_metadata']['sizes'] as $image_size) {
-						//METODO: check if it has size before resizing
-						$resize_result = image_make_intermediate_size($base_file, $image_size['width'], $image_size['height'], true);
-						//METODO: check that resize worked
+					if(isset($attachment_metadata['sizes'])) {
+						foreach($meta_data['meta']['_wp_attachment_metadata']['sizes'] as $image_size) {
+							//METODO: check if it has size before resizing
+							$resize_result = image_make_intermediate_size($base_file, $image_size['width'], $image_size['height'], true);
+							//METODO: check that resize worked
+						}
 					}
 				}
 				
