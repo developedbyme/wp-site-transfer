@@ -38,7 +38,7 @@
 			$this->_arguments = array(
 				'description' => null,
 				'public' => false,
-				'exclude_from_search' => false,
+				'exclude_from_search' => true,
 				'publicly_queryable' => false,
 				'show_ui' => true,
 				'show_in_nav_menus' => true,
