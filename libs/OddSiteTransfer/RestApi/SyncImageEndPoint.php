@@ -24,6 +24,12 @@
 			
 			$file_to_save = $upload_dir['basedir'].'/'.$path;
 			
+			$parent_directory = dirname($file_to_save);
+			
+			if (!file_exists($parent_directory)) {
+				mkdir($parent_directory, 0755, true);
+			}
+			
 			if(move_uploaded_file($_FILES['file']['tmp_name'], $file_to_save)) {
 				return $this->output_success($upload_dir['baseurl'].'/'.$path);
 			}

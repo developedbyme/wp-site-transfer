@@ -28,6 +28,7 @@
 				case "radio":
 				case "post_object":
 				case "wysiwyg":
+				case "true_false":
 					if($repeater_path) {
 						update_sub_field($repeater_path, $field['value'], $post_id);
 						update_post_meta($post_id, implode('_', $meta_path), $field['value']);
