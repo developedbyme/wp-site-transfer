@@ -152,6 +152,9 @@
 					}
 				}
 				
+				update_post_meta($new_id, '_odd_server_transfer_is_incoming', 1);
+				update_post_meta($new_id, '_odd_server_transfer_incoming_sync_date', date(DATE_ATOM));
+				
 				return $this->output_success($new_id);
 			}
 			return $this->output_error('Could not create/update post.');

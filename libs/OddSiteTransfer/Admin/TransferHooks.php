@@ -63,6 +63,19 @@
 			//METODO
 		}
 		
+		protected function output_notice($module_name, $data) {
+			$element_id = sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
+			?>
+				
+				<div class="notice" id="<?php echo($element_id); ?>">
+					<script type="text/javascript">
+						window.OA.reactModuleCreator.createModule("<?php echo($module_name); ?>", document.getElementById("<?php echo($element_id); ?>"), <?php echo(json_encode($data)); ?>);
+					</script>
+				</div>
+				
+			<?php
+		}
+		
 		public function hook_admin_notices() {
 			//echo("\OddSiteTransfer\Admin\TransferHooks::hook_admin_notices<br />");
 			
@@ -73,21 +86,21 @@
 				global $post;
 				//var_dump($post);
 				
-				$sync_index = intval(get_post_meta($post->ID, '_odd_server_transfer_sync_index', true));
-				$sync_index_target = intval(get_post_meta($post->ID, '_odd_server_transfer_sync_index_target', true));
+				$is_incoming_link = get_post_meta($post->ID, '_odd_server_transfer_is_incoming', true);
 				
-				if($sync_index_target > $sync_index) {
+				if($is_incoming_link) {
+					$module_data = array('id' => $post->ID, 'syncDate' => get_post_meta($post->ID, '_odd_server_transfer_incoming_sync_date', true));
+					$this->output_notice('incomingSyncNotice', $module_data);
+				}
+				else {
+					$sync_index = intval(get_post_meta($post->ID, '_odd_server_transfer_sync_index', true));
+					$sync_index_target = intval(get_post_meta($post->ID, '_odd_server_transfer_sync_index_target', true));
+				
+					if($sync_index_target > $sync_index) {
 					
-					$element_id = sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
-					?>
-						
-						<div class="notice" id="<?php echo($element_id); ?>">
-							<script type="text/javascript">
-								window.OA.reactModuleCreator.createModule("checkSyncNotice", document.getElementById("<?php echo($element_id); ?>"), {"id": "<?php echo($post->ID); ?>", "transferUrl": "<?php echo(get_home_url()) ?>/wp-json/odd-site-transfer/v1/post/<?php echo($post->ID); ?>/transfer"});
-							</script>
-						</div>
-						
-					<?php
+						$module_data = array('id' => $post->ID, 'transferUrl' => get_home_url().'/wp-json/odd-site-transfer/v1/post/'.($post->ID).'/transfer');
+						$this->output_notice('checkSyncNotice', $module_data);
+					}
 				}
 			}
 		}
