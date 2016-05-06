@@ -286,7 +286,7 @@
 			
 			$server_transfer_post_id = $server_transfer_post->ID;
 			
-			if($post_type === 'post' || $post_type === 'oa_recipe' || $post_type === 'oa_product' || $post_type === 'attachment') { //METODO: make settings for this
+			if($post_type === 'post' || $post_type === 'oa_recipe' || $post_type === 'oa_product' || $post_type === 'oa_wine' || $post_type === 'attachment') { //METODO: make settings for this
 				//echo("++++");
 				$base_url = get_post_meta($server_transfer_post_id, 'url', true);
 				$url = $base_url.'sync/post';
@@ -299,18 +299,13 @@
 					'local_id' => $local_id
 				);
 				
-				$author_id = $post->post_author;
-				//METODO: handle no author
-				$post_author = get_user_by('id', $author_id);
-				$this->transfer_user($post_author, $server_transfer_post);
-				$author_local_id = get_user_meta($author_id, '_odd_server_transfer_remote_id_'.$server_transfer_post_id, true);
+				
 				
 				$post_data = array(
 					'post_type' => $post->post_type,
 					'post_status' => $post->post_status,
 					'post_title' => $post->post_title,
 					'post_content' => $post->post_content,
-					'post_author' => $author_local_id,
 					'post_name' => $post->post_name,
 					'post_date' => $post->post_date,
 					'post_date_gmt' => $post->post_date_gmt,
@@ -320,6 +315,17 @@
 					'menu_order' => $post->menu_order,
 					'post_mime_type' => $post->post_mime_type
 				);
+				
+				$author_id = $post->post_author;
+				
+				if($author_id != 0) {
+					$post_author = get_user_by('id', $author_id);
+					$this->transfer_user($post_author, $server_transfer_post);
+					$author_local_id = get_user_meta($author_id, '_odd_server_transfer_remote_id_'.$server_transfer_post_id, true);
+					
+					$post_data['post_author'] = $author_local_id;
+				}
+				
 				
 				$meta_data = array();
 				$meta_data['meta'] = array();
