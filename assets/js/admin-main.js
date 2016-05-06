@@ -20229,6 +20229,16 @@
 						"Connected to site running version ",
 						info.version
 					);
+				} else if (this.props.status === "connectinWorks") {
+
+					var info = this.props.info;
+
+					return _react2.default.createElement(
+						"p",
+						null,
+						"Connected is available to site running version ",
+						info.version
+					);
 				}
 
 				return _react2.default.createElement(

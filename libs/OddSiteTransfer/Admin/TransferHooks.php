@@ -111,9 +111,16 @@
 						if($result_data['code'] == '200') {
 							$loaded_data = json_decode($result_data['data']);
 							if($loaded_data->code === 'success') {
-								$module_data['status'] = 'connected';
 								$module_data['info'] = $loaded_data->data;
-								$notice_type = 'updated';
+								
+								if($post->post_status !== 'draft') {
+									$module_data['status'] = 'connected';
+									$notice_type = 'updated';
+								}
+								else {
+									$module_data['status'] = 'connectionWorks';
+									$notice_type = '';
+								}
 							}
 						}
 						
