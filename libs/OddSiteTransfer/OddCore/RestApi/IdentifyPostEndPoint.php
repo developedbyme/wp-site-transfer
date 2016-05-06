@@ -19,12 +19,40 @@
 			//echo("\OddCore\RestApi\IdentifyPostEndPoint::perform_call<br />");
 			
 			$post_type = $data['postType'];
-			$serach_type = $data['postType'];
-			$identifier = $data['id'];
+			$serach_type = $data['searchType'];
+			$identifier = $data['identifier'];
 			
+			$arguments = array(
+				'post_type' => $post_type
+			);
 			
+			switch($serach_type) {
+				case 'slug':
+					$arguments['name'] = $identifier;
+					break;
+				default:
+					return $this->output_error('Unknown search type '.$serach_type);
+			}
 			
-			return $this->output_success($data);
+			$result_type = 'noPosts';
+			$return_array = array();
+			
+			$identification_query = new WP_Query($arguments);
+			if($identification_query->have_posts()) {
+				$posts = $identification_query->get_posts();
+				
+				if(count($posts)) {
+					$result_type = 'singlePost';
+				}
+				else {
+					$result_type = 'mulitplePosts';
+				}
+				foreach($posts as $post) {
+					$return_array[] = $post->ID;
+				}
+			}
+			
+			return $this->output_success(array('resultType' => $result_type, 'ids' => $return_array));
 		}
 		
 		public static function test_import() {

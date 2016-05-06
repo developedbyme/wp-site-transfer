@@ -39,8 +39,9 @@
 			$current_end_point = new \OddSiteTransfer\RestApi\IdentifyPostEndPoint();
 			$current_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
 			$current_end_point->setup('post/(?P<id>\d+)/link', 'odd-site-transfer', 1, 'POST');
-			$this->_rest_api_end_points[] = $current_end_point;	
+			$this->_rest_api_end_points[] = $current_end_point;
 			
+			$this->create_rest_api_end_point(new \OddSiteTransfer\OddCore\RestApi\IdentifyPostEndPoint(), 'identify/(?P<postType>[a-zA-Z0-9_\-.]+)/(?P<searchType>[a-zA-Z0-9_\-.]+)/(?P<identifier>[a-zA-Z0-9_\-.]+)', 'odd-site-transfer', array('Access-Control-Allow-Origin' => '*'));
 			
 			$sync_user_end_point = new \OddSiteTransfer\RestApi\SyncUserEndPoint();
 			$sync_user_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
