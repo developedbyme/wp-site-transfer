@@ -91,32 +91,34 @@
 			
 			if($screen->base === 'post' && $screen->post_type === 'server-transfer') {
 				
-				if($post->post_status) {
+				if($post->post_status === 'publish' || $post->post_status === 'draft') {
 					
 					$module_data = array('id' => $post->ID);
 					
 					$base_url = get_post_meta($post->ID, 'url', true);
-					$url = $base_url.'info';
 					
-					$result_data = HttpLoading::load($url, array());
+					if($post->post_status !== 'draft' || $base_url) {
+						$url = $base_url.'info';
 					
-					$module_data['status'] = 'notConencted';
-					$module_data['info'] = null;
-					$module_data['httpCode'] = $result_data['code'];
-					$module_data['loadedData'] = $result_data['data'];
-					$notice_type = 'error';
+						$result_data = HttpLoading::load($url, array());
 					
-					if($result_data['code'] == '200') {
-						$loaded_data = json_decode($result_data['data']);
-						if($loaded_data->code === 'success') {
-							$module_data['status'] = 'connected';
-							$module_data['info'] = $loaded_data->data;
-							$notice_type = 'updated';
+						$module_data['status'] = 'notConencted';
+						$module_data['info'] = null;
+						$module_data['httpCode'] = $result_data['code'];
+						$module_data['loadedData'] = $result_data['data'];
+						$notice_type = 'error';
+					
+						if($result_data['code'] == '200') {
+							$loaded_data = json_decode($result_data['data']);
+							if($loaded_data->code === 'success') {
+								$module_data['status'] = 'connected';
+								$module_data['info'] = $loaded_data->data;
+								$notice_type = 'updated';
+							}
 						}
+						
+						$this->output_notice('syncTestNotice', $module_data, $notice_type);
 					}
-					
-					
-					$this->output_notice('syncTestNotice', $module_data, $notice_type);
 				}
 			}
 			else if($screen->base === 'post') {
