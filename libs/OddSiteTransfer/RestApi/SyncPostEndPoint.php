@@ -72,8 +72,23 @@
 			}
 		}
 		
+		public function filter_wp_kses_allowed_html($allowed_post_tags) {
+			
+			if(!isset($allowed_post_tags['span'])) {
+				$allowed_post_tags['span'] = array();
+			}
+			$span_array = $allowed_post_tags['span'];
+			$span_array['data-related-ingredients'] = true;
+			$allowed_post_tags['span'] = $span_array;
+		
+			return $allowed_post_tags;
+	
+		}
+		
 		public function perform_call($data) {
 			//echo("\OddSiteTransfer\RestApi\SyncPostEndPoint::perform_call<br />");
+			
+			add_filter('wp_kses_allowed_html', array($this, 'filter_wp_kses_allowed_html'), 10, 1);
 			
 			$post_ids = $data['ids'];
 			$post_data = $data['data'];
