@@ -86,7 +86,7 @@
 		
 		protected function transfer_term($term, $server_transfer_post) {
 			//echo("\OddSiteTransfer\Admin\TransferHooks::transfer_term<br />");
-			//var_dump($term);
+			//var_dump($term->term_id);
 			//echo('<br /><br />');
 			
 			$server_transfer_post_id = $server_transfer_post->ID;
@@ -107,11 +107,20 @@
 			
 			//METODO: do parent
 			
+			$parent_id = 0;
+			$parent_local_id = 0;
+			
+			if($term->parent) {
+				$this->transfer_term(get_term_by('id', $term->parent, $term->taxonomy), $server_transfer_post);
+				$parent_local_id = get_term_meta($term->parent, '_odd_server_transfer_remote_id_'.$server_transfer_post_id, true);
+			}
+			
 			$term_data = array(
 				'name' => $term->name,
 				'slug' => $term->slug,
 				'description' => $term->description,
-				'taxonomy' => $term->taxonomy
+				'taxonomy' => $term->taxonomy,
+				'parent' => $parent_local_id
 			);
 			
 			$send_data = array('ids' => $term_ids, 'data' => $term_data, 'taxonomy' => $term->taxonomy);
@@ -333,6 +342,9 @@
 				if($post_type === 'oa_recipe') {
 					
 					$send_fields = array();
+					
+					$meta_data['meta']['_has_step_instructions'] = get_post_meta($post_id, '_has_step_instructions', true);
+					$meta_data['meta']['_has_matched_ingredients'] = get_post_meta($post_id, '_has_matched_ingredients', true);
 					
 					setup_postdata($post); 
 					$acf_fields = get_field_objects($post_id);
