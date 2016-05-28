@@ -407,6 +407,8 @@
 		public function perform_call($data) {
 			//echo("\OddSiteTransfer\RestApi\TransferPostEndPoint::perform_call<br />");
 			
+			$plugin = \OddSiteTransfer\Plugin::$singleton;
+			
 			$post_id = $data['id'];
 			$post = get_post($post_id);
 			
@@ -418,6 +420,8 @@
 			if(!$force && ($sync_index_target === $sync_index)) {
 				return $this->output_success(array('target' => $sync_index_target, 'index' => $sync_index));
 			}
+			
+			//$plugin->external_access['transfer_hooks']->transfer_post($post);
 			
 			$args = array(
 				'post_type' => 'server-transfer',

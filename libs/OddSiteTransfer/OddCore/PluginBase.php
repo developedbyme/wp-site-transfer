@@ -14,6 +14,8 @@
 		protected $_filters = null;
 		protected $_additional_hooks = null;
 		
+		public $external_access = array();
+		
 		function __construct() {
 			//echo("\OddSiteTransfer\OddCore\PluginBase::__construct<br />");
 			

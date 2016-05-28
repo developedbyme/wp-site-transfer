@@ -3,7 +3,10 @@
 	
 	use \OddSiteTransfer\OddCore\PluginBase;
 	
+	// \OddSiteTransfer\Plugin
 	class Plugin extends PluginBase {
+		
+		public static $singleton = null;
 		
 		function __construct() {
 			//echo("\OddSiteTransfer\Plugin::__construct<br />");
@@ -25,7 +28,10 @@
 		protected function create_additional_hooks() {
 			//echo("\OddSiteTransfer\Plugin::create_additional_hooks<br />");
 			
-			$this->add_additional_hook(new \OddSiteTransfer\Admin\TransferHooks());
+			$transfer_hooks = new \OddSiteTransfer\Admin\TransferHooks();
+			
+			$this->external_access['transfer_hooks'] = $transfer_hooks;
+			$this->add_additional_hook($transfer_hooks);
 		}
 		
 		protected function create_rest_api_end_points() {

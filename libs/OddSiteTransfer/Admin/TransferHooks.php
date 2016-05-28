@@ -7,12 +7,41 @@
 	// \OddSiteTransfer\Admin\TransferHooks
 	class TransferHooks {
 		
-		
+		protected $settings = null;
 		
 		function __construct() {
 			//echo("\OddSiteTransfer\Admin\TransferHooks::__construct<br />");
 			
 			
+		}
+		
+		protected function create_server_settings() {
+			//echo("\OddSiteTransfer\Admin\TransferHooks::create_server_settings<br />");
+			$this->settings = array();
+			
+			$post_type_qualifier = new \OddSiteTransfer\SiteTransfer\Qualifiers\PostTypeQualifier();
+			$post_type_qualifier->add_post_types(array('oa_recipe', 'oa_product', 'oa_wine', 'oa_wine_producer'));
+			
+			$default_post_encoder = new \OddSiteTransfer\SiteTransfer\Encoders\PostEncoderBaseObject();
+			$default_post_encoder->set_qualifier($post_type_qualifier);
+			
+			$default_server_settings = new \OddSiteTransfer\SiteTransfer\ServerSettings();
+			$default_server_settings->add_encoder($default_post_encoder);
+			$this->add_server_settings('default', $default_server_settings);
+		}
+		
+		public function get_settings() {
+			//echo("\OddSiteTransfer\Admin\TransferHooks::get_settings<br />");
+			if($this->settings === null) {
+				$this->create_server_settings();
+			}
+			
+			return $this->settings;
+		}
+		
+		public function add_server_settings($name, $setting) {
+			//echo("\OddSiteTransfer\Admin\TransferHooks::add_server_settings<br />");
+			$this->settings[$name] = $setting;
 		}
 		
 		public function register() {
@@ -36,13 +65,44 @@
 			
 			remove_action('save_post', array($this, 'hook_save_post'));
 			
-			$sync_index_target = get_post_meta($post_id, '_odd_server_transfer_sync_index_target', true);
+			$should_transfer = false;
 			
-			if($sync_index_target) {
-				update_post_meta($post_id, '_odd_server_transfer_sync_index_target', intval($sync_index_target)+1);
+			$args = array(
+				'post_type' => 'server-transfer',
+				'post_status' => 'publish',
+				'posts_per_page' => -1,
+				'ignore_sticky_posts'=> 1
+			);
+			
+			$settings = $this->get_settings();
+			
+			$server_transfers_query = new WP_Query($args);
+			$server_transfers = $server_transfers_query->get_posts();
+			foreach($server_transfers as $server_transfer) {
+				
+				$settings_name = 'default';
+				
+				if(isset($settings[$settings_name])) {
+					$current_setting = $settings[$settings_name];
+					
+					if($current_setting->qualify_post($post)) {
+						$should_transfer = true;
+						break;
+					}
+				}
+				
 			}
-			else {
-				update_post_meta($post_id, '_odd_server_transfer_sync_index_target', 1);
+			wp_reset_query();
+			
+			if($should_transfer) {
+				$sync_index_target = get_post_meta($post_id, '_odd_server_transfer_sync_index_target', true);
+			
+				if($sync_index_target) {
+					update_post_meta($post_id, '_odd_server_transfer_sync_index_target', intval($sync_index_target)+1);
+				}
+				else {
+					update_post_meta($post_id, '_odd_server_transfer_sync_index_target', 1);
+				}
 			}
 		}
 		
@@ -62,6 +122,11 @@
 			//echo("\OddSiteTransfer\Admin\TransferHooks::hook_delete_term<br />");
 			
 			//METODO
+		}
+		
+		public function transfer_post() {
+			echo("\OddSiteTransfer\Admin\TransferHooks::transfer_post<br />");
+			
 		}
 		
 		protected function output_notice($module_name, $data, $type = '') {

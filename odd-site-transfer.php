@@ -17,4 +17,5 @@
 	require_once( ODD_SITE_TRANSFER_DIR . "/libs/OddSiteTransfer/bootstrap.php" );
 	
 	$OddSiteTransferPlugin = new \OddSiteTransfer\Plugin();
+	\OddSiteTransfer\Plugin::$singleton = $OddSiteTransferPlugin;
 ?>
