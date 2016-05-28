@@ -22,8 +22,18 @@
 			$post_type_qualifier = new \OddSiteTransfer\SiteTransfer\Qualifiers\PostTypeQualifier();
 			$post_type_qualifier->add_post_types(array('oa_recipe', 'oa_product', 'oa_wine', 'oa_wine_producer'));
 			
-			$default_post_encoder = new \OddSiteTransfer\SiteTransfer\Encoders\PostEncoderBaseObject();
+			$default_post_encoder = new \OddSiteTransfer\SiteTransfer\Encoders\AcfPostEncoder();
 			$default_post_encoder->set_qualifier($post_type_qualifier);
+			
+			//oa_recipe
+			$default_post_encoder->add_meta_field('_has_step_instructions', 'data');
+			$default_post_encoder->add_meta_field('_has_matched_ingredients', 'data');
+			
+			//attachment
+			//METODO: should caption be here?
+			$default_post_encoder->add_meta_field('_wp_attached_file', 'data');
+			$default_post_encoder->add_meta_field('_wp_attachment_metadata', 'data');
+			$default_post_encoder->add_meta_field('_wp_attachment_image_alt', 'data');
 			
 			$default_server_settings = new \OddSiteTransfer\SiteTransfer\ServerSettings();
 			$default_server_settings->add_encoder($default_post_encoder);
@@ -56,6 +66,17 @@
 			add_action('admin_notices', array($this, 'hook_admin_notices'));
 		}
 		
+		protected function get_server_transfers() {
+			$args = array(
+				'post_type' => 'server-transfer',
+				'post_status' => 'publish',
+				'posts_per_page' => -1,
+				'ignore_sticky_posts'=> 1
+			);
+			
+			return new WP_Query($args);
+		}
+		
 		public function hook_save_post($post_id, $post, $update) {
 			//echo("\OddSiteTransfer\Admin\TransferHooks::hook_save_post<br />");
 			
@@ -67,16 +88,9 @@
 			
 			$should_transfer = false;
 			
-			$args = array(
-				'post_type' => 'server-transfer',
-				'post_status' => 'publish',
-				'posts_per_page' => -1,
-				'ignore_sticky_posts'=> 1
-			);
-			
 			$settings = $this->get_settings();
 			
-			$server_transfers_query = new WP_Query($args);
+			$server_transfers_query = $this->get_server_transfers();
 			$server_transfers = $server_transfers_query->get_posts();
 			foreach($server_transfers as $server_transfer) {
 				
@@ -124,9 +138,30 @@
 			//METODO
 		}
 		
-		public function transfer_post() {
+		public function transfer_post($post) {
 			echo("\OddSiteTransfer\Admin\TransferHooks::transfer_post<br />");
 			
+			$settings = $this->get_settings();
+			
+			$server_transfers_query = $this->get_server_transfers();
+			$server_transfers = $server_transfers_query->get_posts();
+			foreach($server_transfers as $server_transfer) {
+				
+				$settings_name = 'default';
+				
+				if(isset($settings[$settings_name])) {
+					$current_setting = $settings[$settings_name];
+					
+					if($current_setting->qualify_post($post)) {
+						$result = $current_setting->transfer_post($post, $server_transfer);
+					}
+				}
+				
+			}
+			wp_reset_query();
+			
+			
+			return false; //MEDEBUG
 		}
 		
 		protected function output_notice($module_name, $data, $type = '') {
