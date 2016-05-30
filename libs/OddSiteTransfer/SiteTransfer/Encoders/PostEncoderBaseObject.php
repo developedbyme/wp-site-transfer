@@ -1,7 +1,7 @@
 <?php
 	namespace OddSiteTransfer\SiteTransfer\Encoders;
 	
-	//use \WP_Query;
+	use \WP_Post;
 	
 	// \OddSiteTransfer\SiteTransfer\Encoders\PostEncoderBaseObject
 	class PostEncoderBaseObject {
@@ -23,7 +23,7 @@
 		}
 		
 		public function add_meta_field($name, $type = 'data') {
-			echo("\OddSiteTransfer\SiteTransfer\Encoders\PostEncoderBaseObject::add_meta_field<br />");
+			//echo("\OddSiteTransfer\SiteTransfer\Encoders\PostEncoderBaseObject::add_meta_field<br />");
 			$this->meta_fields[] = array('name' => $name, 'type' => $type);
 			
 			return $this;
@@ -32,7 +32,10 @@
 		public function qualify($object) {
 			//echo("\OddSiteTransfer\SiteTransfer\Encoders\PostEncoderBaseObject::qualify<br />");
 			
-			return $this->qualifier->qualify($object);
+			if($object instanceof WP_Post) {
+				return $this->qualifier->qualify($object);
+			}
+			return false;
 		}
 		
 		protected function get_post_transfer_id($object) {
