@@ -98,7 +98,7 @@
 		}
 		
 		protected function transfer_dependencies($dependencies, $server_transfer_post) {
-			echo("\OddSiteTransfer\SiteTransfer\ServerSettings::transfer_dependencies<br />");
+			//echo("\OddSiteTransfer\SiteTransfer\ServerSettings::transfer_dependencies<br />");
 			
 			foreach($dependencies as $dependency) {
 				$type = $dependency['type'];
@@ -114,6 +114,10 @@
 					case 'user':
 						break;
 					case 'term':
+						$term = get_term_by('slug', $id, $dependency['taxonomy']);
+						if($term) {
+							$this->transfer_term($term, $server_transfer_post);
+						}
 						break;
 					default:
 						//METODO: error logging
@@ -122,7 +126,7 @@
 		}
 		
 		public function transfer_post($post, $server_transfer_post) {
-			echo("\OddSiteTransfer\SiteTransfer\ServerSettings::transfer_post<br />");
+			//echo("\OddSiteTransfer\SiteTransfer\ServerSettings::transfer_post<br />");
 			
 			$server_transfer_post_id = $server_transfer_post->ID;
 			
@@ -134,7 +138,6 @@
 					$encoded_data = $encoder->encode($post);
 					//var_dump($encoded_data);
 					
-					//METODO: attachment transfer image
 					if($post->post_type === 'attachment') {
 						$this->transfer_media($post, $server_transfer_post);
 					}
@@ -147,8 +150,47 @@
 					
 					if($result_object['code'] === 'success') {
 						$missing_dependencies = $result_object['data']['missingDependencies'];
-						var_dump($missing_dependencies);
-						$this->transfer_dependencies($missing_dependencies, $server_transfer_post);
+						//var_dump($missing_dependencies);
+						
+						if(count($missing_dependencies) > 0) {
+							$this->transfer_dependencies($missing_dependencies, $server_transfer_post);
+							$result_data = HttpLoading::send_request($url, $encoded_data);
+							$result_object = json_decode($result_data['data'], true);
+						}
+					}
+				}
+			}
+			
+			return false; //MEDEBUG
+		}
+		
+		public function transfer_term($term, $server_transfer_post) {
+			//echo("\OddSiteTransfer\SiteTransfer\ServerSettings::transfer_term<br />");
+			
+			$server_transfer_post_id = $server_transfer_post->ID;
+			
+			$base_url = get_post_meta($server_transfer_post_id, 'url', true);
+			$url = $base_url.'sync/term';
+			
+			foreach($this->post_encoders as $encoder) {
+				if($encoder->qualify($term)) {
+					$encoded_data = $encoder->encode($term);
+					//var_dump($encoded_data);
+					
+					$result_data = HttpLoading::send_request($url, $encoded_data);
+					//var_dump($result_data);
+					//var_dump($result_data['data']);
+					$result_object = json_decode($result_data['data'], true);
+					//var_dump($result_object);
+					
+					if($result_object['code'] === 'success') {
+						$missing_dependencies = $result_object['data']['missingDependencies'];
+						
+						if(count($missing_dependencies) > 0) {
+							$this->transfer_dependencies($missing_dependencies, $server_transfer_post);
+							$result_data = HttpLoading::send_request($url, $encoded_data);
+							$result_object = json_decode($result_data['data'], true);
+						}
 					}
 				}
 			}
