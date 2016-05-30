@@ -117,7 +117,7 @@
 			}
 			wp_reset_postdata();
 			
-			$return_object['meta']['acf'] = $send_fields;
+			$return_object['meta_data']['acf'] = $send_fields;
 		}
 		
 		public static function test_import() {

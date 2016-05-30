@@ -3,6 +3,8 @@
 	
 	//use \WP_Query;
 	
+	use \OddSiteTransfer\OddCore\Utils\HttpLoading as HttpLoading;
+	
 	// \OddSiteTransfer\SiteTransfer\ServerSettings
 	class ServerSettings {
 		
@@ -35,11 +37,20 @@
 		public function transfer_post($post, $server_transfer_post) {
 			echo("\OddSiteTransfer\SiteTransfer\ServerSettings::transfer_post<br />");
 			
+			$server_transfer_post_id = $server_transfer_post->ID;
+			
+			$base_url = get_post_meta($server_transfer_post_id, 'url', true);
+			$url = $base_url.'sync/post';
+			
 			foreach($this->post_encoders as $encoder) {
 				if($encoder->qualify($post)) {
 					//METODO
 					$encoded_data = $encoder->encode($post);
 					var_dump($encoded_data);
+					
+					$result_data = HttpLoading::send_request($url, $encoded_data);
+					
+					var_dump($result_data);
 				}
 			}
 			
