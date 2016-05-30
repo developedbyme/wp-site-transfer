@@ -111,6 +111,13 @@
 			$current_end_point->setup('sync/post', 'odd-site-transfer', 2, 'POST');
 			//METODO: security
 			$this->_rest_api_end_points[] = $current_end_point;
+			
+			$current_end_point = new \OddSiteTransfer\RestApi\TransferWithDependency\SyncTermEndPoint();
+			$current_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
+			$current_end_point->setup('sync/term', 'odd-site-transfer', 2, 'POST');
+			//METODO: security
+			$this->_rest_api_end_points[] = $current_end_point;
+			
 		}
 		
 		
