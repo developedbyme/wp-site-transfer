@@ -112,8 +112,10 @@
 			setup_postdata($object); 
 			$acf_fields = get_field_objects($post_id);
 			
-			foreach($acf_fields as $name => $acf_field) {
-				$send_fields[$name] = $this->encode_acf_field($acf_field, $post_id);
+			if($acf_fields) {
+				foreach($acf_fields as $name => $acf_field) {
+					$send_fields[$name] = $this->encode_acf_field($acf_field, $post_id);
+				}
 			}
 			wp_reset_postdata();
 			
