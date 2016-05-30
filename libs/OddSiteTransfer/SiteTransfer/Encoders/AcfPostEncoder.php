@@ -46,7 +46,7 @@
 					break;
 				case "post_object":
 					$linked_post_ids = $override_value ? $override_value : $acf_field['value'];
-					var_dump($linked_post_ids);
+					//var_dump($linked_post_ids);
 					$linked_post_local_ids = array();
 					
 					
@@ -101,7 +101,7 @@
 		}
 		
 		protected function encode_meta_data($object, &$return_object) {
-			echo("\OddSiteTransfer\SiteTransfer\Encoders\AcfPostEncoder::encode_meta_data<br />");
+			//echo("\OddSiteTransfer\SiteTransfer\Encoders\AcfPostEncoder::encode_meta_data<br />");
 			
 			parent::encode_meta_data($object, $return_object);
 			

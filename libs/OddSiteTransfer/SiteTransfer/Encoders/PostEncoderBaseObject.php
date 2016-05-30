@@ -49,7 +49,7 @@
 		}
 		
 		protected function add_dependency($type, $id, $additional_info, &$dependencies) {
-			echo("\OddSiteTransfer\SiteTransfer\Encoders\PostEncoderBaseObject::add_dependency<br />");
+			//echo("\OddSiteTransfer\SiteTransfer\Encoders\PostEncoderBaseObject::add_dependency<br />");
 			
 			$new_dependency = array('type' => $type, 'id' => $id);
 			
@@ -168,7 +168,7 @@
 		}
 		
 		public function encode_parts($object, &$return_object) {
-			echo("\OddSiteTransfer\SiteTransfer\Encoders\PostEncoderBaseObject::encode_parts<br />");
+			//echo("\OddSiteTransfer\SiteTransfer\Encoders\PostEncoderBaseObject::encode_parts<br />");
 			
 			//METODO
 			$this->encode_id($object, $return_object);
@@ -178,7 +178,7 @@
 		}
 		
 		public function encode($object) {
-			echo("\OddSiteTransfer\SiteTransfer\Encoders\PostEncoderBaseObject::encode<br />");
+			//echo("\OddSiteTransfer\SiteTransfer\Encoders\PostEncoderBaseObject::encode<br />");
 			
 			$return_data = array();
 			$return_data['dependencies'] = array();

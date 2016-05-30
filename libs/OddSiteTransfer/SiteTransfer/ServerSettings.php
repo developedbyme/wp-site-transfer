@@ -35,7 +35,7 @@
 		}
 		
 		public function transfer_post($post, $server_transfer_post) {
-			echo("\OddSiteTransfer\SiteTransfer\ServerSettings::transfer_post<br />");
+			//echo("\OddSiteTransfer\SiteTransfer\ServerSettings::transfer_post<br />");
 			
 			$server_transfer_post_id = $server_transfer_post->ID;
 			
@@ -46,11 +46,18 @@
 				if($encoder->qualify($post)) {
 					//METODO
 					$encoded_data = $encoder->encode($post);
-					var_dump($encoded_data);
+					//var_dump($encoded_data);
 					
 					$result_data = HttpLoading::send_request($url, $encoded_data);
-					
 					var_dump($result_data);
+					//var_dump($result_data['data']);
+					$result_object = json_decode($result_data['data']);
+					//var_dump($result_object);
+					
+					if($result_object->code === 'success') {
+						$missing_dependencies = $result_object->data->missingDependencies;
+						var_dump($missing_dependencies);
+					}
 				}
 			}
 			

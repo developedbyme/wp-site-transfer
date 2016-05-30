@@ -139,7 +139,7 @@
 		}
 		
 		public function transfer_post($post) {
-			echo("\OddSiteTransfer\Admin\TransferHooks::transfer_post<br />");
+			//echo("\OddSiteTransfer\Admin\TransferHooks::transfer_post<br />");
 			
 			$settings = $this->get_settings();
 			
