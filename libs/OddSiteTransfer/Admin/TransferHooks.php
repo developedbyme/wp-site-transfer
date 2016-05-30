@@ -20,7 +20,7 @@
 			$this->settings = array();
 			
 			$post_type_qualifier = new \OddSiteTransfer\SiteTransfer\Qualifiers\PostTypeQualifier();
-			$post_type_qualifier->add_post_types(array('oa_recipe', 'oa_product', 'oa_wine', 'oa_wine_producer'));
+			$post_type_qualifier->add_post_types(array('oa_recipe', 'oa_product', 'oa_wine', 'oa_wine_producer', 'attachment'));
 			
 			$default_post_encoder = new \OddSiteTransfer\SiteTransfer\Encoders\AcfPostEncoder();
 			$default_post_encoder->set_qualifier($post_type_qualifier);
@@ -139,7 +139,7 @@
 		}
 		
 		public function transfer_post($post) {
-			echo("\OddSiteTransfer\Admin\TransferHooks::transfer_post<br />");
+			//echo("\OddSiteTransfer\Admin\TransferHooks::transfer_post<br />");
 			
 			$settings = $this->get_settings();
 			

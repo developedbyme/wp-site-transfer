@@ -46,7 +46,7 @@
 					break;
 				case "post_object":
 					$linked_post_ids = $override_value ? $override_value : $acf_field['value'];
-					var_dump($linked_post_ids);
+					//var_dump($linked_post_ids);
 					$linked_post_local_ids = array();
 					
 					
@@ -101,7 +101,7 @@
 		}
 		
 		protected function encode_meta_data($object, &$return_object) {
-			echo("\OddSiteTransfer\SiteTransfer\Encoders\AcfPostEncoder::encode_meta_data<br />");
+			//echo("\OddSiteTransfer\SiteTransfer\Encoders\AcfPostEncoder::encode_meta_data<br />");
 			
 			parent::encode_meta_data($object, $return_object);
 			
@@ -112,12 +112,14 @@
 			setup_postdata($object); 
 			$acf_fields = get_field_objects($post_id);
 			
-			foreach($acf_fields as $name => $acf_field) {
-				$send_fields[$name] = $this->encode_acf_field($acf_field, $post_id);
+			if($acf_fields) {
+				foreach($acf_fields as $name => $acf_field) {
+					$send_fields[$name] = $this->encode_acf_field($acf_field, $post_id);
+				}
 			}
 			wp_reset_postdata();
 			
-			$return_object['meta']['acf'] = $send_fields;
+			$return_object['meta_data']['acf'] = $send_fields;
 		}
 		
 		public static function test_import() {

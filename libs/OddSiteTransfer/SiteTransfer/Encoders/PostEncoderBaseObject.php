@@ -48,20 +48,26 @@
 			return $id;
 		}
 		
-		protected function add_dependency($type, $id, &$dependencies) {
-			echo("\OddSiteTransfer\SiteTransfer\Encoders\PostEncoderBaseObject::add_dependency<br />");
+		protected function add_dependency($type, $id, $additional_info, &$dependencies) {
+			//echo("\OddSiteTransfer\SiteTransfer\Encoders\PostEncoderBaseObject::add_dependency<br />");
 			
-			$dependencies[] = array('type' => $type, 'id' => $id);
+			$new_dependency = array('type' => $type, 'id' => $id);
+			
+			foreach($additional_info as $key => $value) {
+				$new_dependency[$key] = $value;
+			}
+			
+			$dependencies[] = $new_dependency;
 		}
 		
 		protected function encode_id($object, &$return_object) {
-			echo("\OddSiteTransfer\SiteTransfer\Encoders\PostEncoderBaseObject::encode_id<br />");
+			//echo("\OddSiteTransfer\SiteTransfer\Encoders\PostEncoderBaseObject::encode_id<br />");
 			
 			$return_object['id'] = $this->get_post_transfer_id($object);
 		}
 		
 		protected function encode_content($object, &$return_object) {
-			echo("\OddSiteTransfer\SiteTransfer\Encoders\PostEncoderBaseObject::encode_content<br />");
+			//echo("\OddSiteTransfer\SiteTransfer\Encoders\PostEncoderBaseObject::encode_content<br />");
 			
 			if(!isset($return_object['data'])) $return_object['data'] = array();
 			
@@ -86,13 +92,13 @@
 				
 				$author_local_id = $post_author->user_login;
 				
-				$this->add_dependency('user', $author_local_id, $return_object['dependencies']);
+				$this->add_dependency('user', $author_local_id, array(), $return_object['dependencies']);
 				$return_object['author'] = $post_author->user_login;
 			}
 		}
 		
 		protected function encode_featured_image($object, &$return_object) {
-			echo("\OddSiteTransfer\SiteTransfer\Encoders\PostEncoderBaseObject::encode_featured_image<br />");
+			//echo("\OddSiteTransfer\SiteTransfer\Encoders\PostEncoderBaseObject::encode_featured_image<br />");
 			
 			$media_post_id = get_post_thumbnail_id($object->ID);
 			
@@ -100,13 +106,13 @@
 				$media_post = get_post($media_post_id);
 				
 				$local_thumbnail_id = $this->get_post_transfer_id($media_post);
-				$this->add_dependency('post', $local_thumbnail_id, $return_object['dependencies']);
+				$this->add_dependency('post', $local_thumbnail_id, array('post_type' => $media_post->post_type), $return_object['dependencies']);
 				$return_object['meta_data']['post_thumbnail_id'] = $local_thumbnail_id;
 			}
 		}
 		
 		protected function encode_meta_data($object, &$return_object) {
-			echo("\OddSiteTransfer\SiteTransfer\Encoders\PostEncoderBaseObject::encode_meta_data<br />");
+			//echo("\OddSiteTransfer\SiteTransfer\Encoders\PostEncoderBaseObject::encode_meta_data<br />");
 			
 			$post_id = $object->ID;
 			
@@ -118,7 +124,7 @@
 			foreach($this->meta_fields as $meta_field) {
 				
 				$meta_field_name = $meta_field['name'];
-				var_dump($meta_field_name);
+				//var_dump($meta_field_name);
 				
 				$meta_field_data = get_post_meta($post_id, $meta_field_name, true);
 				switch($meta_field['type']) {
@@ -140,7 +146,7 @@
 		}
 		
 		protected function encode_taxonomies($object, &$return_object) {
-			echo("\OddSiteTransfer\SiteTransfer\Encoders\PostEncoderBaseObject::encode_taxonomies<br />");
+			//echo("\OddSiteTransfer\SiteTransfer\Encoders\PostEncoderBaseObject::encode_taxonomies<br />");
 			
 			if(!isset($return_object['taxonomies'])) $return_object['taxonomies'] = array();
 			
@@ -162,7 +168,7 @@
 		}
 		
 		public function encode_parts($object, &$return_object) {
-			echo("\OddSiteTransfer\SiteTransfer\Encoders\PostEncoderBaseObject::encode_parts<br />");
+			//echo("\OddSiteTransfer\SiteTransfer\Encoders\PostEncoderBaseObject::encode_parts<br />");
 			
 			//METODO
 			$this->encode_id($object, $return_object);
@@ -172,7 +178,7 @@
 		}
 		
 		public function encode($object) {
-			echo("\OddSiteTransfer\SiteTransfer\Encoders\PostEncoderBaseObject::encode<br />");
+			//echo("\OddSiteTransfer\SiteTransfer\Encoders\PostEncoderBaseObject::encode<br />");
 			
 			$return_data = array();
 			$return_data['dependencies'] = array();
