@@ -295,23 +295,19 @@
 			
 			$server_transfer_post_id = $server_transfer_post->ID;
 			
-			if($post_type === 'post' || $post_type === 'oa_recipe' || $post_type === 'oa_product' || $post_type === 'oa_wine' || $post_type === 'attachment') { //METODO: make settings for this
+			if($post_type === 'post' || $post_type === 'oa_recipe' || $post_type === 'oa_product' || $post_type === 'oa_wine' || $post_type === 'attachment' || $post_type === 'oa_wine_producer') { //METODO: make settings for this
 				//echo("++++");
 				$base_url = get_post_meta($server_transfer_post_id, 'url', true);
 				$url = $base_url.'sync/post';
 				//echo($base_url);
 				
-				/* ---------------
 				$local_id = $this->get_local_post_id($post_id, $server_transfer_post_id);
 				
 				$post_ids = array(
 					'origin_id' => $post->ID,
 					'local_id' => $local_id
 				);
-				--------------- */
 				
-				
-				/* ---------------
 				$post_data = array(
 					'post_type' => $post->post_type,
 					'post_status' => $post->post_status,
@@ -326,9 +322,7 @@
 					'menu_order' => $post->menu_order,
 					'post_mime_type' => $post->post_mime_type
 				);
-				--------------- */
 				
-				/* ---------------
 				$author_id = $post->post_author;
 				
 				if($author_id != 0) {
@@ -338,40 +332,31 @@
 					
 					$post_data['post_author'] = $author_local_id;
 				}
-				--------------- */
 				
-				
-				/* ---------------
 				$meta_data = array();
 				$meta_data['meta'] = array();
-				--------------- */
 				
-				if($post_type === 'oa_recipe') {
+				if($post_type === 'oa_recipe' || $post_type === 'oa_wine' || $post_type === 'oa_wine_producer') {
 					
-					/* ---------------
 					$send_fields = array();
-					--------------- */
 					
-					/* ---------------
 					$meta_data['meta']['_has_step_instructions'] = get_post_meta($post_id, '_has_step_instructions', true);
 					$meta_data['meta']['_has_matched_ingredients'] = get_post_meta($post_id, '_has_matched_ingredients', true);
-					--------------- */
 					
-					/* ---------------
 					setup_postdata($post); 
 					$acf_fields = get_field_objects($post_id);
 					
-					foreach($acf_fields as $name => $acf_field) {
-						$send_fields[$name] = $this->encode_acf_field($acf_field, $post_id, $server_transfer_post);
+					if($acf_fields) {
+						foreach($acf_fields as $name => $acf_field) {
+							$send_fields[$name] = $this->encode_acf_field($acf_field, $post_id, $server_transfer_post);
+						}
 					}
 					wp_reset_postdata();
 					
 					$meta_data['acf'] = $send_fields;
-					--------------- */
 				}
 				
 				if($post_type !== 'attachment') {
-					/* ---------------
 					$media_post_id = get_post_thumbnail_id($post_id);
 					
 					if($media_post_id) {
@@ -382,19 +367,15 @@
 					
 					$local_thumbnail_id = get_post_meta($media_post_id, '_odd_server_transfer_remote_id_'.$server_transfer_post_id, true);
 					$meta_data['post_thumbnail_id'] = $local_thumbnail_id;
-					--------------- */
 				}
 				else {
-					/* ---------------
 					//METODO: should caption be here?
 					
 					$meta_data['meta']['_wp_attached_file'] = get_post_meta($post_id, '_wp_attached_file', true);
 					$meta_data['meta']['_wp_attachment_metadata'] = get_post_meta($post_id, '_wp_attachment_metadata', true);
 					$meta_data['meta']['_wp_attachment_image_alt'] = get_post_meta($post_id, '_wp_attachment_image_alt', true);
-					--------------- */
 				}
 				
-				/* ---------------
 				$taxonomies = array_keys(get_the_taxonomies($post_id));
 				
 				$term_data_array = array();
@@ -412,7 +393,6 @@
 					$term_data_array[$taxonomy] = $local_term_ids;
 					
 				}
-				--------------- */
 				
 				//METODO
 				$send_data = array('ids' => $post_ids, 'data' => $post_data, 'meta_data' => $meta_data, 'taxonomies' => $term_data_array);
@@ -427,7 +407,7 @@
 		public function perform_call($data) {
 			//echo("\OddSiteTransfer\RestApi\TransferPostEndPoint::perform_call<br />");
 			
-			$plugin = \OddSiteTransfer\Plugin::$singleton;
+			//$plugin = \OddSiteTransfer\Plugin::$singleton;
 			
 			$post_id = $data['id'];
 			$post = get_post($post_id);
@@ -441,9 +421,8 @@
 				return $this->output_success(array('target' => $sync_index_target, 'index' => $sync_index));
 			}
 			
-			$plugin->external_access['transfer_hooks']->transfer_post($post);
+			//$plugin->external_access['transfer_hooks']->transfer_post($post);
 			
-			/*
 			$args = array(
 				'post_type' => 'server-transfer',
 				'post_status' => 'publish',
@@ -459,7 +438,6 @@
 				
 			}
 			wp_reset_query();
-			*/
 			
 			$sync_index = min($sync_index+1, $sync_index_target);
 			
