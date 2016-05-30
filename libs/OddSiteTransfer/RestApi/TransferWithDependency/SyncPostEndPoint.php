@@ -14,8 +14,8 @@
 		}
 		
 		protected function update_acf_field($name, $field, $post_id, $resolved_dependencies, $repeater_path = NULL, $meta_path = null) {
-			echo("\OddSiteTransfer\RestApi\TransferWithDependency\SyncPostEndPoint::update_acf_field<br />");
-			var_dump($field);
+			//echo("\OddSiteTransfer\RestApi\TransferWithDependency\SyncPostEndPoint::update_acf_field<br />");
+			//var_dump($field);
 			
 			if(!isset($field['value'])) return; //METODO: check that this is correct
 			
@@ -92,6 +92,7 @@
 			
 			$args = array(
 				'post_type' => $post_type,
+				'post_status' => 'any',
 				'meta_key'     => '_odd_server_transfer_id',
 				'meta_value'   => $id,
 				'meta_compare' => '='
@@ -141,7 +142,6 @@
 					else {
 						$missing_dependencies[] = $dependency_data;
 					}
-					$missing_dependencies[] = $dependency_data;
 					break;
 				default:
 					//METODO: error report
@@ -260,7 +260,6 @@
 			}
 			
 			if(isset($meta_data['acf'])) {
-				var_dump($meta_data['acf']);
 				foreach($meta_data['acf'] as $name => $field) {
 					$this->update_acf_field($name, $field, $new_id, $resolved_dependencies);
 				}
