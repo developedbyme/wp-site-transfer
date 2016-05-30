@@ -92,6 +92,7 @@
 			
 			$args = array(
 				'post_type' => $post_type,
+				'post_status' => 'any',
 				'meta_key'     => '_odd_server_transfer_id',
 				'meta_value'   => $id,
 				'meta_compare' => '='
