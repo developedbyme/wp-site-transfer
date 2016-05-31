@@ -22,8 +22,13 @@
 			$post_type_qualifier = new \OddSiteTransfer\SiteTransfer\Qualifiers\PostTypeQualifier();
 			$post_type_qualifier->add_post_types(array('oa_recipe', 'oa_product', 'oa_wine', 'oa_wine_producer', 'attachment'));
 			
+			$term_quailifier = new \OddSiteTransfer\SiteTransfer\Qualifiers\AllQualifier();
+			
 			$default_post_encoder = new \OddSiteTransfer\SiteTransfer\Encoders\AcfPostEncoder();
 			$default_post_encoder->set_qualifier($post_type_qualifier);
+			
+			$default_term_encoder = new \OddSiteTransfer\SiteTransfer\Encoders\TermEncoderBaseObject();
+			$default_term_encoder->set_qualifier($term_quailifier);
 			
 			//oa_recipe
 			$default_post_encoder->add_meta_field('_has_step_instructions', 'data');
@@ -37,6 +42,7 @@
 			
 			$default_server_settings = new \OddSiteTransfer\SiteTransfer\ServerSettings();
 			$default_server_settings->add_encoder($default_post_encoder);
+			$default_server_settings->add_encoder($default_term_encoder);
 			$this->add_server_settings('default', $default_server_settings);
 		}
 		
