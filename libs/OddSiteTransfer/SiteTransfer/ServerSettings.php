@@ -35,9 +35,9 @@
 		}
 		
 		protected function get_post_by_transfer_id($post_type, $id) {
-			echo("\OddSiteTransfer\SiteTransfer\ServerSettings::get_post_by_transfer_id<br />");
-			var_dump($post_type);
-			var_dump($id);
+			//echo("\OddSiteTransfer\SiteTransfer\ServerSettings::get_post_by_transfer_id<br />");
+			//var_dump($post_type);
+			//var_dump($id);
 			
 			$args = array(
 				'post_type' => $post_type,
@@ -48,7 +48,7 @@
 			);
 			$query = new WP_Query( $args );
 			
-			var_dump($query->have_posts());
+			//var_dump($query->have_posts());
 			if($query->have_posts()) {
 				//METODO: warn for more than 1 match
 				return $query->get_posts()[0];
@@ -73,7 +73,7 @@
 		}
 		
 		protected function transfer_media($media, $server_transfer_post) {
-			echo("\OddSiteTransfer\SiteTransfer\ServerSettings::transfer_media<br />");
+			//echo("\OddSiteTransfer\SiteTransfer\ServerSettings::transfer_media<br />");
 			
 			$server_transfer_post_id = $server_transfer_post->ID;
 			
@@ -171,6 +171,40 @@
 			
 			$base_url = get_post_meta($server_transfer_post_id, 'url', true);
 			$url = $base_url.'sync/term';
+			
+			foreach($this->post_encoders as $encoder) {
+				if($encoder->qualify($term)) {
+					$encoded_data = $encoder->encode($term);
+					//var_dump($encoded_data);
+					
+					$result_data = HttpLoading::send_request($url, $encoded_data);
+					//var_dump($result_data);
+					//var_dump($result_data['data']);
+					$result_object = json_decode($result_data['data'], true);
+					//var_dump($result_object);
+					
+					if($result_object['code'] === 'success') {
+						$missing_dependencies = $result_object['data']['missingDependencies'];
+						
+						if(count($missing_dependencies) > 0) {
+							$this->transfer_dependencies($missing_dependencies, $server_transfer_post);
+							$result_data = HttpLoading::send_request($url, $encoded_data);
+							$result_object = json_decode($result_data['data'], true);
+						}
+					}
+				}
+			}
+			
+			return false; //MEDEBUG
+		}
+		
+		public function transfer_user($user, $server_transfer_post) {
+			echo("\OddSiteTransfer\SiteTransfer\ServerSettings::transfer_user<br />");
+			
+			$server_transfer_post_id = $server_transfer_post->ID;
+			
+			$base_url = get_post_meta($server_transfer_post_id, 'url', true);
+			$url = $base_url.'sync/user';
 			
 			foreach($this->post_encoders as $encoder) {
 				if($encoder->qualify($term)) {
