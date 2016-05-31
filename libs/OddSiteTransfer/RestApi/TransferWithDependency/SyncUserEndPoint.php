@@ -4,11 +4,11 @@
 	use \WP_Query;
 	use OddSiteTransfer\OddCore\RestApi\EndPoint as EndPoint;
 	
-	// \OddSiteTransfer\RestApi\TransferWithDependency\SyncTermEndPoint
-	class SyncTermEndPoint extends EndPoint {
+	// \OddSiteTransfer\RestApi\TransferWithDependency\SyncUserEndPoint
+	class SyncUserEndPoint extends EndPoint {
 		
 		function __construct() {
-			//echo("\OddSiteTransfer\RestApi\TransferWithDependency\SyncTermEndPoint::__construct<br />");
+			//echo("\OddSiteTransfer\RestApi\TransferWithDependency\SyncUserEndPoint::__construct<br />");
 			
 			
 		}
@@ -77,7 +77,7 @@
 		}
 		
 		public function perform_call($data) {
-			//echo("\OddSiteTransfer\RestApi\TransferWithDependency\SyncTermEndPoint::perform_call<br />");
+			//echo("\OddSiteTransfer\RestApi\TransferWithDependency\SyncUserEndPoint::perform_call<br />");
 			
 			$dependencies = $data['dependencies'];
 			
@@ -93,32 +93,31 @@
 			}
 			
 			$transfer_id = $data['id'];
-			$term_data = $data['data'];
-			$taxonomy = $term_data['taxonomy'];
+			$user_data = $data['data'];
 			
-			$existing_term = get_term_by('slug', $transfer_id, $taxonomy);
+			$existing_user = get_user_by('login', $transfer_id);
 			
-			if(isset($data['parent'])) {
-				$parent_term = get_term_by('slug', $data['parent'], $taxonomy);
-				if($parent_term) {
-					$term_data['parent'] = intval($parent_term->term_id);
-				}
-			}
-			
-			if($existing_term) {
-				$result = wp_update_term(intval($existing_term->term_id), $taxonomy, $term_data);
+			if($existing_user) {
+				$user_data['ID'] = $existing_user->ID;
+				$new_id = wp_update_user($user_data);
 			}
 			else {
-				$result = wp_insert_term($term_data['name'], $taxonomy, $term_data);
+				$new_id = wp_insert_user($user_data);
+				if(is_wp_error($new_id)) {
+					$error_string = '';
+					$errors = $new_id->get_error_messages();
+					foreach ($errors as $error) {
+						$error_string .= $error;
+					}
+					return $this->output_error($error_string);
+				}
 			}
-			
-			//METODO: set meta data
 			
 			return $this->output_success(array('missingDependencies' => $missing_dependencies));
 		}
 		
 		public static function test_import() {
-			echo("Imported \OddSiteTransfer\RestApi\TransferWithDependency\SyncTermEndPoint<br />");
+			echo("Imported \OddSiteTransfer\RestApi\TransferWithDependency\SyncUserEndPoint<br />");
 		}
 	}
 ?>

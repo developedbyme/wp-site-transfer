@@ -94,17 +94,17 @@
 			$current_end_point->setup('info', 'odd-site-transfer', 2, 'GET');
 			$this->_rest_api_end_points[] = $current_end_point;
 			
-			$compare_image_end_point = new \OddSiteTransfer\RestApi\CompareImageEndPoint();
-			$compare_image_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
-			$compare_image_end_point->setup('compare/image', 'odd-site-transfer', 2, 'POST');
+			$current_end_point = new \OddSiteTransfer\RestApi\CompareImageEndPoint();
+			$current_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
+			$current_end_point->setup('compare/image', 'odd-site-transfer', 2, 'POST');
 			//METODO: security
-			$this->_rest_api_end_points[] = $compare_image_end_point;
+			$this->_rest_api_end_points[] = $current_end_point;
 			
-			$sync_image_end_point = new \OddSiteTransfer\RestApi\SyncImageEndPoint();
-			$sync_image_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
-			$sync_image_end_point->setup('sync/image', 'odd-site-transfer', 2, 'POST');
+			$current_end_point = new \OddSiteTransfer\RestApi\SyncImageEndPoint();
+			$current_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
+			$current_end_point->setup('sync/image', 'odd-site-transfer', 2, 'POST');
 			//METODO: security
-			$this->_rest_api_end_points[] = $sync_image_end_point;
+			$this->_rest_api_end_points[] = $current_end_point;
 			
 			$current_end_point = new \OddSiteTransfer\RestApi\TransferWithDependency\SyncPostEndPoint();
 			$current_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
@@ -117,6 +117,14 @@
 			$current_end_point->setup('sync/term', 'odd-site-transfer', 2, 'POST');
 			//METODO: security
 			$this->_rest_api_end_points[] = $current_end_point;
+			
+			$current_end_point = new \OddSiteTransfer\RestApi\TransferWithDependency\SyncUserEndPoint();
+			$current_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
+			$current_end_point->setup('sync/user', 'odd-site-transfer', 2, 'POST');
+			//METODO: security
+			$this->_rest_api_end_points[] = $current_end_point;
+			
+			
 			
 		}
 		
