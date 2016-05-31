@@ -407,7 +407,7 @@
 		public function perform_call($data) {
 			//echo("\OddSiteTransfer\RestApi\TransferPostEndPoint::perform_call<br />");
 			
-			$plugin = \OddSiteTransfer\Plugin::$singleton;
+			//$plugin = \OddSiteTransfer\Plugin::$singleton;
 			
 			$post_id = $data['id'];
 			$post = get_post($post_id);
@@ -421,9 +421,8 @@
 				return $this->output_success(array('target' => $sync_index_target, 'index' => $sync_index));
 			}
 			
-			$plugin->external_access['transfer_hooks']->transfer_post($post);
+			//$plugin->external_access['transfer_hooks']->transfer_post($post);
 			
-			/*
 			$args = array(
 				'post_type' => 'server-transfer',
 				'post_status' => 'publish',
@@ -439,7 +438,6 @@
 				
 			}
 			wp_reset_query();
-			*/
 			
 			$sync_index = min($sync_index+1, $sync_index_target);
 			

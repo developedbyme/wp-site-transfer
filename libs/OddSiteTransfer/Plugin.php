@@ -37,6 +37,7 @@
 		protected function create_rest_api_end_points() {
 			//echo("\OddSiteTransfer\Plugin::create_rest_api_end_points<br />");
 			
+			/*
 			$current_end_point = new \OddSiteTransfer\RestApi\GetTransferInfoEndPoint();
 			$current_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
 			$current_end_point->setup('info', 'odd-site-transfer', 1, 'GET');
@@ -86,6 +87,7 @@
 			$current_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
 			$current_end_point->setup('post/(?P<id>\d+)/link', 'odd-site-transfer', 1, 'GET');
 			$this->_rest_api_end_points[] = $current_end_point;
+			*/
 			
 			
 			//v2
@@ -124,6 +126,12 @@
 			//METODO: security
 			$this->_rest_api_end_points[] = $current_end_point;
 			
+			
+			$current_end_point = new \OddSiteTransfer\RestApi\TransferWithDependency\TransferPostEndPoint();
+			$current_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
+			$current_end_point->setup('post/(?P<id>\d+)/transfer', 'odd-site-transfer', 2, 'GET');
+			//METODO: security
+			$this->_rest_api_end_points[] = $current_end_point;
 			
 			
 		}

@@ -254,7 +254,7 @@
 				
 					if($sync_index_target > $sync_index) {
 					
-						$module_data = array('id' => $post->ID, 'transferUrl' => get_home_url().'/wp-json/odd-site-transfer/v1/post/'.($post->ID).'/transfer');
+						$module_data = array('id' => $post->ID, 'transferUrl' => get_home_url().'/wp-json/odd-site-transfer/v2/post/'.($post->ID).'/transfer');
 						$this->output_notice('checkSyncNotice', $module_data);
 					}
 				}
