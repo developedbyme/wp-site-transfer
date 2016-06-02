@@ -66,6 +66,12 @@
 			$return_object['id'] = $this->get_post_transfer_id($object);
 		}
 		
+		protected function encode_status($object, &$return_object) {
+			//echo("\OddSiteTransfer\SiteTransfer\Encoders\PostEncoderBaseObject::encode_status<br />");
+			
+			$return_object['status'] = 'existing';
+		}
+		
 		protected function encode_content($object, &$return_object) {
 			//echo("\OddSiteTransfer\SiteTransfer\Encoders\PostEncoderBaseObject::encode_content<br />");
 			
@@ -170,11 +176,13 @@
 		public function encode_parts($object, &$return_object) {
 			//echo("\OddSiteTransfer\SiteTransfer\Encoders\PostEncoderBaseObject::encode_parts<br />");
 			
-			//METODO
 			$this->encode_id($object, $return_object);
-			$this->encode_content($object, $return_object);
-			$this->encode_meta_data($object, $return_object);
-			$this->encode_taxonomies($object, $return_object);
+			$this->encode_status($object, $return_object);
+			if($return_object['status'] !== 'non-existing') {
+				$this->encode_content($object, $return_object);
+				$this->encode_meta_data($object, $return_object);
+				$this->encode_taxonomies($object, $return_object);
+			}
 		}
 		
 		public function encode($object) {

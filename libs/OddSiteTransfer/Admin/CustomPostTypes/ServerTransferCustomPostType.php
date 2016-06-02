@@ -20,10 +20,24 @@
 			//$this->add_javascript('react-dom', plugins_url('assets/js/libs/react-dom.js', BTDM_PARALLAX_ADS_MAIN_FILE));
 			//$this->add_javascript('wallpaper-ad', plugins_url('assets/js/admin/wallpaper-ad.js', BTDM_PARALLAX_ADS_MAIN_FILE));
 			
-			$link_box = new \OddSiteTransfer\OddCore\Admin\MetaData\PostMetaDataFieldBox();
-			$link_box->set_name('URL');
-			$link_box->set_meta_key('url');
-			$this->add_meta_box_after_title($link_box);
+			$current_box = new \OddSiteTransfer\OddCore\Admin\MetaData\PostMetaDataFieldBox();
+			$current_box->set_name('URL');
+			$current_box->set_meta_key('url');
+			$this->add_meta_box_after_title($current_box);
+			
+			$current_box = new \OddSiteTransfer\OddCore\Admin\MetaData\PostMetaDataBox();
+			$current_box->set_name('Settings');
+			$current_box->set_nonce_name('settings_nonce');
+			
+			$select_field = new \OddSiteTransfer\OddCore\Admin\MetaData\SelectMetaField();
+			$select_field->set_name('settings_name');
+			$select_field->set_default_value('default');
+			$select_field->add_option('Default', 'default');
+			$select_field->add_option('Zeta', 'zeta');
+			$select_field->add_option('Wine & Friends', 'wf');
+			$current_box->add_meta_field($select_field);
+			
+			$this->add_meta_box_after_title($current_box);
 			
 		}
 		

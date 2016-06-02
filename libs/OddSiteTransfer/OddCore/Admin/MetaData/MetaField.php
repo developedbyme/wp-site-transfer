@@ -15,6 +15,12 @@
 			
 		}
 		
+		public function set_default_value($value) {
+			$this->_default_value = $value;
+			
+			return $this;
+		}
+		
 		public function set_name($meta_key) {
 			
 			$this->_field_name = $meta_key;
@@ -47,8 +53,9 @@
 		}
 		
 		public function get_value($post) {
+			//echo("\OddCore\Admin\MetaData\MetaField::get_value<br />");
 			$value = get_post_meta($post->ID, $this->_meta_key, true);
-			if(!isset($value)) {
+			if(!isset($value) || empty($value)) {
 				$value = $this->_default_value;
 			}
 			

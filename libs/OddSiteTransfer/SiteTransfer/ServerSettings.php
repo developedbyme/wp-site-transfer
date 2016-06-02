@@ -143,6 +143,7 @@
 					}
 					
 					$result_data = HttpLoading::send_request($url, $encoded_data);
+					//echo('---------------------');
 					//var_dump($result_data);
 					//var_dump($result_data['data']);
 					$result_object = json_decode($result_data['data'], true);
@@ -158,6 +159,7 @@
 							$result_object = json_decode($result_data['data'], true);
 						}
 					}
+					break;
 				}
 			}
 			
@@ -192,6 +194,7 @@
 							$result_object = json_decode($result_data['data'], true);
 						}
 					}
+					break;
 				}
 			}
 			
@@ -226,6 +229,7 @@
 							$result_object = json_decode($result_data['data'], true);
 						}
 					}
+					break;
 				}
 			}
 			

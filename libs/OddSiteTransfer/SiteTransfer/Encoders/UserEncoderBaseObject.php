@@ -51,10 +51,16 @@
 		}
 		
 		protected function encode_id($object, &$return_object) {
-			//echo("\OddSiteTransfer\SiteTransfer\Encoders\PostEncoderBaseObject::encode_id<br />");
+			//echo("\OddSiteTransfer\SiteTransfer\Encoders\UserEncoderBaseObject::encode_id<br />");
 			
 			$return_object['id'] = $object->user_login;
 			
+		}
+		
+		protected function encode_status($object, &$return_object) {
+			//echo("\OddSiteTransfer\SiteTransfer\Encoders\UserEncoderBaseObject::encode_status<br />");
+			
+			$return_object['status'] = 'existing';
 		}
 		
 		protected function encode_content($object, &$return_object) {
@@ -108,8 +114,11 @@
 			
 			//METODO
 			$this->encode_id($object, $return_object);
-			$this->encode_content($object, $return_object);
-			$this->encode_meta_data($object, $return_object);
+			$this->encode_status($object, $return_object);
+			if($return_object['status'] !== 'non-existing') {
+				$this->encode_content($object, $return_object);
+				$this->encode_meta_data($object, $return_object);
+			}
 		}
 		
 		public function encode($object) {
