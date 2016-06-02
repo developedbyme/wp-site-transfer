@@ -19,16 +19,33 @@
 			//echo("\OddSiteTransfer\Admin\TransferHooks::create_server_settings<br />");
 			$this->settings = array();
 			
-			$post_type_qualifier = new \OddSiteTransfer\SiteTransfer\Qualifiers\PostTypeQualifier();
-			$post_type_qualifier->add_post_types(array('oa_recipe', 'oa_product', 'oa_wine', 'oa_wine_producer', 'attachment'));
+			//Defaults
+			$default_post_type_qualifier = new \OddSiteTransfer\SiteTransfer\Qualifiers\PostTypeQualifier();
+			$default_post_type_qualifier->add_post_types(array('oa_recipe', 'oa_product', 'oa_wine', 'oa_wine_producer', 'attachment'));
 			
-			$term_quailifier = new \OddSiteTransfer\SiteTransfer\Qualifiers\AllQualifier();
+			$recipe_post_type_qualifier = new \OddSiteTransfer\SiteTransfer\Qualifiers\PostTypeQualifier();
+			$recipe_post_type_qualifier->add_post_types(array('oa_recipe'));
+			
+			$all_quailifier = new \OddSiteTransfer\SiteTransfer\Qualifiers\AllQualifier();
 			
 			$default_post_encoder = new \OddSiteTransfer\SiteTransfer\Encoders\AcfPostEncoder();
-			$default_post_encoder->set_qualifier($post_type_qualifier);
+			$default_post_encoder->set_qualifier($default_post_type_qualifier);
 			
 			$default_term_encoder = new \OddSiteTransfer\SiteTransfer\Encoders\TermEncoderBaseObject();
-			$default_term_encoder->set_qualifier($term_quailifier);
+			$default_term_encoder->set_qualifier($all_quailifier);
+			
+			$default_user_encoder = new \OddSiteTransfer\SiteTransfer\Encoders\UserEncoderBaseObject();
+			$default_user_encoder->set_qualifier($all_quailifier);
+			
+			//Zeta
+			$zeta_recipe_post_encoder = new \OddSiteTransfer\SiteTransfer\Encoders\TargetedSitePostEncoder();
+			$zeta_recipe_post_encoder->add_term('zeta', 'oa_target_site');
+			$zeta_recipe_post_encoder->set_qualifier($recipe_post_type_qualifier);
+			
+			//Wine and friends
+			$wf_recipe_post_encoder = new \OddSiteTransfer\SiteTransfer\Encoders\TargetedSitePostEncoder();
+			$wf_recipe_post_encoder->add_term('wine-and-friends', 'oa_target_site');
+			$wf_recipe_post_encoder->set_qualifier($recipe_post_type_qualifier);
 			
 			//oa_recipe
 			$default_post_encoder->add_meta_field('_has_step_instructions', 'data');
@@ -40,10 +57,29 @@
 			$default_post_encoder->add_meta_field('_wp_attachment_metadata', 'data');
 			$default_post_encoder->add_meta_field('_wp_attachment_image_alt', 'data');
 			
+			//--- Settings
+			//Default
 			$default_server_settings = new \OddSiteTransfer\SiteTransfer\ServerSettings();
 			$default_server_settings->add_encoder($default_post_encoder);
 			$default_server_settings->add_encoder($default_term_encoder);
+			$default_server_settings->add_encoder($default_user_encoder);
 			$this->add_server_settings('default', $default_server_settings);
+			
+			//Zeta
+			$zeta_server_settings = new \OddSiteTransfer\SiteTransfer\ServerSettings();
+			$zeta_server_settings->add_encoder($zeta_recipe_post_encoder);
+			$zeta_server_settings->add_encoder($default_post_encoder);
+			$zeta_server_settings->add_encoder($default_term_encoder);
+			$zeta_server_settings->add_encoder($default_user_encoder);
+			$this->add_server_settings('zeta', $zeta_server_settings);
+			
+			//Wine & friends
+			$zeta_server_settings = new \OddSiteTransfer\SiteTransfer\ServerSettings();
+			$zeta_server_settings->add_encoder($zeta_recipe_post_encoder);
+			$zeta_server_settings->add_encoder($default_post_encoder);
+			$zeta_server_settings->add_encoder($default_term_encoder);
+			$zeta_server_settings->add_encoder($default_user_encoder);
+			$this->add_server_settings('wf', $zeta_server_settings);
 		}
 		
 		public function get_settings() {
@@ -100,7 +136,7 @@
 			$server_transfers = $server_transfers_query->get_posts();
 			foreach($server_transfers as $server_transfer) {
 				
-				$settings_name = 'default';
+				$settings_name = get_post_meta($server_transfer->ID, 'settings_name', true);
 				
 				if(isset($settings[$settings_name])) {
 					$current_setting = $settings[$settings_name];
@@ -153,7 +189,7 @@
 			$server_transfers = $server_transfers_query->get_posts();
 			foreach($server_transfers as $server_transfer) {
 				
-				$settings_name = 'default';
+				$settings_name = get_post_meta($server_transfer->ID, 'settings_name', true);
 				
 				if(isset($settings[$settings_name])) {
 					$current_setting = $settings[$settings_name];
@@ -250,7 +286,7 @@
 				
 					if($sync_index_target > $sync_index) {
 					
-						$module_data = array('id' => $post->ID, 'transferUrl' => get_home_url().'/wp-json/odd-site-transfer/v1/post/'.($post->ID).'/transfer');
+						$module_data = array('id' => $post->ID, 'transferUrl' => get_home_url().'/wp-json/odd-site-transfer/v2/post/'.($post->ID).'/transfer');
 						$this->output_notice('checkSyncNotice', $module_data);
 					}
 				}

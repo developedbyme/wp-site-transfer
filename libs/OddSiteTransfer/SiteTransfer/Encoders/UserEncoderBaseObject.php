@@ -1,17 +1,17 @@
 <?php
 	namespace OddSiteTransfer\SiteTransfer\Encoders;
 	
-	use \WP_Term;
+	use \WP_User;
 	
-	// \OddSiteTransfer\SiteTransfer\Encoders\TermEncoderBaseObject
-	class TermEncoderBaseObject {
+	// \OddSiteTransfer\SiteTransfer\Encoders\UserEncoderBaseObject
+	class UserEncoderBaseObject {
 		
 		protected $qualifier = null;
 		
 		protected $meta_fields = array();
 		
 		function __construct() {
-			//echo("\OddSiteTransfer\SiteTransfer\Encoders\TermEncoderBaseObject::__construct<br />");
+			//echo("\OddSiteTransfer\SiteTransfer\Encoders\UserEncoderBaseObject::__construct<br />");
 			
 			
 		}
@@ -23,23 +23,23 @@
 		}
 		
 		public function add_meta_field($name, $type = 'data') {
-			//echo("\OddSiteTransfer\SiteTransfer\Encoders\TermEncoderBaseObject::add_meta_field<br />");
+			//echo("\OddSiteTransfer\SiteTransfer\Encoders\UserEncoderBaseObject::add_meta_field<br />");
 			$this->meta_fields[] = array('name' => $name, 'type' => $type);
 			
 			return $this;
 		}
 		
 		public function qualify($object) {
-			//echo("\OddSiteTransfer\SiteTransfer\Encoders\TermEncoderBaseObject::qualify<br />");
+			//echo("\OddSiteTransfer\SiteTransfer\Encoders\UserEncoderBaseObject::qualify<br />");
 			
-			if($object instanceof WP_Term) {
+			if($object instanceof WP_User) {
 				return $this->qualifier->qualify($object);
 			}
 			return false;
 		}
 		
 		protected function add_dependency($type, $id, $additional_info, &$dependencies) {
-			//echo("\OddSiteTransfer\SiteTransfer\Encoders\TermEncoderBaseObject::add_dependency<br />");
+			//echo("\OddSiteTransfer\SiteTransfer\Encoders\UserEncoderBaseObject::add_dependency<br />");
 			
 			$new_dependency = array('type' => $type, 'id' => $id);
 			
@@ -51,13 +51,14 @@
 		}
 		
 		protected function encode_id($object, &$return_object) {
-			//echo("\OddSiteTransfer\SiteTransfer\Encoders\PostEncoderBaseObject::encode_id<br />");
+			//echo("\OddSiteTransfer\SiteTransfer\Encoders\UserEncoderBaseObject::encode_id<br />");
 			
-			$return_object['id'] = $object->slug;
+			$return_object['id'] = $object->user_login;
+			
 		}
 		
 		protected function encode_status($object, &$return_object) {
-			//echo("\OddSiteTransfer\SiteTransfer\Encoders\PostEncoderBaseObject::encode_status<br />");
+			//echo("\OddSiteTransfer\SiteTransfer\Encoders\UserEncoderBaseObject::encode_status<br />");
 			
 			$return_object['status'] = 'existing';
 		}
@@ -68,24 +69,18 @@
 			
 			if(!isset($return_object['data'])) $return_object['data'] = array();
 			
-			$return_object['data']['name'] = $object->name;
-			$return_object['data']['slug'] = $object->slug;
-			$return_object['data']['taxonomy'] = $object->taxonomy;
-			$return_object['data']['description'] = $object->description;
-			
-			$parent_id = $object->parent;
-			if($parent_id) {
-				$parent = get_term_by('id', $parent_id, $object->taxonomy);
-				$return_object['parent'] = $parent->slug;
-				
-				$return_object['dependencies'][] = array('type' => 'term', 'id' => $parent->slug, 'taxonomy' => $parent->taxonomy);
-			}
+			$return_object['data']['user_login'] = $user->user_login;
+			$return_object['data']['user_nicename'] = $user->user_nicename;
+			$return_object['data']['user_email'] = $user->user_email;
+			$return_object['data']['display_name'] = $user->display_name;
+			$return_object['data']['first_name'] = $user->first_name;
+			$return_object['data']['last_name'] = $user->last_name;
 		}
 		
 		protected function encode_meta_data($object, &$return_object) {
-			//echo("\OddSiteTransfer\SiteTransfer\Encoders\TermEncoderBaseObject::encode_meta_data<br />");
+			//echo("\OddSiteTransfer\SiteTransfer\Encoders\UserEncoderBaseObject::encode_meta_data<br />");
 			
-			$term_id = intval($object->term_id);
+			$user_id = intval($object->ID);
 			
 			if(!isset($return_object['meta_data'])) $return_object['meta_data'] = array();
 			if(!isset($return_object['meta_data']['meta'])) $return_object['meta_data']['meta'] = array();
@@ -95,7 +90,7 @@
 				$meta_field_name = $meta_field['name'];
 				//var_dump($meta_field_name);
 				
-				$meta_field_data = get_term_meta($term_id, $meta_field_name, true);
+				$meta_field_data = get_user_meta($user_id, $meta_field_name, true);
 				switch($meta_field['type']) {
 					case 'post_id':
 						//METODO
@@ -115,7 +110,7 @@
 		}
 		
 		public function encode_parts($object, &$return_object) {
-			//echo("\OddSiteTransfer\SiteTransfer\Encoders\TermEncoderBaseObject::encode_parts<br />");
+			//echo("\OddSiteTransfer\SiteTransfer\Encoders\UserEncoderBaseObject::encode_parts<br />");
 			
 			//METODO
 			$this->encode_id($object, $return_object);
@@ -127,7 +122,7 @@
 		}
 		
 		public function encode($object) {
-			//echo("\OddSiteTransfer\SiteTransfer\Encoders\TermEncoderBaseObject::encode<br />");
+			//echo("\OddSiteTransfer\SiteTransfer\Encoders\UserEncoderBaseObject::encode<br />");
 			
 			$return_data = array();
 			$return_data['dependencies'] = array();
@@ -138,7 +133,7 @@
 		}
 		
 		public static function test_import() {
-			echo("Imported \OddSiteTransfer\SiteTransfer\Encoders\TermEncoderBaseObject<br />");
+			echo("Imported \OddSiteTransfer\SiteTransfer\Encoders\UserEncoderBaseObject<br />");
 		}
 	}
 ?>
