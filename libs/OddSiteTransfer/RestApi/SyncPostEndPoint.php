@@ -86,7 +86,7 @@
 		}
 		
 		public function perform_call($data) {
-			//echo("\OddSiteTransfer\RestApi\SyncPostEndPoint::perform_call<br />");
+			echo("\OddSiteTransfer\RestApi\SyncPostEndPoint::perform_call<br />");
 			
 			add_filter('wp_kses_allowed_html', array($this, 'filter_wp_kses_allowed_html'), 10, 1);
 			

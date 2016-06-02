@@ -177,7 +177,21 @@
 			
 			//var_dump($data);
 			
+			$status = $data['status'];
 			$transfer_id = $data['id'];
+			
+			if($status === "non-existing") {
+				
+				$existing_post = $this->get_post_by_transfer_id('any', $transfer_id);
+				
+				if($existing_post) {
+					wp_delete_post($existing_post->ID, true);
+				}
+				
+				return $this->output_success(array('missingDependencies' => array()));
+			}
+			
+			
 			
 			//echo('---------');
 			//var_dump($transfer_id);
