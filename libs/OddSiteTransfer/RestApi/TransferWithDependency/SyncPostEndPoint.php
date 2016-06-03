@@ -220,6 +220,12 @@
 			
 			$existing_post = $this->get_post_by_transfer_id($post_type, $transfer_id);
 			
+			$author_id = $data['author'];
+			$author = $this->get_resolved_dependency('user', $author_id, $resolved_dependencies);
+			if($author) {
+				$post_data['post_author'] = $author->ID;
+			}
+			
 			$new_id = NULL;
 			
 			if($existing_post) {
