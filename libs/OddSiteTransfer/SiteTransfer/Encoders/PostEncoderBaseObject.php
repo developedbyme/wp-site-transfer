@@ -60,6 +60,38 @@
 			$dependencies[] = $new_dependency;
 		}
 		
+		protected function get_referenced_posts($post_ids, &$dependencies) {
+			//echo("\OddSiteTransfer\SiteTransfer\Encoders\PostEncoderBaseObject::get_referenced_posts<br />");
+			
+			if(is_array($post_ids)) {
+				$return_array = array();
+				foreach($post_ids as $post_id) {
+					if($post_id instanceof WP_Post) {
+						$post_id = $post_id->ID;
+					}
+					$linked_post = get_post($post_id);
+					$linked_post_id = $this->get_post_transfer_id($linked_post);
+					$this->add_dependency('post', $linked_post_id, array('post_type' => $linked_post->post_type), $dependencies);
+					$return_array[] = $linked_post_id;
+				}
+				return $return_array;
+			}
+			else {
+				if(empty($post_ids)) {
+					return '';
+				}
+				$post_id = $post_ids;
+				if($post_id instanceof WP_Post) {
+					$post_id = $post_id->ID;
+				}
+				$linked_post = get_post($post_id);
+				$linked_post_id = $this->get_post_transfer_id($linked_post);
+				$this->add_dependency('post', $linked_post_id, array('post_type' => $linked_post->post_type), $dependencies);
+				
+				return $linked_post_id;
+			}
+		}
+		
 		protected function encode_id($object, &$return_object) {
 			//echo("\OddSiteTransfer\SiteTransfer\Encoders\PostEncoderBaseObject::encode_id<br />");
 			
@@ -124,6 +156,7 @@
 			
 			if(!isset($return_object['meta_data'])) $return_object['meta_data'] = array();
 			if(!isset($return_object['meta_data']['meta'])) $return_object['meta_data']['meta'] = array();
+			if(!isset($return_object['meta_data']['meta_posts'])) $return_object['meta_data']['meta_posts'] = array();
 			
 			$this->encode_featured_image($object, $return_object);
 			
@@ -134,20 +167,18 @@
 				
 				$meta_field_data = get_post_meta($post_id, $meta_field_name, true);
 				switch($meta_field['type']) {
-					case 'post_id':
-						//METODO
-						break;
 					case 'post_ids':
 						//METODO
+						$linked_post_ids = $this->get_referenced_posts($meta_field_data, $return_object['dependencies']);
+						$return_object['meta_data']['meta_posts'][$meta_field_name] = $linked_post_ids;
+						
 						break;
 					default:
 						//METODO: add warning
 					case 'data':
-						//MENOTE: do nothing
+						$return_object['meta_data']['meta'][$meta_field_name] = $meta_field_data;
 						break;
 				}
-				
-				$return_object['meta_data']['meta'][$meta_field_name] = $meta_field_data;
 			}
 		}
 		

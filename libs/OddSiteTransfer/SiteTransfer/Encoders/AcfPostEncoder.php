@@ -13,7 +13,7 @@
 			
 		}
 		
-		protected function encode_acf_field($acf_field, $post_id, $override_value = NULL) {
+		protected function encode_acf_field($acf_field, $post_id, &$dependencies, $override_value = null) {
 			//echo("\OddSiteTransfer\SiteTransfer\Encoders\AcfPostEncoder::encode_acf_field<br />");
 			//echo($acf_field['type']."<br />");
 			
@@ -33,7 +33,7 @@
 							
 							foreach($current_row as $key => $value) {
 								$current_row_field = get_field_object($key, $post_id, false, true);
-								$row_result[$current_row_field['name']] = $this->encode_acf_field($current_row_field, $post_id, $value);
+								$row_result[$current_row_field['name']] = $this->encode_acf_field($current_row_field, $post_id, $dependencies, $value);
 							}
 							
 							array_push($rows_array, $row_result);
@@ -47,29 +47,13 @@
 				case "post_object":
 					$linked_post_ids = $override_value ? $override_value : $acf_field['value'];
 					//var_dump($linked_post_ids);
-					$linked_post_local_ids = array();
-					
-					
-					if($linked_post_ids) {
-						if($linked_post_ids instanceof WP_Post) {
-							$local_id = $this->get_post_transfer_id($linked_post_ids);
-							//METODO
-							//$this->add_dependency($local_id);
-							
-							$linked_post_local_ids = $local_id;
-							//METODO: handle string instead of array on the recivien end
-						}
-						else {
-							foreach($linked_post_ids as $linked_post_id) {
-							
-								$local_id = $this->get_post_transfer_id(get_post($linked_post_id));
-								//METODO
-								//$this->add_dependency($local_id);
-							
-								$linked_post_local_ids[] = $local_id;
-							}
-						}
+					if(isset($linked_post_ids)) {
+						$linked_post_local_ids = $this->get_referenced_posts($linked_post_ids, $dependencies);
 					}
+					else {
+						$linked_post_local_ids = array();
+					}
+					
 					$current_send_field = array(
 						'type' => $acf_field['type'],
 						'value' => $linked_post_local_ids
@@ -114,7 +98,7 @@
 			
 			if($acf_fields) {
 				foreach($acf_fields as $name => $acf_field) {
-					$send_fields[$name] = $this->encode_acf_field($acf_field, $post_id);
+					$send_fields[$name] = $this->encode_acf_field($acf_field, $post_id, $return_object['dependencies']);
 				}
 			}
 			wp_reset_postdata();

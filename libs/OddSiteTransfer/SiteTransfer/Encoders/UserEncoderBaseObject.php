@@ -69,12 +69,12 @@
 			
 			if(!isset($return_object['data'])) $return_object['data'] = array();
 			
-			$return_object['data']['user_login'] = $user->user_login;
-			$return_object['data']['user_nicename'] = $user->user_nicename;
-			$return_object['data']['user_email'] = $user->user_email;
-			$return_object['data']['display_name'] = $user->display_name;
-			$return_object['data']['first_name'] = $user->first_name;
-			$return_object['data']['last_name'] = $user->last_name;
+			$return_object['data']['user_login'] = $object->user_login;
+			$return_object['data']['user_nicename'] = $object->user_nicename;
+			$return_object['data']['user_email'] = $object->user_email;
+			$return_object['data']['display_name'] = $object->display_name;
+			$return_object['data']['first_name'] = $object->first_name;
+			$return_object['data']['last_name'] = $object->last_name;
 		}
 		
 		protected function encode_meta_data($object, &$return_object) {

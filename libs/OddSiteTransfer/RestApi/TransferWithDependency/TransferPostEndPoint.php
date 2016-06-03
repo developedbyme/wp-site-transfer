@@ -7,8 +7,6 @@
 	// \OddSiteTransfer\RestApi\TransferWithDependency\TransferPostEndPoint
 	class TransferPostEndPoint extends EndPoint {
 		
-		protected $http_log = array();
-		
 		function __construct() {
 			//echo("\OddSiteTransfer\RestApi\TransferWithDependency\TransferPostEndPoint::__construct<br />");
 			
@@ -24,6 +22,7 @@
 			$post = get_post($post_id);
 			
 			$force = ($data['force'] === '1');
+			$force_dependencies = (isset($data['forceDependencies']) ? intval($data['forceDependencies']) : 0 );
 			
 			$sync_index = intval(get_post_meta($post_id, '_odd_server_transfer_sync_index', true));
 			$sync_index_target = intval(get_post_meta($post_id, '_odd_server_transfer_sync_index_target', true));
@@ -32,13 +31,13 @@
 				return $this->output_success(array('target' => $sync_index_target, 'index' => $sync_index));
 			}
 			
-			$plugin->external_access['transfer_hooks']->transfer_post($post);
+			$result_data = $plugin->external_access['transfer_hooks']->transfer_post($post, $force_dependencies);
 			
 			$sync_index = min($sync_index+1, $sync_index_target);
 			
 			update_post_meta($post_id, '_odd_server_transfer_sync_index', $sync_index);
 			
-			return $this->output_success(array('target' => $sync_index_target, 'index' => $sync_index, 'httpLog' => $this->http_log));
+			return $this->output_success(array('target' => $sync_index_target, 'index' => $sync_index, 'transfer' => $result_data));
 			
 		}
 		
