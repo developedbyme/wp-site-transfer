@@ -16,6 +16,12 @@
 			
 		}
 		
+		public function set_condition($condition) {
+			$this->match_type = $condition;
+			
+			return $this;
+		}
+		
 		public function add_term($term, $taxonomy) {
 			$this->matches[] = array('taxonomy' => $taxonomy, 'term' => $term);
 		}

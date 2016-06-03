@@ -32,7 +32,7 @@ export default class CheckSyncNotice extends React.Component {
 	
 	resync() {
 		this.setState({"status": 0});
-		jQuery.get(this.props.transferUrl + "?force=1", (function(aData) {
+		jQuery.get(this.props.transferUrl + "?force=1&forceDependencies=5", (function(aData) {
 			console.log(aData);
 			if(aData.code === "success") {
 				this.setState({"status": 1});

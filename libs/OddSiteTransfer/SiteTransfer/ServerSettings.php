@@ -10,10 +10,21 @@
 		
 		protected $post_encoders = array();
 		
+		protected $log = array();
+		protected $http_log = array();
+		
 		function __construct() {
 			//echo("\OddSiteTransfer\SiteTransfer\ServerSettings::__construct<br />");
 			
 			
+		}
+		
+		public function get_result() {
+			return array('log' => $this->log, 'http_log' => $this->http_log);
+		}
+		
+		protected function add_log_item($type, $message) {
+			$this->log[] = array('type' => $type, 'message' => $message);
 		}
 		
 		public function add_encoder($encoder) {
@@ -67,6 +78,7 @@
 			$send_data = array('path' => $file_path, 'size' => $file_size);
 			
 			$repsonse_data = HttpLoading::send_request($url, $send_data);
+			$this->http_log[] = $repsonse_data;
 			$result_object = json_decode($repsonse_data['data'], true);
 			
 			return $result_object['data']['match'];
@@ -91,13 +103,14 @@
 				$send_data = array('path' => $file_path, 'file' => new \CURLFile($file_to_load, 'image/jpeg'));
 			
 				$repsonse_data = HttpLoading::send_request_with_file($url, $send_data);
+				$this->http_log[] = $repsonse_data;
 				if($repsonse_data) {
 					//METODO: check that the image is sent
 				}
 			}
 		}
 		
-		protected function transfer_dependencies($dependencies, $server_transfer_post) {
+		protected function transfer_dependencies($dependencies, $server_transfer_post, $force_dependencies_transfer_steps = 0) {
 			//echo("\OddSiteTransfer\SiteTransfer\ServerSettings::transfer_dependencies<br />");
 			
 			foreach($dependencies as $dependency) {
@@ -108,15 +121,28 @@
 					case 'post':
 						$post = $this->get_post_by_transfer_id($dependency['post_type'], $id);
 						if($post) {
-							$this->transfer_post($post, $server_transfer_post);
+							$this->transfer_post($post, $server_transfer_post, $force_dependencies_transfer_steps-1);
+						}
+						else {
+							$this->add_log_item('error', 'Can\'t resolve post '.$id.' of type '.$dependency['post_type']);
 						}
 						break;
 					case 'user':
+						$term = get_user_by('login', $id);
+						if($term) {
+							$this->transfer_user($term, $server_transfer_post, $force_dependencies_transfer_steps-1);
+						}
+						else {
+							$this->add_log_item('error', 'Can\'t resolve user '.$id);
+						}
 						break;
 					case 'term':
 						$term = get_term_by('slug', $id, $dependency['taxonomy']);
 						if($term) {
-							$this->transfer_term($term, $server_transfer_post);
+							$this->transfer_term($term, $server_transfer_post, $force_dependencies_transfer_steps-1);
+						}
+						else {
+							$this->add_log_item('error', 'Can\'t resolve term '.$id.' in taxonomy '.$dependency['taxonomy']);
 						}
 						break;
 					default:
@@ -125,7 +151,7 @@
 			}
 		}
 		
-		public function transfer_post($post, $server_transfer_post) {
+		public function transfer_post($post, $server_transfer_post, $force_dependencies_transfer_steps = 0) {
 			//echo("\OddSiteTransfer\SiteTransfer\ServerSettings::transfer_post<br />");
 			
 			$server_transfer_post_id = $server_transfer_post->ID;
@@ -142,7 +168,12 @@
 						$this->transfer_media($post, $server_transfer_post);
 					}
 					
+					if($force_dependencies_transfer_steps > 0) {
+						$this->transfer_dependencies($encoded_data['dependencies'], $server_transfer_post, $force_dependencies_transfer_steps);
+					}
+					
 					$result_data = HttpLoading::send_request($url, $encoded_data);
+					$this->http_log[] = $result_data;
 					//echo('---------------------');
 					//var_dump($result_data);
 					//var_dump($result_data['data']);
@@ -166,7 +197,7 @@
 			return false; //MEDEBUG
 		}
 		
-		public function transfer_term($term, $server_transfer_post) {
+		public function transfer_term($term, $server_transfer_post, $force_dependencies_transfer_steps = 0) {
 			//echo("\OddSiteTransfer\SiteTransfer\ServerSettings::transfer_term<br />");
 			
 			$server_transfer_post_id = $server_transfer_post->ID;
@@ -179,7 +210,12 @@
 					$encoded_data = $encoder->encode($term);
 					//var_dump($encoded_data);
 					
+					if($force_dependencies_transfer_steps > 0) {
+						$this->transfer_dependencies($encoded_data['dependencies'], $server_transfer_post, $force_dependencies_transfer_steps);
+					}
+					
 					$result_data = HttpLoading::send_request($url, $encoded_data);
+					$this->http_log[] = $result_data;
 					//var_dump($result_data);
 					//var_dump($result_data['data']);
 					$result_object = json_decode($result_data['data'], true);
@@ -201,8 +237,8 @@
 			return false; //MEDEBUG
 		}
 		
-		public function transfer_user($user, $server_transfer_post) {
-			echo("\OddSiteTransfer\SiteTransfer\ServerSettings::transfer_user<br />");
+		public function transfer_user($user, $server_transfer_post, $force_dependencies_transfer_steps = 0) {
+			//echo("\OddSiteTransfer\SiteTransfer\ServerSettings::transfer_user<br />");
 			
 			$server_transfer_post_id = $server_transfer_post->ID;
 			
@@ -210,11 +246,16 @@
 			$url = $base_url.'sync/user';
 			
 			foreach($this->post_encoders as $encoder) {
-				if($encoder->qualify($term)) {
-					$encoded_data = $encoder->encode($term);
+				if($encoder->qualify($user)) {
+					$encoded_data = $encoder->encode($user);
 					//var_dump($encoded_data);
 					
+					if($force_dependencies_transfer_steps > 0) {
+						$this->transfer_dependencies($encoded_data['dependencies'], $server_transfer_post, $force_dependencies_transfer_steps);
+					}
+					
 					$result_data = HttpLoading::send_request($url, $encoded_data);
+					$this->http_log[] = $result_data;
 					//var_dump($result_data);
 					//var_dump($result_data['data']);
 					$result_object = json_decode($result_data['data'], true);
