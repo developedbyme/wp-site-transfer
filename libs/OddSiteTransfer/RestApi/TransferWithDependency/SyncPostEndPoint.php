@@ -27,7 +27,6 @@
 				case "number":
 				case "url":
 				case "radio":
-				case "post_object": //METODO: relink this
 				case "wysiwyg":
 				case "true_false":
 					if($repeater_path) {
@@ -36,6 +35,16 @@
 					}
 					else {
 						update_field($name, $field['value'], $post_id);
+					}
+					break;
+				case "post_object":
+					$resolved_ids = $this->get_resolved_post_ids($field['value'], $resolved_dependencies);
+					if($repeater_path) {
+						update_sub_field($repeater_path, $resolved_ids, $post_id);
+						update_post_meta($post_id, implode('_', $meta_path), $resolved_ids);
+					}
+					else {
+						update_field($name, $resolved_ids, $post_id);
 					}
 					break;
 				case "repeater":
@@ -107,6 +116,33 @@
 				return $query->get_posts()[0];
 			}
 			
+			return null;
+		}
+		
+		
+		protected function get_resolved_post_ids($ids, $resolved_dependencies) {
+			//echo("\OddSiteTransfer\RestApi\TransferWithDependency\SyncPostEndPoint::get_resolved_post_ids<br />");
+			//var_dump($ids);
+			
+			if(is_array($ids)) {
+				$return_array = array();
+				
+				foreach($ids as $id) {
+					$current_post = $this->get_resolved_dependency('post', $id, $resolved_dependencies);
+					if($current_post) {
+						$return_array[] = $current_post->ID;
+					}
+				}
+				
+				return $return_array;
+			}
+			if(empty($ids)) {
+				return '';
+			}
+			$current_post = $this->get_resolved_dependency('post', $ids, $resolved_dependencies);
+			if($current_post) {
+				return $current_post->ID;
+			}
 			return null;
 		}
 		
@@ -201,10 +237,12 @@
 			$resolved_dependencies = array();
 			$missing_dependencies = array();
 			
-			foreach($dependencies as $dependency) {
-				//var_dump($dependency);
+			if($dependencies) {
+				foreach($dependencies as $dependency) {
+					//var_dump($dependency);
 				
-				$this->get_dependency($dependency, $resolved_dependencies, $missing_dependencies);
+					$this->get_dependency($dependency, $resolved_dependencies, $missing_dependencies);
+				}
 			}
 			
 			//var_dump($resolved_dependencies);
