@@ -75,7 +75,7 @@
 			
 			//Wine & friends
 			$zeta_server_settings = new \OddSiteTransfer\SiteTransfer\ServerSettings();
-			$zeta_server_settings->add_encoder($zeta_recipe_post_encoder);
+			$zeta_server_settings->add_encoder($wf_recipe_post_encoder);
 			$zeta_server_settings->add_encoder($default_post_encoder);
 			$zeta_server_settings->add_encoder($default_term_encoder);
 			$zeta_server_settings->add_encoder($default_user_encoder);
