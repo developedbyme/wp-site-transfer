@@ -54,7 +54,7 @@
 			
 			if($object_field_names) {
 				foreach($object_field_names as $field_name) {
-					$encoder->add_meta_field($field_name, 'data');
+					$encoder->add_meta_field($field_name, 'post_ids');
 				}
 			}
 			

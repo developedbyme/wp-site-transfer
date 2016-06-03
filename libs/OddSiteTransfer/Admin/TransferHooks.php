@@ -74,6 +74,7 @@
 			//Wine & friends
 			$current_server_settings = new \OddSiteTransfer\SiteTransfer\ServerSettings();
 			$current_server_settings->add_encoder($wf_recipe_post_encoder);
+			$current_server_settings->add_encoder($zeta_product_post_encoder); //MEDEBUG
 			$current_server_settings->add_encoder($wine_post_encoder);
 			$current_server_settings->add_encoder($wine_producer_post_encoder);
 			$current_server_settings->add_encoder($attachment_post_encoder);
