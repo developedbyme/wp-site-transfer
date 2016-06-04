@@ -318,6 +318,8 @@
 			}
 			
 			if(isset($meta_data['acf'])) {
+				\OddSiteTransfer\OddCore\Utils\AcfFunctions::ensure_post_has_fields(get_post($new_id));
+				
 				foreach($meta_data['acf'] as $name => $field) {
 					$this->update_acf_field($name, $field, $new_id, $resolved_dependencies);
 				}
