@@ -89,7 +89,9 @@
 			
 			parent::encode_meta_data($object, $return_object);
 			
-			//METODO
+			//METODO: move this as it's not efficient to have it here
+			\OddSiteTransfer\OddCore\Utils\AcfFunctions::ensure_post_has_fields($object);
+			
 			$send_fields = array();
 			
 			$post_id = $object->ID;
