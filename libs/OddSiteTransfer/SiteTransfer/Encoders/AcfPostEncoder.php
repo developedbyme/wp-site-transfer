@@ -70,6 +70,7 @@
 				case "number":
 				case "wysiwyg":
 				case "true_false":
+				case "select":
 					$current_send_field = array(
 						'type' => $acf_field['type'],
 						'value' => $acf_field['value']
