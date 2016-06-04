@@ -29,7 +29,23 @@
 			$wine_post_encoder = EncoderSetup::create_post_encoder(array('oa_wine'));
 			
 			//Fields
-			$recipe_meta_data_fields = array('_has_step_instructions', '_has_matched_ingredients');
+			$recipe_meta_data_fields = array(
+				'_has_step_instructions',
+				'_has_matched_ingredients',
+				'show_wine_recommendation_on_zeta',
+				'number_of_wine_recommendations',
+				'wine_recommendation_1_locked',
+				'wine_recommendation_2_locked',
+				'wine_recommendation_3_locked',
+				'wine_recommendation_4_locked'
+			);
+			
+			$recipe_post_ids_meta_data_fields = array(
+				'wine_recommendation_1',
+				'wine_recommendation_2',
+				'wine_recommendation_3',
+				'wine_recommendation_4'
+			);
 			
 			//Zeta
 			$zeta_recipe_post_encoder = EncoderSetup::create_targeted_post_encoder(
@@ -38,7 +54,7 @@
 					array('term' => 'zeta', 'taxonomy' => 'oa_target_site')
 				)
 			);
-			EncoderSetup::add_meta_fields_to_encoder($zeta_recipe_post_encoder, $recipe_meta_data_fields);
+			EncoderSetup::add_meta_fields_to_encoder($zeta_recipe_post_encoder, $recipe_meta_data_fields, $recipe_post_ids_meta_data_fields);
 			
 			$zeta_product_post_encoder = EncoderSetup::create_post_encoder(array('oa_product'));
 			
@@ -49,7 +65,7 @@
 					array('term' => 'wine-and-friends', 'taxonomy' => 'oa_target_site')
 				)
 			);
-			EncoderSetup::add_meta_fields_to_encoder($wf_recipe_post_encoder, $recipe_meta_data_fields);
+			EncoderSetup::add_meta_fields_to_encoder($wf_recipe_post_encoder, $recipe_meta_data_fields, $recipe_post_ids_meta_data_fields);
 			
 			$wine_producer_post_encoder = EncoderSetup::create_post_encoder(array('oa_wine_producer'));
 			
