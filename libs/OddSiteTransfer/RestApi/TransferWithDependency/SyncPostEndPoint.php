@@ -29,6 +29,7 @@
 				case "radio":
 				case "wysiwyg":
 				case "true_false":
+				case "select":
 					if($repeater_path) {
 						update_sub_field($repeater_path, $field['value'], $post_id);
 						update_post_meta($post_id, implode('_', $meta_path), $field['value']);
@@ -330,7 +331,12 @@
 					update_post_meta($new_id, $key, $value);
 				}
 			}
-			//METODO: solve id in meta data
+			
+			if(isset($meta_data['meta_posts'])) {
+				foreach($meta_data['meta_posts'] as $key => $value) {
+					update_post_meta($new_id, $key, $this->get_resolved_post_ids($value, $resolved_dependencies));
+				}
+			}
 			
 			update_post_meta($new_id, '_odd_server_transfer_id', $transfer_id);
 			update_post_meta($new_id, '_odd_server_transfer_is_incoming', 1);
