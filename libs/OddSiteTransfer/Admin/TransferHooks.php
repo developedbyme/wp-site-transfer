@@ -253,6 +253,56 @@
 			<?php
 		}
 		
+		public function remove_missing_posts($post_type) {
+			echo("\OddSiteTransfer\Admin\TransferHooks::remove_missing_posts<br />");
+			
+			$args = array(
+				'post_type'  => $post_type,
+				'posts_per_page' => -1
+			);
+			
+			$query = new WP_Query( $args );
+			
+			$transfer_ids = array();
+			
+			$exisitng_posts = $query->get_posts();
+			foreach($exisitng_posts as $post) {
+				$transfer_id = get_post_meta($post->ID, '_odd_server_transfer_id', true);
+				if($transfer_id !== '') {
+					$transfer_ids[] = $transfer_id;
+				}
+			}
+			var_dump($transfer_ids);
+			
+			$return_data = array();
+			$settings = $this->get_settings();
+			
+			$server_transfers_query = $this->get_server_transfers();
+			$server_transfers = $server_transfers_query->get_posts();
+			foreach($server_transfers as $server_transfer) {
+				
+				$settings_name = get_post_meta($server_transfer->ID, 'settings_name', true);
+				
+				$current_transfer_return_data = array();
+				$current_transfer_return_data['name'] = $server_transfer->post_title;
+				
+				if(isset($settings[$settings_name])) {
+					$current_setting = $settings[$settings_name];
+					$current_setting->transfer_missing_posts($post_type, $transfer_ids, $server_transfer);
+					$current_transfer_return_data['status'] = 'sent';
+					$current_transfer_return_data['result'] = $current_setting->get_result();
+				}
+				else {
+					$current_transfer_return_data['status'] = 'missing_setting';
+					$current_transfer_return_data['message'] = 'Setting '.$settings_name.' doesn\'t exist.';
+				}
+				
+				$return_data[] = $current_transfer_return_data;
+			}
+			
+			var_dump($return_data);
+		}
+		
 		public function hook_admin_notices() {
 			//echo("\OddSiteTransfer\Admin\TransferHooks::hook_admin_notices<br />");
 			
