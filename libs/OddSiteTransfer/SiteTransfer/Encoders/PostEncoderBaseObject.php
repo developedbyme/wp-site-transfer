@@ -168,10 +168,8 @@
 				$meta_field_data = get_post_meta($post_id, $meta_field_name, true);
 				switch($meta_field['type']) {
 					case 'post_ids':
-						//METODO
 						$linked_post_ids = $this->get_referenced_posts($meta_field_data, $return_object['dependencies']);
 						$return_object['meta_data']['meta_posts'][$meta_field_name] = $linked_post_ids;
-						
 						break;
 					default:
 						//METODO: add warning

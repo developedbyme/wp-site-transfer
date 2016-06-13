@@ -36,7 +36,7 @@
 						}
 					?>
 				</select>
-			<?
+			<?php
 		}
 		
 		public static function test_import() {

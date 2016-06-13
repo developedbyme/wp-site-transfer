@@ -277,6 +277,19 @@
 			return false; //MEDEBUG
 		}
 		
+		public function transfer_missing_posts($post_type, $existing_post_ids, $server_transfer_post) {
+			
+			$server_transfer_post_id = $server_transfer_post->ID;
+			
+			$encoded_data = array('post_type' => $post_type, 'existing_ids' => $existing_post_ids);
+			
+			$base_url = get_post_meta($server_transfer_post_id, 'url', true);
+			$url = $base_url.'sync/missing-posts';
+			
+			$result_data = HttpLoading::send_request($url, $encoded_data);
+			$this->http_log[] = $result_data;
+		}
+		
 		public static function test_import() {
 			echo("Imported \OddSiteTransfer\SiteTransfer\ServerSettings<br />");
 		}
