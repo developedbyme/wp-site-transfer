@@ -102,7 +102,7 @@
 			
 			$args = array(
 				'post_type' => $post_type,
-				'post_status' => 'any',
+				'post_status' => array('any', 'trash'),
 				'meta_key'     => '_odd_server_transfer_id',
 				'meta_value'   => $id,
 				'meta_compare' => '='
@@ -222,7 +222,7 @@
 				$existing_post = $this->get_post_by_transfer_id('any', $transfer_id);
 				
 				if($existing_post) {
-					wp_delete_post($existing_post->ID, true);
+					wp_trash_post($existing_post->ID);
 				}
 				
 				return $this->output_success(array('missingDependencies' => array()));

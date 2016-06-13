@@ -126,6 +126,12 @@
 			//METODO: security
 			$this->_rest_api_end_points[] = $current_end_point;
 			
+			$current_end_point = new \OddSiteTransfer\RestApi\TransferWithDependency\SyncMissingPostsEndPoint();
+			$current_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
+			$current_end_point->setup('sync/missing-posts', 'odd-site-transfer', 2, 'POST');
+			//METODO: security
+			$this->_rest_api_end_points[] = $current_end_point;
+			
 			
 			$current_end_point = new \OddSiteTransfer\RestApi\TransferWithDependency\TransferPostEndPoint();
 			$current_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
