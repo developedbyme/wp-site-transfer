@@ -254,7 +254,7 @@
 		}
 		
 		public function remove_missing_posts($post_type) {
-			echo("\OddSiteTransfer\Admin\TransferHooks::remove_missing_posts<br />");
+			//echo("\OddSiteTransfer\Admin\TransferHooks::remove_missing_posts<br />");
 			
 			$args = array(
 				'post_type'  => $post_type,
@@ -272,7 +272,6 @@
 					$transfer_ids[] = $transfer_id;
 				}
 			}
-			var_dump($transfer_ids);
 			
 			$return_data = array();
 			$settings = $this->get_settings();
@@ -300,7 +299,7 @@
 				$return_data[] = $current_transfer_return_data;
 			}
 			
-			var_dump($return_data);
+			return $return_data;
 		}
 		
 		public function hook_admin_notices() {

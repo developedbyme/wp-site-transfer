@@ -22,7 +22,7 @@
 			
 			$result_data = $plugin->external_access['transfer_hooks']->remove_missing_posts($post_type);
 			
-			return $this->output_success("METODO");
+			return $this->output_success($result_data);
 			
 		}
 		
