@@ -70,9 +70,12 @@
 						$post_id = $post_id->ID;
 					}
 					$linked_post = get_post($post_id);
-					$linked_post_id = $this->get_post_transfer_id($linked_post);
-					$this->add_dependency('post', $linked_post_id, array('post_type' => $linked_post->post_type), $dependencies);
-					$return_array[] = $linked_post_id;
+					
+					if($linked_post) {
+						$linked_post_id = $this->get_post_transfer_id($linked_post);
+						$this->add_dependency('post', $linked_post_id, array('post_type' => $linked_post->post_type), $dependencies);
+						$return_array[] = $linked_post_id;
+					}
 				}
 				return $return_array;
 			}
@@ -85,11 +88,16 @@
 					$post_id = $post_id->ID;
 				}
 				$linked_post = get_post($post_id);
-				$linked_post_id = $this->get_post_transfer_id($linked_post);
-				$this->add_dependency('post', $linked_post_id, array('post_type' => $linked_post->post_type), $dependencies);
 				
-				return $linked_post_id;
+				if($linked_post) {
+					$linked_post_id = $this->get_post_transfer_id($linked_post);
+					$this->add_dependency('post', $linked_post_id, array('post_type' => $linked_post->post_type), $dependencies);
+				
+					return $linked_post_id;
+				}
 			}
+			
+			return null;
 		}
 		
 		protected function encode_id($object, &$return_object) {
