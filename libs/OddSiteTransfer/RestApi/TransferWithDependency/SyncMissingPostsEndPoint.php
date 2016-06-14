@@ -17,9 +17,14 @@
 			//echo("\OddSiteTransfer\RestApi\TransferWithDependency\SyncMissingPostsEndPoint::perform_call<br />");
 			
 			//var_dump($data);
+			$allowed_types = array('oa_recipe', 'oa_wine', 'oa_wine_producer');
 			
 			$post_type = $data['post_type'];
 			$existing_ids = $data['existing_ids'];
+			
+			if(!in_array($post_type, $allowed_types)) {
+				return $this->output_error('Type not allowed');
+			}
 			
 			$args = array(
 				'post_type'  => $post_type,
