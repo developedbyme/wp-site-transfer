@@ -36,15 +36,16 @@
 						'compare' => 'NOT IN',
 					)
 				),
+				'fields' => 'ids'
 			);
 			$query = new WP_Query( $args );
 			
 			$removed_ids = array();
 			
 			$posts_to_remove = $query->get_posts();
-			foreach($posts_to_remove as $post_to_remove) {
-				$removed_ids[] = $post_to_remove->ID;
-				wp_trash_post($post_to_remove->ID);
+			foreach($posts_to_remove->posts as $remove_id) {
+				$removed_ids[] = $remove_id;
+				wp_trash_post($remove_id);
 			}
 			
 			return $this->output_success(array('removed' => $removed_ids));

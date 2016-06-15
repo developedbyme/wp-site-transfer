@@ -258,16 +258,16 @@
 			
 			$args = array(
 				'post_type'  => $post_type,
-				'posts_per_page' => -1
+				'posts_per_page' => -1,
+				'fields' => 'ids'
 			);
 			
 			$query = new WP_Query( $args );
 			
 			$transfer_ids = array();
 			
-			$exisitng_posts = $query->get_posts();
-			foreach($exisitng_posts as $post) {
-				$transfer_id = get_post_meta($post->ID, '_odd_server_transfer_id', true);
+			foreach($query->posts as $id) {
+				$transfer_id = get_post_meta($id, '_odd_server_transfer_id', true);
 				if($transfer_id !== '') {
 					$transfer_ids[] = $transfer_id;
 				}
