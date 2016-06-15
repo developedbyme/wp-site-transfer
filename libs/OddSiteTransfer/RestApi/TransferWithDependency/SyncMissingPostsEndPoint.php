@@ -26,15 +26,13 @@
 				return $this->output_error('Type not allowed');
 			}
 			
-			print_r($existing_ids);
-			
 			$args = array(
 				'post_type'  => $post_type,
 				'posts_per_page' => -1,
 				'fields' => 'ids',
 				
 				'meta_key'     => '_odd_server_transfer_id',
-				'meta_value'   => $transfer_ids,
+				'meta_value'   => $existing_ids,
 				'meta_compare' => 'NOT IN',
 			);
 			$query = new WP_Query( $args );
