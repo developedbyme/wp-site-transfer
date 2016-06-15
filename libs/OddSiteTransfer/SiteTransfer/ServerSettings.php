@@ -187,6 +187,7 @@
 						if(count($missing_dependencies) > 0) {
 							$this->transfer_dependencies($missing_dependencies, $server_transfer_post);
 							$result_data = HttpLoading::send_request($url, $encoded_data);
+							$this->http_log[] = $result_data;
 							$result_object = json_decode($result_data['data'], true);
 						}
 					}
@@ -227,6 +228,7 @@
 						if(count($missing_dependencies) > 0) {
 							$this->transfer_dependencies($missing_dependencies, $server_transfer_post);
 							$result_data = HttpLoading::send_request($url, $encoded_data);
+							$this->http_log[] = $result_data;
 							$result_object = json_decode($result_data['data'], true);
 						}
 					}
@@ -267,6 +269,7 @@
 						if(count($missing_dependencies) > 0) {
 							$this->transfer_dependencies($missing_dependencies, $server_transfer_post);
 							$result_data = HttpLoading::send_request($url, $encoded_data);
+							$this->http_log[] = $result_data;
 							$result_object = json_decode($result_data['data'], true);
 						}
 					}
