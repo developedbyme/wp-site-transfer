@@ -42,8 +42,7 @@
 			
 			$removed_ids = array();
 			
-			$posts_to_remove = $query->get_posts();
-			foreach($posts_to_remove->posts as $remove_id) {
+			foreach($query->posts as $remove_id) {
 				$removed_ids[] = $remove_id;
 				wp_trash_post($remove_id);
 			}
