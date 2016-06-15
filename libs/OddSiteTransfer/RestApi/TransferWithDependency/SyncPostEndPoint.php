@@ -156,7 +156,6 @@
 					$post = $this->get_post_by_transfer_id($dependency_data['post_type'], $id);
 					if($post) {
 						if($dependency_data['post_type'] === 'attachment') {
-							var_dump($post);
 							
 							$file_name = get_post_meta($post->ID, '_wp_attached_file', true);
 							$base_file = wp_upload_dir()['basedir'].'/'.$file_name;
