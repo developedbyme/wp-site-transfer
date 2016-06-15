@@ -26,6 +26,8 @@
 				return $this->output_error('Type not allowed');
 			}
 			
+			print_r($existing_ids);
+			
 			$args = array(
 				'post_type'  => $post_type,
 				'posts_per_page' => -1,
