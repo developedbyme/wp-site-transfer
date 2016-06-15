@@ -31,14 +31,11 @@
 			$args = array(
 				'post_type'  => $post_type,
 				'posts_per_page' => -1,
-				'meta_query' => array(
-					array(
-						'key'     => '_odd_server_transfer_id',
-						'value'   => $existing_ids,
-						'compare' => 'NOT IN',
-					)
-				),
-				'fields' => 'ids'
+				'fields' => 'ids',
+				
+				'meta_key'     => '_odd_server_transfer_id',
+				'meta_value'   => $transfer_ids,
+				'meta_compare' => 'NOT IN',
 			);
 			$query = new WP_Query( $args );
 			
