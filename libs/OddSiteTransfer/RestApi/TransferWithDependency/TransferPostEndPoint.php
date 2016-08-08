@@ -33,11 +33,21 @@
 			
 			$result_data = $plugin->external_access['transfer_hooks']->transfer_post($post, $force_dependencies);
 			
-			$sync_index = min($sync_index+1, $sync_index_target);
+			$status = 'sent';
+			foreach($result_data as $transfer_data) {
+				if($transfer_data['status'] === 'error') {
+					$status = 'error';
+					break;
+				}
+			}
 			
-			update_post_meta($post_id, '_odd_server_transfer_sync_index', $sync_index);
+			if($status === 'sent') {
+				$sync_index = min($sync_index+1, $sync_index_target);
 			
-			return $this->output_success(array('target' => $sync_index_target, 'index' => $sync_index, 'transfer' => $result_data));
+				update_post_meta($post_id, '_odd_server_transfer_sync_index', $sync_index);
+			}
+			
+			return $this->output_success(array('status' => $status, 'target' => $sync_index_target, 'index' => $sync_index, 'transfer' => $result_data));
 			
 		}
 		

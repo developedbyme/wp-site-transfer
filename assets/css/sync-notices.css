@@ -1,0 +1,38 @@
+.transfer-log .log-item {
+	border-left: 3px solid #dedede;
+	padding-left: 3px;
+	font-size: 10px;
+	font-family: monospace;
+}
+
+.transfer-log .log-item.type-result {
+	border-left: 3px solid #67e499;
+}
+
+.transfer-log .log-item.type-error {
+	border-left: 3px solid #FF0000;
+}
+
+.transfer-log .toggle-button {
+	font-size: 8px;
+	padding: 0px 3px;
+	height: 16px;
+	line-height: inherit;
+}
+
+.transfer-log .title {
+	border-left: 6px solid #FF0000;
+}
+
+.transfer-log.status-sent .title {
+	border-left: 6px solid #67e499;
+}
+
+.transfer-log .server-name {
+	padding-left: 3px;
+	padding-right: 3px;
+}
+
+.transfer-log .transfer-status {
+	padding-right: 3px;
+}

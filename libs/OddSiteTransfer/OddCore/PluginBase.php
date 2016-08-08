@@ -14,6 +14,10 @@
 		protected $_filters = null;
 		protected $_additional_hooks = null;
 		
+		protected $_javascript_files = array();
+		protected $_javascript_data = array();
+		protected $_css_files = array();
+		
 		public $external_access = array();
 		
 		function __construct() {
@@ -341,6 +345,20 @@
 		public function hook_admin_enqueue_scripts() {
 			//echo("\OddSiteTransfer\OddCore\PluginBase::hook_admin_enqueue_scripts<br />");
 			
+			foreach($this->_javascript_files as $id => $path) {
+				wp_enqueue_script($id, $path);
+			}
+			
+			foreach($this->_javascript_data as $file_id => $data_array) {
+				foreach($data_array as $object_id => $data) {
+					wp_localize_script($file_id, $object_id, $data);
+				}
+			}
+			
+			foreach($this->_css_files as $id => $path) {
+				wp_enqueue_style($id, $path);
+			}
+			
 			$screen = get_current_screen();
 			$current_page_name = $screen->id;
 			
@@ -356,6 +374,44 @@
 				$current_post->enqueue_scripts_and_styles();
 			}
 		}
+		
+		public function add_javascript($id, $path) {
+			if(isset($this->_javascript_files[$id])) {
+				//METODO: error message
+			}
+			$this->_javascript_files[$id] = $path;
+			
+			return $this;
+		}
+		
+		public function add_javascripts($scripts) {
+			foreach($scripts as $id => $path) {
+				$this->add_javascript($id, $path);
+			}
+			
+			return $this;
+		}
+		
+		public function add_javascript_data($id, $object_name, $data) {
+			
+			if(!isset($this->_javascript_data[$id])) {
+				//METODO: check that a script exists with that id
+				$this->_javascript_data[$id] = array();
+			}
+			$this->_javascript_data[$id][$object_name] = $data;
+			
+			return $this;
+		}
+		
+		public function add_css($id, $path) {
+			if(isset($this->_css_files[$id])) {
+				//METODO: error message
+			}
+			$this->_css_files[$id] = $path;
+			
+			return $this;
+		}
+		
 		
 		public function hook_rest_api_init() {
 			//echo("\OddSiteTransfer\OddCore\PluginBase::hook_rest_api_init<br />");

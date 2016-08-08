@@ -220,15 +220,32 @@
 					
 					if($current_setting->qualify_post($post)) {
 						$result = $current_setting->transfer_post($post, $server_transfer, $force_dependencies_transfer_steps);
-						$current_transfer_return_data['status'] = 'sent';
+						if($result) {
+							if($current_setting->has_error()) {
+								$current_transfer_return_data['status'] = 'error';
+								$current_transfer_return_data['code'] = 'logged-error';
+							}
+							else {
+								$current_transfer_return_data['status'] = 'sent';
+								$current_transfer_return_data['code'] = 'sent-'.$result['transfer_type'];
+							}
+							$current_transfer_return_data['url'] = $result['url'];
+						}
+						else {
+							$current_transfer_return_data['status'] = 'error';
+							$current_transfer_return_data['code'] = 'unknown-error';
+						}
 						$current_transfer_return_data['result'] = $current_setting->get_result();
 					}
 					else {
-						$current_transfer_return_data['status'] = 'not_qualified';
+						$current_transfer_return_data['status'] = 'ignored';
+						$current_transfer_return_data['code'] = 'not-qualified';
+						$current_transfer_return_data['message'] = 'Post doesn\'t qualify for transfer.';
 					}
 				}
 				else {
-					$current_transfer_return_data['status'] = 'missing_setting';
+					$current_transfer_return_data['status'] = 'ignored';
+					$current_transfer_return_data['code'] = 'missing-setting';
 					$current_transfer_return_data['message'] = 'Setting '.$settings_name.' doesn\'t exist.';
 				}
 				

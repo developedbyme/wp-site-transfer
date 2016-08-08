@@ -20005,6 +20005,10 @@
 
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 
+	var _SyncNoticeTransferLog = __webpack_require__(166);
+
+	var _SyncNoticeTransferLog2 = _interopRequireDefault(_SyncNoticeTransferLog);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -20024,7 +20028,9 @@
 			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(CheckSyncNotice).call(this, props));
 
 			_this.state = {
-				"status": 0
+				"status": 0,
+				"transferStatus": "none",
+				"transfers": []
 			};
 
 			_this.resyncBound = _this.resync.bind(_this);
@@ -20032,15 +20038,37 @@
 		}
 
 		_createClass(CheckSyncNotice, [{
+			key: "_createTransfer",
+			value: function _createTransfer(aData) {
+				//console.log("_createTransfer");
+				//console.log(aData);
+
+				return _react2.default.createElement(_SyncNoticeTransferLog2.default, { key: aData.name, name: aData.name, status: aData.status, code: aData.code, url: aData.url, log: aData.result.log });
+			}
+		}, {
+			key: "_setResultData",
+			value: function _setResultData(aData) {
+				if (aData.code === "success") {
+
+					var transfers = new Array();
+
+					var currentArray = aData.data.transfer;
+					var currentArrayLength = currentArray.length;
+					for (var i = 0; i < currentArrayLength; i++) {
+						transfers.push(this._createTransfer(currentArray[i]));
+					}
+
+					this.setState({ "status": 1, "transferStatus": aData.data.status, "transfers": transfers });
+				} else {
+					this.setState({ "status": -1 });
+				}
+			}
+		}, {
 			key: "componentDidMount",
 			value: function componentDidMount() {
 				jQuery.get(this.props.transferUrl, function (aData) {
 					console.log(aData);
-					if (aData.code === "success") {
-						this.setState({ "status": 1 });
-					} else {
-						this.setState({ "status": -1 });
-					}
+					this._setResultData(aData);
 				}.bind(this)).fail(function () {
 					this.setState({ "status": -1 });
 				}.bind(this));
@@ -20048,14 +20076,10 @@
 		}, {
 			key: "resync",
 			value: function resync() {
-				this.setState({ "status": 0 });
+				this.setState({ "status": 0, "transfers": [] });
 				jQuery.get(this.props.transferUrl + "?force=1&forceDependencies=5", function (aData) {
 					console.log(aData);
-					if (aData.code === "success") {
-						this.setState({ "status": 1 });
-					} else {
-						this.setState({ "status": -1 });
-					}
+					this._setResultData(aData);
 				}.bind(this)).fail(function () {
 					this.setState({ "status": -1 });
 				}.bind(this));
@@ -20065,16 +20089,47 @@
 			value: function render() {
 
 				if (this.state.status === 1) {
-					return _react2.default.createElement(
-						"p",
-						null,
-						"Post has been updated on all sites. ",
-						_react2.default.createElement(
-							"span",
-							{ className: "resync", onClick: this.resyncBound },
-							"(Resync)"
-						)
-					);
+					if (this.state.transferStatus === 'sent') {
+						return _react2.default.createElement(
+							"div",
+							null,
+							_react2.default.createElement(
+								"p",
+								null,
+								"Post has been updated on all sites. ",
+								_react2.default.createElement(
+									"span",
+									{ className: "resync", onClick: this.resyncBound },
+									"(Resync)"
+								)
+							),
+							_react2.default.createElement(
+								"div",
+								null,
+								this.state.transfers
+							)
+						);
+					} else {
+						return _react2.default.createElement(
+							"div",
+							null,
+							_react2.default.createElement(
+								"p",
+								null,
+								"Error occured while transferring. ",
+								_react2.default.createElement(
+									"span",
+									{ className: "resync", onClick: this.resyncBound },
+									"(Resync)"
+								)
+							),
+							_react2.default.createElement(
+								"div",
+								null,
+								this.state.transfers
+							)
+						);
+					}
 				}
 				if (this.state.status === -1) {
 					return _react2.default.createElement(
@@ -20257,6 +20312,183 @@
 	}(_react2.default.Component);
 
 	exports.default = SyncTestNotice;
+
+/***/ },
+/* 166 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(3);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactDom = __webpack_require__(160);
+
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	// import SyncNoticeTransferLog from "oddsitetransfer/admin/sync/SyncNoticeTransferLog";
+
+	var SyncNoticeTransferLog = function (_React$Component) {
+		_inherits(SyncNoticeTransferLog, _React$Component);
+
+		function SyncNoticeTransferLog(props) {
+			_classCallCheck(this, SyncNoticeTransferLog);
+
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(SyncNoticeTransferLog).call(this, props));
+
+			_this.state = {
+				"showingLog": false
+			};
+
+			_this._toggleLogsBound = _this.toggleLogs.bind(_this);
+			return _this;
+		}
+
+		_createClass(SyncNoticeTransferLog, [{
+			key: "_createLogItem",
+			value: function _createLogItem(aData, aKey) {
+				//console.log("_createLogItem");
+				//console.log(aData);
+
+				return _react2.default.createElement(
+					"div",
+					{ key: aKey, className: "log-item type-" + aData.type },
+					aData.message
+				);
+			}
+		}, {
+			key: "toggleLogs",
+			value: function toggleLogs() {
+				this.setState({ "showingLog": !this.state.showingLog });
+			}
+		}, {
+			key: "componentDidMount",
+			value: function componentDidMount() {}
+		}, {
+			key: "render",
+			value: function render() {
+
+				var logElement = null;
+				var logButton = null;
+
+				if (this.state.showingLog) {
+					var logs = new Array();
+					var currentArray = this.props.log;
+					var currentArrayLength = currentArray.length;
+					for (var i = 0; i < currentArrayLength; i++) {
+						var newLog = this._createLogItem(currentArray[i], i);
+						logs.push(newLog);
+					}
+
+					logButton = _react2.default.createElement(
+						"div",
+						{ className: "button toggle-button", onClick: this._toggleLogsBound },
+						"Hide log"
+					);
+					logElement = _react2.default.createElement(
+						"div",
+						{ className: "log-items" },
+						logs
+					);
+				} else {
+					logButton = _react2.default.createElement(
+						"div",
+						{ className: "button toggle-button", onClick: this._toggleLogsBound },
+						"Show log"
+					);
+				}
+
+				var statusMessage = null;
+				switch (this.props.status) {
+					case "sent":
+						if (this.props.code === 'sent-non-existing') {
+							statusMessage = _react2.default.createElement(
+								"span",
+								{ className: "transfer-status" },
+								"Ignored"
+							);
+						} else {
+							statusMessage = _react2.default.createElement(
+								"span",
+								{ className: "transfer-status" },
+								_react2.default.createElement(
+									"a",
+									{ href: this.props.url },
+									this.props.url
+								)
+							);
+						}
+						break;
+					case "ignored":
+						statusMessage = _react2.default.createElement(
+							"span",
+							{ className: "transfer-status" },
+							"Ignored"
+						);
+						break;
+					case "error":
+						if (this.props.code === 'logged-error') {
+							statusMessage = _react2.default.createElement(
+								"span",
+								{ className: "transfer-status" },
+								"An error occured, check the log"
+							);
+						} else {
+							statusMessage = _react2.default.createElement(
+								"span",
+								{ className: "transfer-status" },
+								"An unknown error occured"
+							);
+						}
+						break;
+					default:
+						statusMessage = _react2.default.createElement(
+							"span",
+							{ className: "transfer-status" },
+							"Unknown status"
+						);
+						break;
+				}
+
+				return _react2.default.createElement(
+					"div",
+					{ className: "transfer-log status-" + this.props.status + " code-" + this.props.code },
+					_react2.default.createElement(
+						"div",
+						{ className: "title" },
+						_react2.default.createElement(
+							"span",
+							{ className: "server-name" },
+							this.props.name,
+							":"
+						),
+						statusMessage,
+						logButton
+					),
+					logElement
+				);
+			}
+		}]);
+
+		return SyncNoticeTransferLog;
+	}(_react2.default.Component);
+
+	exports.default = SyncNoticeTransferLog;
 
 /***/ }
 /******/ ]);

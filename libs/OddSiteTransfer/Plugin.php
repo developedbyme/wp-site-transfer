@@ -12,6 +12,8 @@
 			//echo("\OddSiteTransfer\Plugin::__construct<br />");
 			
 			parent::__construct();
+			
+			$this->add_css('oddsitetransfer-sync-notice', ODD_SITE_TRANSFER_URL.'/assets/css/sync-notices.css');
 		}
 		
 		protected function create_pages() {
