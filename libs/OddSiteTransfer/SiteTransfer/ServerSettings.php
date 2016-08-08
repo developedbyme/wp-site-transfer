@@ -241,14 +241,18 @@
 							$result_object = json_decode($result_data['data'], true);
 							if($result_object['code'] === 'success') {
 								$this->add_log_item('result', 'Sent post '.($post->post_title).' after dependencies. (type: '.($post->post_type).', id: '.($post->ID).', forced dependency steps: '.$force_dependencies_transfer_steps.')');
-								$return_value = array('url' => $result_object['data']['url'], 'transfer_type' => $encoded_data['status']);
+								$return_value = array('transfer_type' => $encoded_data['status']);
 							}
 							else {
 								$this->add_log_item('error', 'Error occured when re-transfering post '.($post->post_title).'. (type: '.($post->post_type).', id: '.($post->ID).', forced dependency steps: '.$force_dependencies_transfer_steps.')');
 							}
 						}
 						else {
-							$return_value = array('url' => $result_object['data']['url'], 'transfer_type' => $encoded_data['status']);
+							$return_value = array('transfer_type' => $encoded_data['status']);
+						}
+						
+						if(isset($result_object['data']['url'])) {
+							$return_value['url'] = $result_object['data']['url'];
 						}
 					}
 					else {

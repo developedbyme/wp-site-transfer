@@ -229,7 +229,9 @@
 								$current_transfer_return_data['status'] = 'sent';
 								$current_transfer_return_data['code'] = 'sent-'.$result['transfer_type'];
 							}
-							$current_transfer_return_data['url'] = $result['url'];
+							if(isset($result['url'])) {
+								$current_transfer_return_data['url'] = $result['url'];
+							}
 						}
 						else {
 							$current_transfer_return_data['status'] = 'error';
