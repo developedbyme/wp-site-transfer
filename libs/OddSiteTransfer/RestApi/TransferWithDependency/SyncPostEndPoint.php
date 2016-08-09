@@ -217,6 +217,12 @@
 			return $return_array;
 		}
 		
+		protected function _disable_save_hooks($post_type) {
+			remove_all_actions("save_post_{$post_type}");
+			remove_all_actions('save_post');
+			remove_all_actions('wp_insert_post');
+		}
+		
 		public function perform_call($data) {
 			//echo("\OddSiteTransfer\RestApi\TransferWithDependency\SyncPostEndPoint::perform_call<br />");
 			
@@ -277,9 +283,7 @@
 			
 			$new_id = NULL;
 			
-			remove_all_actions("save_post_{$post_type}");
-			remove_all_actions('save_post');
-			remove_all_actions('wp_insert_post');
+			$this->_disable_save_hooks($post_type);
 			
 			if($existing_post) {
 				$post_data['ID'] = $existing_post->ID;
