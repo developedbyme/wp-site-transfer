@@ -201,7 +201,9 @@
 			
 			$base_url = get_post_meta($server_transfer_post_id, 'url', true);
 			$url = $base_url.'sync/post';
+			$url_with_hooks = $base_url.'sync/post-with-hooks';
 			
+			$has_error = false;
 			$return_value = null;
 			
 			foreach($this->post_encoders as $encoder) {
@@ -246,6 +248,8 @@
 								$return_value = array('transfer_type' => $encoded_data['status']);
 							}
 							else {
+								$has_error = true;
+								
 								$this->add_log_item('error', 'Error occured when re-transfering post '.($post->post_title).'. (type: '.($post->post_type).', id: '.($post->ID).', forced dependency steps: '.$force_dependencies_transfer_steps.')');
 							}
 						}
@@ -256,8 +260,24 @@
 						if(isset($result_object['data']['url'])) {
 							$return_value['url'] = $result_object['data']['url'];
 						}
+						
+						if(!$has_error) {
+							$this->add_log_item('log', 'Re-transfer post with hooks '.($post->post_title).' (type: '.($post->post_type).', id: '.($post->ID).', forced dependency steps: '.$force_dependencies_transfer_steps.')');
+							
+							$result_data = HttpLoading::send_request($url_with_hooks, $encoded_data);
+							$this->http_log[] = $result_data;
+							$result_object = json_decode($result_data['data'], true);
+							if($result_object['code'] === 'success') {
+								$this->add_log_item('result', 'Sent post '.($post->post_title).' with hooks. (type: '.($post->post_type).', id: '.($post->ID).', forced dependency steps: '.$force_dependencies_transfer_steps.')');
+							}
+							else {
+								$this->add_log_item('warning', 'Could not trigger hooks for '.($post->post_title).'. (type: '.($post->post_type).', id: '.($post->ID).', forced dependency steps: '.$force_dependencies_transfer_steps.')');
+							}
+						}
 					}
 					else {
+						$has_error = true;
+						
 						$this->add_log_item('error', 'Error occured when transfering post '.($post->post_title).'. (type: '.($post->post_type).', id: '.($post->ID).', forced dependency steps: '.$force_dependencies_transfer_steps.')');
 					}
 					break;
@@ -322,6 +342,7 @@
 			
 			foreach($this->post_encoders as $encoder) {
 				if($encoder->qualify($user)) {
+					$this->add_log_item('log', 'Transfer user '.($user->name).' (id: '.($user->ID).', forced dependency steps: '.$force_dependencies_transfer_steps.')');
 					$encoded_data = $encoder->encode($user);
 					//var_dump($encoded_data);
 					
@@ -337,6 +358,7 @@
 					//var_dump($result_object);
 					
 					if($result_object['code'] === 'success') {
+						$this->add_log_item('result', 'Sent user '.($user->name).' (id: '.($user->ID).', forced dependency steps: '.$force_dependencies_transfer_steps.')');
 						$missing_dependencies = $result_object['data']['missingDependencies'];
 						
 						if(count($missing_dependencies) > 0) {
@@ -345,6 +367,9 @@
 							$this->http_log[] = $result_data;
 							$result_object = json_decode($result_data['data'], true);
 						}
+					}
+					else {
+						$this->add_log_item('error', 'Error occured when transfering user '.($user->name).'. (id: '.($user->ID).', forced dependency steps: '.$force_dependencies_transfer_steps.')');
 					}
 					break;
 				}

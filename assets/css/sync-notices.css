@@ -6,11 +6,15 @@
 }
 
 .transfer-log .log-item.type-result {
-	border-left: 3px solid #67e499;
+	border-left: 3px solid #46b450;
 }
 
 .transfer-log .log-item.type-error {
 	border-left: 3px solid #FF0000;
+}
+
+.transfer-log .log-item.type-warning {
+	border-left: 3px solid #ffba00;
 }
 
 .transfer-log .toggle-button {
@@ -25,7 +29,7 @@
 }
 
 .transfer-log.status-sent .title {
-	border-left: 6px solid #67e499;
+	border-left: 6px solid #46b450;
 }
 
 .transfer-log .server-name {
