@@ -26,6 +26,22 @@
 				return $this->output_error('Type not allowed');
 			}
 			
+			remove_all_actions('transition_post_status');
+			remove_all_actions('wp_trash_post');
+			remove_all_actions('trashed_post');
+			remove_all_actions('trash_post_comments');
+			remove_all_actions('trashed_post_comments');
+			
+			remove_all_actions('pre_post_update');
+			remove_all_actions('edit_attachment');
+			remove_all_actions('attachment_updated');
+			remove_all_actions('add_attachment');
+			remove_all_actions('edit_post');
+			remove_all_actions('post_updated');
+			remove_all_actions("save_post_{$post_type}");
+			remove_all_actions('save_post');
+			remove_all_actions('wp_insert_post');
+			
 			$removed_ids = array();
 			
 			$args = array(
