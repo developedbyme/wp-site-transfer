@@ -72,7 +72,9 @@
 			
 			//var_dump($query->have_posts());
 			if($query->have_posts()) {
-				$this->add_log_item('warning', 'There are multiple posts with the transfer id '.$id.'. ()');
+				if($query->post_count > 1) {
+					$this->add_log_item('warning', 'There are multiple posts with the transfer id '.$id.'. ()');
+				}
 				return $query->get_posts()[0];
 			}
 			
