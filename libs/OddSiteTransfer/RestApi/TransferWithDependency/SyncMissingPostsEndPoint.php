@@ -26,6 +26,8 @@
 				return $this->output_error('Type not allowed');
 			}
 			
+			$removed_ids = array();
+			
 			$args = array(
 				'post_type'  => $post_type,
 				'posts_per_page' => -1,
@@ -37,7 +39,21 @@
 			);
 			$query = new WP_Query( $args );
 			
-			$removed_ids = array();
+			foreach($query->posts as $remove_id) {
+				$removed_ids[] = $remove_id;
+				wp_trash_post($remove_id);
+			}
+			
+			$args = array(
+				'post_type'  => $post_type,
+				'posts_per_page' => -1,
+				'fields' => 'ids',
+				
+				'meta_key' => '_odd_server_transfer_id',
+				'meta_value' => '',
+				'meta_compare' => 'NOT EXISTS',
+			);
+			$query = new WP_Query( $args );
 			
 			foreach($query->posts as $remove_id) {
 				$removed_ids[] = $remove_id;
