@@ -277,6 +277,10 @@
 			
 			$new_id = NULL;
 			
+			remove_all_actions("save_post_{$post_type}");
+			remove_all_actions('save_post');
+			remove_all_actions('wp_insert_post');
+			
 			if($existing_post) {
 				$post_data['ID'] = $existing_post->ID;
 				$new_id = wp_update_post($post_data);
