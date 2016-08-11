@@ -17,7 +17,7 @@
 			//echo("\OddSiteTransfer\RestApi\TransferWithDependency\SyncMissingPostsEndPoint::perform_call<br />");
 			
 			//var_dump($data);
-			$allowed_types = array('oa_recipe', 'oa_wine', 'oa_wine_producer');
+			$allowed_types = array('oa_recipe', 'oa_product', 'oa_wine', 'oa_wine_producer');
 			
 			$post_type = $data['post_type'];
 			$existing_ids = $data['existing_ids'];
