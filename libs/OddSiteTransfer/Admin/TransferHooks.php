@@ -97,6 +97,14 @@
 			$current_server_settings->add_encoder($default_term_encoder);
 			$current_server_settings->add_encoder($default_user_encoder);
 			$this->add_server_settings('wf', $current_server_settings);
+			
+			$current_server_settings = new \OddSiteTransfer\SiteTransfer\ServerSettings();
+			$current_server_settings->add_encoder($wine_post_encoder);
+			$current_server_settings->add_encoder($wine_producer_post_encoder);
+			$current_server_settings->add_encoder($attachment_post_encoder);
+			$current_server_settings->add_encoder($default_term_encoder);
+			$current_server_settings->add_encoder($default_user_encoder);
+			$this->add_server_settings('enjoy', $current_server_settings);
 		}
 		
 		public function get_settings() {
