@@ -71,6 +71,7 @@
 				case "wysiwyg":
 				case "true_false":
 				case "select":
+				case "oembed":
 					$current_send_field = array(
 						'type' => $acf_field['type'],
 						'value' => $acf_field['value']
