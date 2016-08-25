@@ -35,6 +35,7 @@
 			$select_field->add_option('Default', 'default');
 			$select_field->add_option('Zeta', 'zeta');
 			$select_field->add_option('Wine & Friends', 'wf');
+			$select_field->add_option('Enjoy wine', 'enjoy');
 			$current_box->add_meta_field($select_field);
 			
 			$this->add_meta_box_after_title($current_box);
