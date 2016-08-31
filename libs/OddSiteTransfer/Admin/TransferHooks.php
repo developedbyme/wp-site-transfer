@@ -28,6 +28,16 @@
 			//METODO: split this up
 			$wine_post_encoder = EncoderSetup::create_post_encoder(array('oa_wine'));
 			
+			$wf_post_encoder = EncoderSetup::create_targeted_post_encoder(
+				array('oa_wine'),
+				array(
+					array('term' => 'sb-bestallningssortiment', 'taxonomy' => 'dijoy_wine_availability'),
+					array('term' => 'sb-fast-sortiment', 'taxonomy' => 'dijoy_wine_availability'),
+					array('term' => 'sb-tillfalligt-sortiment-exklusivt', 'taxonomy' => 'dijoy_wine_availability')
+				),
+				'or'
+			);
+			
 			//Fields
 			$recipe_meta_data_fields = array(
 				'_has_step_instructions',
@@ -91,7 +101,7 @@
 			$current_server_settings = new \OddSiteTransfer\SiteTransfer\ServerSettings();
 			$current_server_settings->add_encoder($wf_recipe_post_encoder);
 			$current_server_settings->add_encoder($zeta_product_post_encoder); //MEDEBUG
-			$current_server_settings->add_encoder($wine_post_encoder);
+			$current_server_settings->add_encoder($wf_post_encoder);
 			$current_server_settings->add_encoder($wine_producer_post_encoder);
 			$current_server_settings->add_encoder($attachment_post_encoder);
 			$current_server_settings->add_encoder($default_term_encoder);
