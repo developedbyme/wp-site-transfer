@@ -66,7 +66,12 @@
 			);
 			EncoderSetup::add_meta_fields_to_encoder($zeta_recipe_post_encoder, $recipe_meta_data_fields, $recipe_post_ids_meta_data_fields);
 			
-			$zeta_product_post_encoder = EncoderSetup::create_post_encoder(array('oa_product'));
+			$zeta_product_post_encoder = EncoderSetup::create_meta_targeted_post_encoder(
+				array('oa_product'),
+				array(
+					array('key' => 'target_consumer', 'value' => 'yes')
+				)
+			);
 			
 			//Wine and friends
 			$wf_recipe_post_encoder = EncoderSetup::create_targeted_post_encoder(

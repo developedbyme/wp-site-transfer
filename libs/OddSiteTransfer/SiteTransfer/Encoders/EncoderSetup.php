@@ -43,6 +43,27 @@
 			return $encoder;
 		}
 		
+		public static function create_meta_targeted_post_encoder($post_types, $targets = null, $condition = 'and') {
+			//echo("\OddSiteTransfer\SiteTransfer\Encoders\EncoderSetup::create_meta_targeted_post_encoder<br />");
+			
+			$qualifier = new \OddSiteTransfer\SiteTransfer\Qualifiers\PostTypeQualifier();
+			$qualifier->add_post_types($post_types);
+			
+			$encoder = new \OddSiteTransfer\SiteTransfer\Encoders\MetaTargetedSitePostEncoder();
+			$encoder->set_qualifier($qualifier);
+			
+			if($targets) {
+				foreach($targets as $target) {
+					$encoder->add_meta($target['key'], $target['value']);
+				}
+			}
+			$encoder->set_condition($condition);
+			
+			return $encoder;
+		}
+		
+		
+		
 		public static function add_meta_fields_to_encoder($encoder, $data_field_names = null, $object_field_names = null) {
 			//echo("\OddSiteTransfer\SiteTransfer\Encoders\EncoderSetup::add_meta_fields_to_encoder<br />");
 			
