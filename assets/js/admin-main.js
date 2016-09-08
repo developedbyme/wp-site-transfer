@@ -20043,7 +20043,12 @@
 				//console.log("_createTransfer");
 				//console.log(aData);
 
-				return _react2.default.createElement(_SyncNoticeTransferLog2.default, { key: aData.name, name: aData.name, status: aData.status, code: aData.code, url: aData.url, log: aData.result.log });
+				var log = [];
+				if (aData.result && aData.result.log) {
+					log = aData.result.log;
+				}
+
+				return _react2.default.createElement(_SyncNoticeTransferLog2.default, { key: aData.name, name: aData.name, status: aData.status, code: aData.code, url: aData.url, log: log });
 			}
 		}, {
 			key: "_setResultData",

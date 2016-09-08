@@ -24,7 +24,13 @@ export default class CheckSyncNotice extends React.Component {
 		//console.log("_createTransfer");
 		//console.log(aData);
 		
-		return <SyncNoticeTransferLog key={aData.name} name={aData.name} status={aData.status} code={aData.code} url={aData.url} log={aData.result.log} />;
+		var log = [];
+		if(aData.result && aData.result.log) {
+			log = aData.result.log;
+		}
+		
+		
+		return <SyncNoticeTransferLog key={aData.name} name={aData.name} status={aData.status} code={aData.code} url={aData.url} log={log} />;
 	}
 	
 	_setResultData(aData) {
