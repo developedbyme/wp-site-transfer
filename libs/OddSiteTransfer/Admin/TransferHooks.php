@@ -73,6 +73,15 @@
 				)
 			);
 			
+			//Accademia
+			$accademia_recipe_post_encoder = EncoderSetup::create_targeted_post_encoder(
+				array('oa_recipe'),
+				array(
+					array('term' => 'accademia', 'taxonomy' => 'oa_target_site')
+				)
+			);
+			EncoderSetup::add_meta_fields_to_encoder($accademia_recipe_post_encoder, $recipe_meta_data_fields, $recipe_post_ids_meta_data_fields);
+			
 			//Zeta
 			$zeta_recipe_post_encoder = EncoderSetup::create_targeted_post_encoder(
 				array('oa_recipe'),
@@ -126,6 +135,14 @@
 			$current_server_settings->add_encoder($default_term_encoder);
 			$current_server_settings->add_encoder($default_user_encoder);
 			$this->add_server_settings('foodservice', $current_server_settings);
+			
+			//Accademia
+			$current_server_settings = new \OddSiteTransfer\SiteTransfer\ServerSettings();
+			$current_server_settings->add_encoder($accademia_recipe_post_encoder);
+			$current_server_settings->add_encoder($attachment_post_encoder);
+			$current_server_settings->add_encoder($default_term_encoder);
+			$current_server_settings->add_encoder($default_user_encoder);
+			$this->add_server_settings('accademia', $current_server_settings);
 			
 			//Wine & friends
 			$current_server_settings = new \OddSiteTransfer\SiteTransfer\ServerSettings();
