@@ -138,7 +138,8 @@
 						$this->add_log_item('result', 'Transfered media '.($file_path).' ()');
 					}
 					else {
-						$this->add_log_item('error', 'Error occured while transferring media '.($file_path).' ()');
+						var_dump($send_data);
+						$this->add_log_item('error', 'Error occured while transferring media '.($file_path).' (response: '.$repsonse_data.')');
 					}
 					
 				}
