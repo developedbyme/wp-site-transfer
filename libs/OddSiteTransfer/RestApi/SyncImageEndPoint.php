@@ -33,7 +33,7 @@
 			if(move_uploaded_file($_FILES['file']['tmp_name'], $file_to_save)) {
 				return $this->output_success($upload_dir['baseurl'].'/'.$path);
 			}
-			return $this->output_error("Couldn't save file.");
+			return $this->output_error("Couldn't save file (".($_FILES['file']['tmp_name'])." to ".$file_to_save.").");
 		}
 		
 		public static function test_import() {
