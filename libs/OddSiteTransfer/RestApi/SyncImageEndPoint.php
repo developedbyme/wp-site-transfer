@@ -23,7 +23,7 @@
 					break;
 				case UPLOAD_ERR_INI_SIZE:
 				case UPLOAD_ERR_FORM_SIZE:
-					return $this->output_error("File size is too big (max size: ".get_max_upload().").");
+					return $this->output_error("File size is too big (max size: ".ini_get('upload_max_filesize').").");
 				case UPLOAD_ERR_PARTIAL:
 					return $this->output_error("File upload was partial.");
 				case UPLOAD_ERR_NO_FILE:
