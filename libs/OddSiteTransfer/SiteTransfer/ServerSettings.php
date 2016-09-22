@@ -144,7 +144,8 @@
 					
 				}
 				else {
-					$this->add_log_item('error', 'Couldn\'t transfer media '.($file_path).' ()');
+					var_dump($send_data);
+					$this->add_log_item('error', 'Couldn\'t transfer media '.($file_path).' (response: '.$repsonse_data.')');
 					$image_is_ok = false;
 				}
 			}
