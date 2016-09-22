@@ -138,12 +138,12 @@
 						$this->add_log_item('result', 'Transfered media '.($file_path).' ()');
 					}
 					else {
-						$this->add_log_item('error', 'Error occured while transferring media '.($file_path).' (response: '.$repsonse_data.')');
+						$this->add_log_item('error', 'Error occured while transferring media '.($file_path).' (response: '.json_encode($repsonse_data).')');
 					}
 					
 				}
 				else {
-					$this->add_log_item('error', 'Couldn\'t transfer media '.($file_path).' (response: '.$repsonse_data.')');
+					$this->add_log_item('error', 'Couldn\'t transfer media '.($file_path).' (response: '.json_encode($repsonse_data).')');
 					$image_is_ok = false;
 				}
 			}
