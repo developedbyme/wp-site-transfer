@@ -40,6 +40,7 @@
 					}
 					break;
 				case "post_object":
+				case "image":
 					$resolved_ids = $this->get_resolved_post_ids($field['value'], $resolved_dependencies);
 					if($repeater_path) {
 						update_sub_field($repeater_path, $resolved_ids, $post_id);
