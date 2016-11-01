@@ -237,7 +237,7 @@
 			
 			if($status === "non-existing") {
 				
-				$return_object = array('missingDependencies' => array());
+				$return_object = array('transferId' => $transfer_id, 'missingDependencies' => array());
 				
 				$existing_post = $this->get_post_by_transfer_id('any', $transfer_id);
 				
