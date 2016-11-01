@@ -103,6 +103,11 @@
 			//var_dump($id);
 			
 			remove_all_actions('pre_get_posts');
+			
+			if($post_type === 'any') {
+				$post_type = get_post_types(array(), 'names');
+			}
+			
 			$args = array(
 				'post_type' => $post_type,
 				'post_status' => array('any', 'trash'),
