@@ -237,13 +237,17 @@
 			
 			if($status === "non-existing") {
 				
+				$return_object = array('missingDependencies' => array());
+				
 				$existing_post = $this->get_post_by_transfer_id('any', $transfer_id);
 				
 				if($existing_post) {
-					wp_trash_post($existing_post->ID);
+					$return_object['removedId'] = $existing_post->ID;
+					$remove_status = wp_trash_post($existing_post->ID);
+					$return_object['removedPost'] = $remove_status;
 				}
 				
-				return $this->output_success(array('missingDependencies' => array()));
+				return $this->output_success($return_object);
 			}
 			
 			
