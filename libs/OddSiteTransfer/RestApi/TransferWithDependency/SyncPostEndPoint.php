@@ -102,6 +102,7 @@
 			//echo("\OddSiteTransfer\RestApi\TransferWithDependency\SyncPostEndPoint::perform_call<br />");
 			//var_dump($id);
 			
+			remove_all_actions('pre_get_posts');
 			$args = array(
 				'post_type' => $post_type,
 				'post_status' => array('any', 'trash'),
