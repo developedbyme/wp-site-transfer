@@ -453,7 +453,8 @@
 				$is_incoming_link = get_post_meta($post->ID, '_odd_server_transfer_is_incoming', true);
 				
 				if($is_incoming_link) {
-					$module_data = array('id' => $post->ID, 'syncDate' => get_post_meta($post->ID, '_odd_server_transfer_incoming_sync_date', true));
+					$module_data = array('id' => $post->ID, 'syncDate' => get_post_meta($post->ID, '_odd_server_transfer_incoming_sync_date', true), 'syncId' => get_post_meta($post->ID, '_odd_server_transfer_id', true));
+					
 					$this->output_notice('incomingSyncNotice', $module_data);
 				}
 				else {
@@ -462,7 +463,7 @@
 				
 					if($sync_index_target > $sync_index) {
 					
-						$module_data = array('id' => $post->ID, 'transferUrl' => get_home_url().'/wp-json/odd-site-transfer/v2/post/'.($post->ID).'/transfer');
+						$module_data = array('id' => $post->ID, 'transferUrl' => get_home_url().'/wp-json/odd-site-transfer/v2/post/'.($post->ID).'/transfer', 'syncId' => get_post_meta($post->ID, '_odd_server_transfer_id', true));
 						$this->output_notice('checkSyncNotice', $module_data);
 					}
 				}

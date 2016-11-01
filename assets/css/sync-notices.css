@@ -40,3 +40,8 @@
 .transfer-log .transfer-status {
 	padding-right: 3px;
 }
+
+.sync-date,
+.sync-id {
+	display: block;
+}

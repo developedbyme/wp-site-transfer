@@ -20,7 +20,8 @@ export default class IncomingSyncNotice extends React.Component {
 		
 		return <p>
 			<span className="do-not-update">This post is synced from another server. Any changes done will be overwritten at the next sync.</span>
-			<div className="sync-date">Last sync: {this.props.syncDate}</div>
+			<span className="sync-date">Last sync: {this.props.syncDate}</span>
+			<span className="sync-id">Sync id: {this.props.syncId}</span>
 		</p>;
 		
 	}

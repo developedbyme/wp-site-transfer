@@ -76,6 +76,7 @@ export default class CheckSyncNotice extends React.Component {
 			if(this.state.transferStatus === 'sent') {
 				return <div>
 					<p>Post has been updated on all sites. <span className="resync" onClick={this.resyncBound}>(Resync)</span></p>
+					<span className="sync-id">Sync id: {this.props.syncId}</span>
 					<div>
 						{this.state.transfers}
 					</div>
@@ -84,6 +85,7 @@ export default class CheckSyncNotice extends React.Component {
 			else {
 				return <div>
 					<p>Error occured while transferring. <span className="resync" onClick={this.resyncBound}>(Resync)</span></p>
+					<span className="sync-id">Sync id: {this.props.syncId}</span>
 					<div>
 						{this.state.transfers}
 					</div>
@@ -93,10 +95,12 @@ export default class CheckSyncNotice extends React.Component {
 		if(this.state.status === -1) {
 			return <p>
 				An error occured while transferring. <span className="resync" onClick={this.resyncBound}>(Resync)</span>
+				<span className="sync-id">Sync id: {this.props.syncId}</span>
 			</p>;
 		}
 		return <p>
 			<span className="spinner is-active" style={{"float": "none"}}></span> Transferring post to all connected sites.
+			<span className="sync-id">Sync id: {this.props.syncId}</span>
 		</p>;
 		
 	}
