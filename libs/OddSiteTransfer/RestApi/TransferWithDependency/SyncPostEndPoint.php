@@ -102,6 +102,12 @@
 			//echo("\OddSiteTransfer\RestApi\TransferWithDependency\SyncPostEndPoint::perform_call<br />");
 			//var_dump($id);
 			
+			remove_all_actions('pre_get_posts');
+			
+			if($post_type === 'any') {
+				$post_type = get_post_types(array(), 'names');
+			}
+			
 			$args = array(
 				'post_type' => $post_type,
 				'post_status' => array('any', 'trash'),
@@ -237,7 +243,7 @@
 			
 			if($status === "non-existing") {
 				
-				$return_object = array('missingDependencies' => array());
+				$return_object = array('transferId' => $transfer_id, 'missingDependencies' => array());
 				
 				$existing_post = $this->get_post_by_transfer_id('any', $transfer_id);
 				
