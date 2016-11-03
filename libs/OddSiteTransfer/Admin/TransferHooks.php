@@ -75,12 +75,12 @@
 			);
 			EncoderSetup::add_meta_fields_to_encoder($foodservice_recipe_post_encoder, $recipe_meta_data_fields, $recipe_post_ids_meta_data_fields);
 			
-			$foodservice_product_post_encoder = EncoderSetup::create_post_encoder(array('oa_product')); /*EncoderSetup::create_meta_targeted_post_encoder(
+			$foodservice_product_post_encoder = EncoderSetup::create_any_meta_in_acf_list_targeted_post_encoder(
 				array('oa_product'),
 				array(
-					array('key' => 'target_catering', 'value' => 'yes')
+					array('list' => 'product_information', 'key' => 'target_catering', 'value' => 'yes')
 				)
-			);*/
+			);
 			
 			//Accademia
 			$accademia_recipe_post_encoder = EncoderSetup::create_targeted_post_encoder(
@@ -100,12 +100,12 @@
 			);
 			EncoderSetup::add_meta_fields_to_encoder($zeta_recipe_post_encoder, $recipe_meta_data_fields, $recipe_post_ids_meta_data_fields);
 			
-			$zeta_product_post_encoder = EncoderSetup::create_post_encoder(array('oa_product')); /*EncoderSetup::create_meta_targeted_post_encoder(
+			$zeta_product_post_encoder = EncoderSetup::create_any_meta_in_acf_list_targeted_post_encoder(
 				array('oa_product'),
 				array(
-					array('key' => 'target_consumer', 'value' => 'yes')
+					array('list' => 'product_information', 'key' => 'target_consumer', 'value' => 'yes')
 				)
-			);*/
+			);
 			
 			//Wine and friends
 			$wf_recipe_post_encoder = EncoderSetup::create_targeted_post_encoder(
