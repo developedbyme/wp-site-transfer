@@ -216,9 +216,11 @@
 			$return_array = array();
 			
 			foreach($ids as $id) {
-				$term = $this->get_resolved_dependency('term_'.$taxonomy, $id, $resolved_dependencies);
-				if($term) {
-					$return_array[] = intval($term->term_id);
+				if($id !== '') {
+					$term = $this->get_resolved_dependency('term_'.$taxonomy, $id, $resolved_dependencies);
+					if($term) {
+						$return_array[] = intval($term->term_id);
+					}
 				}
 			}
 			
