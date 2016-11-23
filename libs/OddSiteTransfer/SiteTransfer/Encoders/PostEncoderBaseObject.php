@@ -216,6 +216,9 @@
 						$return_object['dependencies'][] = array('type' => 'term', 'id' => $current_term->slug, 'taxonomy' => $taxonomy);
 					}
 				}
+				else {
+					$local_term_ids[] = "";
+				}
 				
 				
 				$return_object['taxonomies'][$taxonomy] = $local_term_ids;
