@@ -191,19 +191,32 @@
 		protected function encode_taxonomies($object, &$return_object) {
 			//echo("\OddSiteTransfer\SiteTransfer\Encoders\PostEncoderBaseObject::encode_taxonomies<br />");
 			
+			global $wp_taxonomies;
+			
 			if(!isset($return_object['taxonomies'])) $return_object['taxonomies'] = array();
 			
 			$post_id = $object->ID;
-			$taxonomies = array_keys(get_the_taxonomies($post_id));
+			$taxonomies = array();
+			
+			$object_type = get_post_type($post_id);
+			
+			foreach($wp_taxonomies as $name => $taxonomy_object) {
+				if(in_array($object_type, $taxonomy_object->object_type)) {
+					$taxonomies[] = $name;
+				}
+			}
 			
 			foreach($taxonomies as $taxonomy) {
 				$current_terms = get_the_terms($post_id, $taxonomy);
 				$local_term_ids = array();
 				
-				foreach($current_terms as $current_term) {
-					$local_term_ids[] = $current_term->slug;
-					$return_object['dependencies'][] = array('type' => 'term', 'id' => $current_term->slug, 'taxonomy' => $taxonomy);
+				if($current_terms) {
+					foreach($current_terms as $current_term) {
+						$local_term_ids[] = $current_term->slug;
+						$return_object['dependencies'][] = array('type' => 'term', 'id' => $current_term->slug, 'taxonomy' => $taxonomy);
+					}
 				}
+				
 				
 				$return_object['taxonomies'][$taxonomy] = $local_term_ids;
 				
