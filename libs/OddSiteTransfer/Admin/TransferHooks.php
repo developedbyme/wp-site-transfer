@@ -103,8 +103,10 @@
 			$zeta_product_post_encoder = EncoderSetup::create_any_meta_in_acf_list_targeted_post_encoder(
 				array('oa_product'),
 				array(
-					array('list' => 'product_information', 'key' => 'target_consumer', 'value' => 'yes')
-				)
+					array('list' => 'product_information', 'key' => 'target_consumer', 'value' => 'yes'),
+					array('list' => 'product_information', 'key' => 'brand', 'value' => 'Zeta')
+				),
+				'and'
 			);
 			
 			//Wine and friends
