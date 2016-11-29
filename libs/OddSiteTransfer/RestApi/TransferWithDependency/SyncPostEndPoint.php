@@ -50,6 +50,30 @@
 						update_field($name, $resolved_ids, $post_id);
 					}
 					break;
+				case "taxonomy":
+					$ids = $field['value']['ids'];
+					$taxonomy = $field['value']['taxonomy'];
+					if(is_array($ids)) {
+						$resolved_ids = $this->get_resolved_term_dependencies($ids, $taxonomy, $resolved_dependencies);
+					}
+					else {
+						$resolved_ids = null;
+						if(!empty($ids)) {
+							$term = $this->get_resolved_dependency('term_'.$taxonomy, $ids, $resolved_dependencies);
+							if($term) {
+								$resolved_ids = intval($term->term_id);
+							}
+						}
+					}
+					
+					if($repeater_path) {
+						update_sub_field($repeater_path, $resolved_ids, $post_id);
+						update_post_meta($post_id, implode('_', $meta_path), $resolved_ids);
+					}
+					else {
+						update_field($name, $resolved_ids, $post_id);
+					}
+					break;
 				case "repeater":
 					
 					$new_rows = $field['value'];
