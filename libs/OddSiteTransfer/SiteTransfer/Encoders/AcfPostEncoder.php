@@ -71,7 +71,7 @@
 					}
 					$current_send_field = array(
 						'type' => $acf_field['type'],
-						'value' => $linked_taxonomy_ids
+						'value' => array('ids' => $linked_taxonomy_ids, 'taxonomy' => $acf_field['taxonomy'])
 					);
 					break;
 				default:
