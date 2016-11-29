@@ -54,9 +54,6 @@
 					$ids = $field['value']['ids'];
 					$taxonomy = $field['value']['taxonomy'];
 					
-					var_dump($field['value']);
-					var_dump($resolved_dependencies);
-					
 					if(is_array($ids)) {
 						$resolved_ids = $this->get_resolved_term_dependencies($ids, $taxonomy, $resolved_dependencies);
 					}
@@ -69,7 +66,6 @@
 							}
 						}
 					}
-					var_dump($resolved_ids);
 					
 					if($repeater_path) {
 						update_sub_field($repeater_path, $resolved_ids, $post_id);
