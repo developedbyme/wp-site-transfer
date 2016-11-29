@@ -65,6 +65,7 @@
 							}
 						}
 					}
+					var_dump($resolved_ids);
 					
 					if($repeater_path) {
 						update_sub_field($repeater_path, $resolved_ids, $post_id);
