@@ -114,7 +114,7 @@
 					
 					if($linked_term) {
 						
-						$return_array[] = array('id' => $linked_term->slug, 'taxonomy' => $linked_term->taxonomy);
+						$return_array[] = $linked_term->slug;
 						$this->add_dependency('term', $linked_term->slug, array('taxonomy' => $linked_term->taxonomy), $dependencies);
 					}
 				}
@@ -133,7 +133,7 @@
 				if($linked_term) {
 					$this->add_dependency('term', $linked_term->slug, array('taxonomy' => $linked_term->taxonomy), $dependencies);
 				
-					return array('id' => $linked_term->slug, 'taxonomy' => $linked_term->taxonomy);
+					return $linked_term->slug;
 				}
 			}
 			
