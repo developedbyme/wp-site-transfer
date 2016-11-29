@@ -61,6 +61,19 @@
 					);
 					break;
 				break;
+				case "taxonomy":
+					$linked_taxonomy_ids = $override_value ? $override_value : $acf_field['value'];
+					if(isset($linked_taxonomy_ids)) {
+						$linked_taxonomy_ids = $this->get_referenced_terms($linked_taxonomy_ids, $dependencies);
+					}
+					else {
+						$linked_taxonomy_ids = array();
+					}
+					$current_send_field = array(
+						'type' => $acf_field['type'],
+						'value' => $linked_taxonomy_ids
+					);
+					break;
 				default:
 					echo("Unknown type: ".$acf_field['type']."<br />");
 					var_dump($acf_field);

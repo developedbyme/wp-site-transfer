@@ -2,6 +2,7 @@
 	namespace OddSiteTransfer\SiteTransfer\Encoders;
 	
 	use \WP_Post;
+	use \WP_Term;
 	
 	// \OddSiteTransfer\SiteTransfer\Encoders\PostEncoderBaseObject
 	class PostEncoderBaseObject {
@@ -94,6 +95,45 @@
 					$this->add_dependency('post', $linked_post_id, array('post_type' => $linked_post->post_type), $dependencies);
 				
 					return $linked_post_id;
+				}
+			}
+			
+			return null;
+		}
+		
+		protected function get_referenced_terms($term_ids, &$dependencies) {
+			//echo("\OddSiteTransfer\SiteTransfer\Encoders\PostEncoderBaseObject::get_referenced_terms<br />");
+			
+			if(is_array($term_ids)) {
+				$return_array = array();
+				foreach($term_ids as $term_id) {
+					if($term_id instanceof WP_Term) {
+						$term_id = $post_id->term_id;
+					}
+					$linked_term = get_term($term_id);
+					
+					if($linked_term) {
+						
+						$return_array[] = array('id' => $linked_term->slug, 'taxonomy' => $linked_term->taxonomy);
+						$this->add_dependency('term', $linked_term->slug, array('taxonomy' => $linked_term->taxonomy), $dependencies);
+					}
+				}
+				return $return_array;
+			}
+			else {
+				if(empty($term_ids)) {
+					return '';
+				}
+				$term_id = $term_ids;
+				if($term_id instanceof WP_Term) {
+					$term_id = $post_id->term_id;
+				}
+				$linked_term = get_term($term_id);
+				
+				if($linked_term) {
+					$this->add_dependency('term', $linked_term->slug, array('taxonomy' => $linked_term->taxonomy), $dependencies);
+				
+					return array('id' => $linked_term->slug, 'taxonomy' => $linked_term->taxonomy);
 				}
 			}
 			
