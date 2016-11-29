@@ -53,6 +53,10 @@
 				case "taxonomy":
 					$ids = $field['value']['ids'];
 					$taxonomy = $field['value']['taxonomy'];
+					
+					var_dump($field['value']);
+					var_dump($resolved_dependencies);
+					
 					if(is_array($ids)) {
 						$resolved_ids = $this->get_resolved_term_dependencies($ids, $taxonomy, $resolved_dependencies);
 					}
