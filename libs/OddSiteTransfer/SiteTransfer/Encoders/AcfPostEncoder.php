@@ -46,6 +46,7 @@
 					break;
 				case "image":
 				case "post_object":
+				case "relationship":
 					$linked_post_ids = $override_value ? $override_value : $acf_field['value'];
 					//var_dump($linked_post_ids);
 					if(isset($linked_post_ids)) {
