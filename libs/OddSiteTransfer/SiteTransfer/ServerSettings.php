@@ -118,6 +118,11 @@
 			
 			$file_to_load = wp_upload_dir()['basedir'].'/'.$file_path;
 			
+			if(!file_exists($file_to_load)) {
+				$this->add_log_item('error', 'Media file '.($file_path).' doesn\'t exist.');
+				return false;
+			}
+			
 			$image_exists = $this->compare_image($file_path, filesize($file_to_load), $server_transfer_post);
 			
 			$image_is_ok = true;
