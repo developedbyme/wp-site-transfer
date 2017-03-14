@@ -102,14 +102,23 @@
 				$new_id = wp_update_user($user_data);
 			}
 			else {
-				$new_id = wp_insert_user($user_data);
-				if(is_wp_error($new_id)) {
-					$error_string = '';
-					$errors = $new_id->get_error_messages();
-					foreach ($errors as $error) {
-						$error_string .= $error;
+				$transfer_email = $user_data['user_email'];
+				$existing_user = get_user_by('email', $transfer_email);
+			
+				if($existing_user) {
+					$user_data['ID'] = $existing_user->ID;
+					$new_id = wp_update_user($user_data);
+				}
+				else {
+					$new_id = wp_insert_user($user_data);
+					if(is_wp_error($new_id)) {
+						$error_string = '';
+						$errors = $new_id->get_error_messages();
+						foreach ($errors as $error) {
+							$error_string .= $error;
+						}
+						return $this->output_error($error_string);
 					}
-					return $this->output_error($error_string);
 				}
 			}
 			
