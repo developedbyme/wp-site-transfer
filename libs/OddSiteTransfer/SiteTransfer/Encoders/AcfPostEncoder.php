@@ -75,6 +75,18 @@
 						'value' => array('ids' => $linked_taxonomy_ids, 'taxonomy' => $acf_field['taxonomy'])
 					);
 					break;
+				case "oembed":
+					$current_send_field = array(
+						'type' => $acf_field['type']
+					);
+					if($override_value) {
+						$current_send_field['value'] = $override_value;
+					}
+					else {
+						$raw_field = get_field_object($acf_field['key'], $post_id, false, true);
+						$current_send_field['value'] = $raw_field['value'];
+					}
+					break;
 				default:
 					echo("Unknown type: ".$acf_field['type']."<br />");
 					var_dump($acf_field);
