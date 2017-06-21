@@ -16,7 +16,6 @@
 		function __construct() {
 			//echo("\OddSiteTransfer\SiteTransfer\ServerSettings::__construct<br />");
 			
-			
 		}
 		
 		public function has_error() {
@@ -28,6 +27,11 @@
 			}
 			
 			return false;
+		}
+		
+		public function reset_log() {
+			$this->log = array();
+			$this->http_log = array();
 		}
 		
 		public function get_result() {

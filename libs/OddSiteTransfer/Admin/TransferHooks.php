@@ -317,6 +317,7 @@
 							$current_transfer_return_data['code'] = 'unknown-error';
 						}
 						$current_transfer_return_data['result'] = $current_setting->get_result();
+						$current_setting->reset_log();
 					}
 					else {
 						$current_transfer_return_data['status'] = 'ignored';
