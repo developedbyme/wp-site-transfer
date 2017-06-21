@@ -31,6 +31,7 @@
 				case "true_false":
 				case "select":
 				case "oembed":
+				case "date_picker":
 					if($repeater_path) {
 						update_sub_field($repeater_path, $field['value'], $post_id);
 						update_post_meta($post_id, implode('_', $meta_path), $field['value']);

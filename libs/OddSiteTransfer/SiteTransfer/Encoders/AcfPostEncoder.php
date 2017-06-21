@@ -99,6 +99,7 @@
 				case "true_false":
 				case "select":
 				case "oembed":
+				case "date_picker":
 					$current_send_field = array(
 						'type' => $acf_field['type'],
 						'value' => $acf_field['value']
