@@ -22,7 +22,18 @@
 		}
 		
 		protected function create_custom_post_types() {
-			//echo("\BtdmParallaxAds\Plugin::create_custom_post_types<br />");
+			//echo("\OddSiteTransfer\Plugin::create_custom_post_types<br />");
+			
+			$post_settings = new \OddSiteTransfer\OddCore\Admin\MetaData\ReactPostMetaDataBox();
+			$post_settings->create_simple_meta_fields(array('_odd_server_transfer_id'));
+			$post_settings->set_name('Site transfer settings');
+			$post_settings->set_nonce_name('odd_site_transfer_post_settings');
+			$post_settings->set_component('siteTransferPostSettings', array());
+			
+			$current_post_type = new \OddSiteTransfer\OddCore\Admin\CustomPostTypes\AlreadyRegisteredCustomPostTypePost();
+			$current_post_type->set_names('oa_recipe');
+			$current_post_type->add_meta_box_after_title($post_settings);
+			$this->add_custom_post_type($current_post_type);
 			
 			$this->add_custom_post_type(new \OddSiteTransfer\Admin\CustomPostTypes\ServerTransferCustomPostType());
 		}

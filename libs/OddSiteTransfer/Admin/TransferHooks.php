@@ -25,6 +25,9 @@
 			$default_term_encoder = EncoderSetup::create_term_encoder();
 			$default_user_encoder = EncoderSetup::create_user_encoder();
 			
+			$page_post_encoder = EncoderSetup::create_post_encoder(array('page'));
+			$post_post_encoder = EncoderSetup::create_post_encoder(array('post'));
+			
 			//METODO: split this up
 			$wine_post_encoder = EncoderSetup::create_post_encoder(array('oa_wine'));
 			
@@ -176,6 +179,15 @@
 			$current_server_settings->add_encoder($default_term_encoder);
 			$current_server_settings->add_encoder($default_user_encoder);
 			$this->add_server_settings('enjoy', $current_server_settings);
+			
+			//Manual post transfer
+			$current_server_settings = new \OddSiteTransfer\SiteTransfer\ServerSettings();
+			$current_server_settings->add_encoder($page_post_encoder);
+			$current_server_settings->add_encoder($post_post_encoder);
+			$current_server_settings->add_encoder($attachment_post_encoder);
+			$current_server_settings->add_encoder($default_term_encoder);
+			$current_server_settings->add_encoder($default_user_encoder);
+			$this->add_server_settings('posts', $current_server_settings);
 		}
 		
 		public function get_settings() {
@@ -453,8 +465,6 @@
 				}
 			}
 			else if($screen->base === 'post') {
-				
-				//var_dump($post);
 				
 				$is_incoming_link = get_post_meta($post->ID, '_odd_server_transfer_is_incoming', true);
 				

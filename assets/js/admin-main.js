@@ -74,11 +74,17 @@
 
 	var _SyncTestNotice2 = _interopRequireDefault(_SyncTestNotice);
 
+	var _PostSettings = __webpack_require__(167);
+
+	var _PostSettings2 = _interopRequireDefault(_PostSettings);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	//console.log("admin-main.js");
 
 	if (!window.OA) {
 		window.OA = new Object();
-	} //console.log("admin-main.js");
+	}
 
 	if (!window.OA.externallyAvailableClasses) {
 		window.OA.externallyAvailableClasses = new Object();
@@ -99,6 +105,7 @@
 	window.OA.reactModuleCreator.registerModule("checkSyncNotice", new _GenericReactClassModuleCreator2.default().setClass(_CheckSyncNotice2.default));
 	window.OA.reactModuleCreator.registerModule("incomingSyncNotice", new _GenericReactClassModuleCreator2.default().setClass(_IncomingSyncNotice2.default));
 	window.OA.reactModuleCreator.registerModule("syncTestNotice", new _GenericReactClassModuleCreator2.default().setClass(_SyncTestNotice2.default));
+	window.OA.reactModuleCreator.registerModule("siteTransferPostSettings", new _GenericReactClassModuleCreator2.default().setClass(_PostSettings2.default));
 
 	document.addEventListener("DOMContentLoaded", function (event) {
 		//console.log("admin-main.js DOMContentLoaded");
@@ -20071,6 +20078,8 @@
 		}, {
 			key: "componentDidMount",
 			value: function componentDidMount() {
+				//console.log("oddsitetransfer/admin/sync/CheckSyncNotice::componentDidMount"):
+
 				jQuery.get(this.props.transferUrl, function (aData) {
 					console.log(aData);
 					this._setResultData(aData);
@@ -20524,6 +20533,119 @@
 	}(_react2.default.Component);
 
 	exports.default = SyncTestNotice;
+
+/***/ },
+/* 167 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _react = __webpack_require__(3);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactDom = __webpack_require__(160);
+
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	// import PostSettings from "oddsitetransfer/admin/postsettings/PostSettings";
+
+	var PostSettings = function (_React$Component) {
+		_inherits(PostSettings, _React$Component);
+
+		function PostSettings(props) {
+			_classCallCheck(this, PostSettings);
+
+			var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(PostSettings).call(this, props));
+
+			_this.state = new Object();
+			_this.state['change'] = false;
+
+			_this._callback_toggleSettingsBound = _this._callback_toggleSettings.bind(_this);
+			return _this;
+		}
+
+		_createClass(PostSettings, [{
+			key: "_callback_toggleSettings",
+			value: function _callback_toggleSettings(aEvent) {
+				var newValue = !this.state['change'];
+
+				this.setState({ 'change': newValue });
+			}
+		}, {
+			key: "componentDidMount",
+			value: function componentDidMount() {}
+		}, {
+			key: "render",
+			value: function render() {
+
+				var changeText = !this.state['change'] ? "Change settings" : "Cancel changes";
+
+				var formFields = null;
+				if (this.state['change']) {
+
+					var defaultValue = "";
+					if (this.props.metaFields && this.props.metaFields["_odd_server_transfer_id"]) {
+						defaultValue = this.props.metaFields["_odd_server_transfer_id"];
+					}
+
+					formFields = _react2.default.createElement(
+						"div",
+						null,
+						_react2.default.createElement(
+							"label",
+							{ htmlFor: "_odd_server_transfer_id" },
+							"Transfer id:"
+						),
+						_react2.default.createElement("input", { type: "text", name: "_odd_server_transfer_id", defaultValue: defaultValue, style: { "width": 350 } })
+					);
+				}
+
+				return _react2.default.createElement(
+					"div",
+					null,
+					_react2.default.createElement(
+						"div",
+						null,
+						_react2.default.createElement(
+							"span",
+							{ className: "button button-primary button-large", onClick: this._callback_toggleSettingsBound },
+							changeText
+						),
+						_react2.default.createElement(
+							"span",
+							{ style: { "lineHeight": "28px", "marginLeft": "10px" } },
+							_react2.default.createElement(
+								"strong",
+								null,
+								"Warning:"
+							),
+							" changing these settings might cause unexpected behaviour"
+						)
+					),
+					formFields
+				);
+			}
+		}]);
+
+		return PostSettings;
+	}(_react2.default.Component);
+
+	exports.default = PostSettings;
 
 /***/ }
 /******/ ]);

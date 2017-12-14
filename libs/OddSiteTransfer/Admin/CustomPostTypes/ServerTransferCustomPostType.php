@@ -38,6 +38,7 @@
 			$select_field->add_option('Enjoy wine', 'enjoy');
 			$select_field->add_option('Foodservice', 'foodservice');
 			$select_field->add_option('Accademia', 'accademia');
+			$select_field->add_option('Manual posts and pages', 'posts');
 			$current_box->add_meta_field($select_field);
 			
 			$this->add_meta_box_after_title($current_box);

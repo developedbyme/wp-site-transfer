@@ -20,6 +20,41 @@
 			$current_send_field = NULL;
 			
 			switch($acf_field['type']) {
+				case "flexible_content":
+					$rows_array = array();
+					
+					$current_key = $acf_field['key'];
+					
+					if(have_rows($current_key, $post_id)) {
+						while(have_rows($current_key, $post_id)) {
+						
+							the_row();
+							$current_row = get_row();
+						
+							$row_result = array();
+							
+							$layout = get_row_layout();
+						
+							foreach($current_row as $key => $value) {
+								if($key === 'acf_fc_layout') {
+									continue;
+								}
+								
+								$current_row_field = get_field_object($key, $post_id, false, true);
+								
+								$row_result[$current_row_field['name']] = $this->encode_acf_field($current_row_field, $post_id, $dependencies, $value);
+							}
+							
+							array_push($rows_array, array('layout' => $layout, 'fields' => $row_result));
+						}
+					}
+					
+					$current_send_field = array(
+						'type' => $acf_field['type'],
+						'value' => $rows_array
+					);
+					
+					break;
 				case "repeater":
 					$rows_array = array();
 					$current_key = $acf_field['key'];
@@ -43,6 +78,7 @@
 						'type' => $acf_field['type'],
 						'value' => $rows_array
 					);
+					
 					break;
 				case "image":
 				case "post_object":
@@ -100,6 +136,7 @@
 				case "true_false":
 				case "select":
 				case "oembed":
+				case 'bool':
 					$current_send_field = array(
 						'type' => $acf_field['type'],
 						'value' => $acf_field['value']

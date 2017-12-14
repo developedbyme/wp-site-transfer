@@ -52,6 +52,8 @@ export default class CheckSyncNotice extends React.Component {
 	}
 	
 	componentDidMount() {
+		//console.log("oddsitetransfer/admin/sync/CheckSyncNotice::componentDidMount"):
+		
 		jQuery.get(this.props.transferUrl, (function(aData) {
 			console.log(aData);
 			this._setResultData(aData);
