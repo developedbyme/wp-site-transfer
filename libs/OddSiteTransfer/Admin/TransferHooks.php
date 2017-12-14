@@ -26,6 +26,7 @@
 			$default_user_encoder = EncoderSetup::create_user_encoder();
 			
 			$page_post_encoder = EncoderSetup::create_post_encoder(array('page'));
+			EncoderSetup::add_meta_fields_to_encoder($page_post_encoder, array('_wp_page_template'), array());
 			$post_post_encoder = EncoderSetup::create_post_encoder(array('post'));
 			
 			//METODO: split this up
