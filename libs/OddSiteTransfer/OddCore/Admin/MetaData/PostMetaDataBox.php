@@ -32,6 +32,14 @@
 			return $this;
 		}
 		
+		public function create_simple_meta_fields($field_names) {
+			foreach($field_names as $field_name) {
+				$current_field = new \OddSiteTransfer\OddCore\Admin\MetaData\MetaField();
+				$current_field->set_name($field_name);
+				$this->add_meta_field($current_field);
+			}
+		}
+		
 		public function add_meta_field($meta_field) {
 			$this->_meta_fields[$meta_field->get_meta_key()] = $meta_field;
 			

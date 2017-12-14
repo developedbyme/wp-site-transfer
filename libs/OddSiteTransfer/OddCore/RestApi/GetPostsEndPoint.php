@@ -155,95 +155,7 @@
 					$term_data_array[$taxonomy] = get_the_terms($id, $taxonomy);
 				}
 				
-				$rich_content_boxes = array();
-				$top_boxes_data = array();
-				$bottom_boxes_data = array();
 				
-				$top_boxes = get_post_meta($id, '_rich_content', true);
-				if(is_array($top_boxes)) {
-					
-					foreach($top_boxes AS $mb => $display) {
-						if($display) {
-							$meta = null;
-							$content = null;
-							if($mb === 'htmlcss') {
-								$meta = get_post_meta($id, '_richcontent_html', true);
-								$content = $meta;
-							}
-							elseif($mb === 'image') {
-								$meta = get_post_thumbnail_id();
-								$content = $this->get_image_tag($meta);
-							}
-							elseif($mb === 'imggallery') {
-								$meta = get_post_meta($id, '_richcontent_imggallery', true);
-								$content = "[gallery size=\"wrapper_width\" columns=\"1\" ids=\"".implode(',', $this->get_image_gallery_ids($meta))."\"]";
-							}
-							elseif($mb === 'pdfsales') {
-								$meta = get_post_meta($id, '_pdfsale_file_id', true);
-								$content = "[pdfsale id=\"{$meta}\"]";
-							}
-							elseif($mb === 'quizpoll') {
-								//MENOTE: poll doesn't have any meta
-								$content = "[poll id=\"{$id}\"]";
-							}
-							elseif($mb === 'video') {
-								$meta = get_post_meta($id, '_richcontent_video', true);
-								$content = $meta;
-								//MENOTE: data is stored as url and not the oembed
-								/*
-								if(filter_var($meta, FILTER_VALIDATE_URL)) {
-									$content = wp_oembed_get($meta, array('width' => 700));
-								}
-								*/
-							}
-							array_push($top_boxes_data, array('type' => $mb, 'content' => $content, 'meta' => $meta));
-						}
-					}
-				}
-				$bottom_boxes = get_post_meta($id, '_rich_content_bottom', true);
-				if(is_array($bottom_boxes)) {
-					
-					foreach($bottom_boxes AS $mb => $display) {
-						if($display) {
-							$meta = null;
-							$content = null;
-							if($mb === 'htmlcss') {
-								$meta = get_post_meta($id, '_richcontent_html_bottom', true);
-								$content = $meta;
-							}
-							elseif($mb === 'image') {
-								$meta = get_post_meta(get_the_ID(), '_richcontent_image_bottom', true);
-								$content = $this->get_image_tag($meta);
-							}
-							elseif($mb === 'imggallery') {
-								$meta = get_post_meta($id, '_richcontent_imggallery_bottom', true);
-								$content = "[gallery size=\"wrapper_width\" columns=\"1\" ids=\"".implode(',', $this->get_image_gallery_ids($meta))."\"]";
-							}
-							elseif($mb === 'pdfsales') {
-								$meta = get_post_meta($id, '_pdfsale_file_id_bottom', true);
-								$content = "[pdfsale id=\"{$meta}\"]";
-							}
-							elseif($mb === 'quizpoll') {
-								//MENOTE: poll doesn't have any meta
-								$content = "[poll id=\"{$id}\"]";
-							}
-							elseif($mb === 'video') {
-								$meta = get_post_meta($id, '_richcontent_video_bottom', true);
-								$content = $meta;
-								//MENOTE: data is stored as url and not the oembed
-								/*
-								if(filter_var($meta, FILTER_VALIDATE_URL)) {
-									$content = wp_oembed_get($meta, array('width' => 700));
-								}
-								*/
-							}
-							array_push($bottom_boxes_data, array('type' => $mb, 'content' => $content, 'meta' => $meta));
-						}
-					}
-				}
-				
-				$rich_content_boxes['top'] = $top_boxes_data;
-				$rich_content_boxes['bottom'] = $bottom_boxes_data;
 				
 				$return_array[] = array(
 					"id" => $id,
@@ -252,8 +164,7 @@
 					"thumbnailId" => $thumbnail_id,
 					"thumbnailSource" => $thumbnail_source,
 					"content" => $post->post_content,
-					"terms" => $term_data_array,
-					"richContentBoxes" => $rich_content_boxes
+					"terms" => $term_data_array
 				);
 			}
 			wp_reset_postdata();

@@ -28,6 +28,9 @@
 		protected $_meta_boxes_after_title = array();
 		protected $_meta_boxes_after_editor = array();
 		
+		protected $_owned_taxonomies = array();
+		protected $_registered_taxonomies = array();
+		
 		public $javascript_files = array();
 		public $javascript_data = array();
 		public $css_files = array();
@@ -37,24 +40,32 @@
 			
 			$this->_arguments = array(
 				'description' => null,
-				'public' => false,
-				'exclude_from_search' => true,
-				'publicly_queryable' => false,
+				'public' => true,
+				'hierarchical' => false,
+				'exclude_from_search' => false,
+				'publicly_queryable' => true,
 				'show_ui' => true,
-				'show_in_nav_menus' => true,
+				'show_in_nav_menus' => false,
 				'show_in_menu' => true,
 				'show_in_admin_bar' => true,
-				'menu_position' => null,
+				'menu_position' => 5,
 				'menu_icon' => null,
 				'capability_type' => 'post',
-				//'capabilities' => array(),
 				'hierarchical' => false,
-				'supports' => array( 'title', 'editor', 'author', 'comments', 'thumbnail', 'revisions' ),
-				'taxonomies' => array(),
+				'can_export' => true,
+				'supports' => array( 'title', 'editor', 'thumbnail'),
+				'taxonomies' => array( 'category' ),
 				'has_archive' => true,
 				'rewrite' => array( 'slug' => $this->_system_name ),
 				'query_var' => true
 			);
+			
+		}
+		
+		public function set_argument($name, $value) {
+			$this->_arguments[$name] = $value;
+			
+			return $this;
 		}
 		
 		public function get_system_name() {
@@ -75,12 +86,18 @@
 		
 		public function setup_labels_autonaming($name) {
 			
-			$multiple_name = $name.'s'; //METODO: do better
-			//METODO: fix parent_item_colon
+			if(substr($name, -1) === 'y') {
+				$multiple_name = substr($name, 0, -1).'ies';
+			}
+			else {
+				$multiple_name = $name.'s';
+			}
 			
 			$this->_labels = array(
 				'name' => __( ucfirst($multiple_name), ODD_SITE_TRANSFER_TEXTDOMAIN ),
 				'singular_name' => __( ucfirst($name), ODD_SITE_TRANSFER_TEXTDOMAIN ),
+				'menu_name' => __( ucfirst($multiple_name), ODD_SITE_TRANSFER_TEXTDOMAIN ),
+				'name_admin_bar' => __( ucfirst($name), ODD_SITE_TRANSFER_TEXTDOMAIN ),
 				'add_new' => __( 'Add New', ODD_SITE_TRANSFER_TEXTDOMAIN ),
 				'add_new_item' => __( 'Add New '.ucfirst($name), ODD_SITE_TRANSFER_TEXTDOMAIN ),
 				'edit_item' => __( 'Edit '.ucfirst($name), ODD_SITE_TRANSFER_TEXTDOMAIN ),
@@ -88,11 +105,56 @@
 				'all_items' => __( 'All '.ucfirst($multiple_name), ODD_SITE_TRANSFER_TEXTDOMAIN ),
 				'view_item' => __( 'View '.ucfirst($name), ODD_SITE_TRANSFER_TEXTDOMAIN ),
 				'search_items' => __( 'Search '.ucfirst($multiple_name), ODD_SITE_TRANSFER_TEXTDOMAIN ),
-				'not_found' => __( 'No '.$name.' found', ODD_SITE_TRANSFER_TEXTDOMAIN ),
-				'not_found_in_trash' => __( 'No '.$name.' found in trash', ODD_SITE_TRANSFER_TEXTDOMAIN ),
-				'parent_item_colon' => '',
-				'menu_name' => __( ucfirst($multiple_name), ODD_SITE_TRANSFER_TEXTDOMAIN )
+				'not_found' => __( 'No '.$multiple_name.' found', ODD_SITE_TRANSFER_TEXTDOMAIN ),
+				'not_found_in_trash' => __( 'No '.$multiple_name.' found in trash', ODD_SITE_TRANSFER_TEXTDOMAIN ),
+				'parent_item_colon'     => __( 'Parent '.ucfirst($name).':', ODD_SITE_TRANSFER_TEXTDOMAIN ),
+				'archives'              => __( ucfirst($name).' Archives', ODD_SITE_TRANSFER_TEXTDOMAIN ),
+				'edit_item'             => __( 'Edit '.ucfirst($name), ODD_SITE_TRANSFER_TEXTDOMAIN ),
+				'update_item'           => __( 'Update '.ucfirst($name), ODD_SITE_TRANSFER_TEXTDOMAIN ),
+				'view_item'             => __( 'View '.ucfirst($name), ODD_SITE_TRANSFER_TEXTDOMAIN ),
+				'search_items'          => __( 'Search '.ucfirst($multiple_name), ODD_SITE_TRANSFER_TEXTDOMAIN ),
+				'items_list'            => __( ucfirst($multiple_name).' list', ODD_SITE_TRANSFER_TEXTDOMAIN ),
+				'items_list_navigation' => __( ucfirst($multiple_name).' list navigation', ODD_SITE_TRANSFER_TEXTDOMAIN ),
+				'filter_items_list'     => __( 'Filter '.ucfirst($multiple_name).' list', ODD_SITE_TRANSFER_TEXTDOMAIN )
 			);
+			
+			//'featured_image'        => __( 'Featured Image', ODD_SITE_TRANSFER_TEXTDOMAIN ),
+			//'set_featured_image'    => __( 'Set featured image', ODD_SITE_TRANSFER_TEXTDOMAIN ),
+			//'remove_featured_image' => __( 'Remove featured image', ODD_SITE_TRANSFER_TEXTDOMAIN ),
+			//'use_featured_image'    => __( 'Use as featured image', ODD_SITE_TRANSFER_TEXTDOMAIN ),
+			//'insert_into_item'      => __( 'Insert into item', ODD_SITE_TRANSFER_TEXTDOMAIN ),
+			//'uploaded_to_this_item' => __( 'Uploaded to this item', ODD_SITE_TRANSFER_TEXTDOMAIN ),
+		}
+		
+		public function get_owned_taxonomy($name) {
+			return $this->_owned_taxonomies[$name];
+		}
+		
+		public function add_owned_taxonomy($custom_taxonomy) {
+			
+			$name = $custom_taxonomy->get_system_name();
+			
+			$this->_owned_taxonomies[$name] = $custom_taxonomy;
+			$this->_registered_taxonomies[] = $name;
+			
+			return $this;
+		}
+		
+		public function create_taxonomy($system_name, $display_name, $hierarchical) {
+			$new_taxonomy = new \OddSiteTransfer\OddCore\Admin\Taxonomies\CustomTaxonomy();
+			$new_taxonomy->set_names($system_name, $display_name);
+			$new_taxonomy->set_argument('hierarchical', $hierarchical);
+			
+			$this->add_owned_taxonomy($new_taxonomy);
+			
+			return $new_taxonomy;
+		}
+		
+		public function add_taxonomy($name) {
+			
+			$this->_registered_taxonomies[] = $name;
+			
+			return $this;
 		}
 		
 		public function add_meta_box_after_title($meta_box) {
@@ -109,10 +171,20 @@
 		
 		public function register() {
 			//echo("\OddCore\Admin\CustomPostTypes\CustomPostTypePost::register<br />");
+			//echo($this->_system_name);
 			
 			$this->_arguments['labels'] = $this->_labels;
 			
 			register_post_type($this->_system_name, $this->_arguments);
+			
+			foreach($this->_owned_taxonomies as $name => $custom_taxonomy) {
+				$custom_taxonomy->register();
+			}
+			foreach($this->_registered_taxonomies as $name) {
+				register_taxonomy_for_object_type($name, $this->_system_name);
+			}
+			
+			
 		}
 		
 		public function enqueue_scripts_and_styles() {

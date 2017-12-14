@@ -15,9 +15,9 @@
 			
 			$this->_holder_id = sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
 			
-			$portrait_image_meta_field = new \OddSiteTransfer\OddCore\Admin\MetaData\MetaField();
-			$portrait_image_meta_field->set_name('portrait_image');
-			$this->add_meta_field($portrait_image_meta_field);
+			//$portrait_image_meta_field = new \OddSiteTransfer\OddCore\Admin\MetaData\MetaField();
+			//$portrait_image_meta_field->set_name('portrait_image');
+			//$this->add_meta_field($portrait_image_meta_field);
 		}
 		
 		public function set_component($name, $data = null) {
@@ -30,12 +30,13 @@
 		protected function get_react_data($post) {
 			
 			$id = $post->ID;
-			$thumbnail_id = get_post_thumbnail_id($id);
-			$this->_data['initialImage'] = ($thumbnail_id) ? wp_get_attachment_image_src($thumbnail_id, array(1920, 1080))[0] : NULL;
+			
+			//$thumbnail_id = get_post_thumbnail_id($id);
+			//$this->_data['initialImage'] = ($thumbnail_id) ? wp_get_attachment_image_src($thumbnail_id, array(1920, 1080))[0] : NULL;
 			$this->_data['removeFeaturedImageNonce'] = wp_create_nonce('set_post_thumbnail-'.$id);
 			
-			$portrait_image_id = $this->_meta_fields['portrait_image']->get_value($post);
-			$this->_data['initialPortraitImage'] = ($portrait_image_id) ? wp_get_attachment_image_src($portrait_image_id, array(768, 1200))[0] : NULL;
+			//$portrait_image_id = $this->_meta_fields['portrait_image']->get_value($post);
+			//$this->_data['initialPortraitImage'] = ($portrait_image_id) ? wp_get_attachment_image_src($portrait_image_id, array(768, 1200))[0] : NULL;
 			
 			$meta_fields_data = array();
 			foreach($this->_meta_fields as $meta_field) {

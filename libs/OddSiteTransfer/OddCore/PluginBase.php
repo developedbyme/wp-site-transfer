@@ -13,12 +13,10 @@
 		protected $_meta_boxes = null;
 		protected $_filters = null;
 		protected $_additional_hooks = null;
+		protected $_default_hook_priority = 10;
 		
-		protected $_javascript_files = array();
-		protected $_javascript_data = array();
-		protected $_css_files = array();
-		
-		public $external_access = array();
+		public $javascript_files = array();
+		public $css_files = array(); //METODO
 		
 		function __construct() {
 			//echo("\OddSiteTransfer\OddCore\PluginBase::__construct<br />");
@@ -278,17 +276,35 @@
 			return $this->_meta_boxes;
 		}
 		
+		public function add_javascript($id, $path) {
+			if(isset($this->javascript_files[$id])) {
+				//METODO: error message
+			}
+			$this->javascript_files[$id] = $path;
+			
+			return $this;
+		}
+		
+		public function add_javascripts($scripts) {
+			foreach($scripts as $id => $path) {
+				$this->add_javascript($id, $path);
+			}
+			
+			return $this;
+		}
+		
 		public function register_hooks() {
 			//echo("\OddSiteTransfer\OddCore\PluginBase::register_hooks<br />");
 			
-			add_action('init', array($this, 'hook_init'));
-			add_action('admin_menu', array($this, 'hook_admin_menu'));
-			add_action('admin_enqueue_scripts', array($this, 'hook_admin_enqueue_scripts'));
-			add_action('rest_api_init', array($this, 'hook_rest_api_init'));
-			add_action('edit_form_after_title', array($this, 'hook_edit_form_after_title'));
-			add_action('edit_form_after_editor', array($this, 'hook_edit_form_after_editor'));
-			add_action('save_post', array($this, 'hook_save_post'), 10, 3);
-			add_action('add_meta_boxes', array($this, 'hook_add_meta_boxes'));
+			add_action('init', array($this, 'hook_init'), $this->_default_hook_priority);
+			add_action('admin_menu', array($this, 'hook_admin_menu'), $this->_default_hook_priority);
+			add_action('admin_enqueue_scripts', array($this, 'hook_admin_enqueue_scripts'), $this->_default_hook_priority);
+			add_action('rest_api_init', array($this, 'hook_rest_api_init'), $this->_default_hook_priority);
+			add_action('edit_form_after_title', array($this, 'hook_edit_form_after_title'), $this->_default_hook_priority);
+			add_action('edit_form_after_editor', array($this, 'hook_edit_form_after_editor'), $this->_default_hook_priority);
+			add_action('save_post', array($this, 'hook_save_post'), $this->_default_hook_priority, 3);
+			add_action('add_meta_boxes', array($this, 'hook_add_meta_boxes'), $this->_default_hook_priority);
+			add_action('wp_enqueue_scripts', array($this, 'hook_wp_enqueue_scripts'), $this->_default_hook_priority);
 			
 			$ajax_api_end_points = $this->get_ajax_api_end_points();
 			foreach($ajax_api_end_points as $current_end_point) {
@@ -345,20 +361,6 @@
 		public function hook_admin_enqueue_scripts() {
 			//echo("\OddSiteTransfer\OddCore\PluginBase::hook_admin_enqueue_scripts<br />");
 			
-			foreach($this->_javascript_files as $id => $path) {
-				wp_enqueue_script($id, $path);
-			}
-			
-			foreach($this->_javascript_data as $file_id => $data_array) {
-				foreach($data_array as $object_id => $data) {
-					wp_localize_script($file_id, $object_id, $data);
-				}
-			}
-			
-			foreach($this->_css_files as $id => $path) {
-				wp_enqueue_style($id, $path);
-			}
-			
 			$screen = get_current_screen();
 			$current_page_name = $screen->id;
 			
@@ -374,44 +376,6 @@
 				$current_post->enqueue_scripts_and_styles();
 			}
 		}
-		
-		public function add_javascript($id, $path) {
-			if(isset($this->_javascript_files[$id])) {
-				//METODO: error message
-			}
-			$this->_javascript_files[$id] = $path;
-			
-			return $this;
-		}
-		
-		public function add_javascripts($scripts) {
-			foreach($scripts as $id => $path) {
-				$this->add_javascript($id, $path);
-			}
-			
-			return $this;
-		}
-		
-		public function add_javascript_data($id, $object_name, $data) {
-			
-			if(!isset($this->_javascript_data[$id])) {
-				//METODO: check that a script exists with that id
-				$this->_javascript_data[$id] = array();
-			}
-			$this->_javascript_data[$id][$object_name] = $data;
-			
-			return $this;
-		}
-		
-		public function add_css($id, $path) {
-			if(isset($this->_css_files[$id])) {
-				//METODO: error message
-			}
-			$this->_css_files[$id] = $path;
-			
-			return $this;
-		}
-		
 		
 		public function hook_rest_api_init() {
 			//echo("\OddSiteTransfer\OddCore\PluginBase::hook_rest_api_init<br />");
@@ -465,6 +429,12 @@
 			if(isset($custom_post_types[$current_page_name])) {
 				$current_post = $custom_post_types[$current_page_name];
 				$current_post->verify_and_save($post_id);
+			}
+		}
+		
+		public function hook_wp_enqueue_scripts() {
+			foreach($this->javascript_files as $id => $path) {
+				wp_enqueue_script($id, $path, array(), "wp-".get_bloginfo('version').','.ODD_SITE_TRANSFER_DOMAIN.'-'.ODD_SITE_TRANSFER_VERSION);
 			}
 		}
 		
