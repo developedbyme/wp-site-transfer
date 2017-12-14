@@ -293,6 +293,15 @@
 			return $this;
 		}
 		
+		public function add_css($id, $path) {
+			if(isset($this->_css_files[$id])) {
+				//METODO: error message
+			}
+			$this->_css_files[$id] = $path;
+			
+			return $this;
+		}
+		
 		public function register_hooks() {
 			//echo("\OddSiteTransfer\OddCore\PluginBase::register_hooks<br />");
 			
@@ -360,6 +369,11 @@
 		
 		public function hook_admin_enqueue_scripts() {
 			//echo("\OddSiteTransfer\OddCore\PluginBase::hook_admin_enqueue_scripts<br />");
+
+			foreach($this->_css_files as $id => $path) {
+				wp_enqueue_style($id, $path);
+			}
+			
 			
 			$screen = get_current_screen();
 			$current_page_name = $screen->id;
