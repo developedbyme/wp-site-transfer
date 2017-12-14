@@ -53,7 +53,12 @@
 					}
 					break;
 				case "taxonomy":
-					$ids = $field['value']['ids'];
+					if(isset($field['value']['ids'])) {
+						$ids = $field['value']['ids'];
+					}
+					else {
+						$ids = array();
+					}
 					$taxonomy = $field['value']['taxonomy'];
 
 					if(is_array($ids)) {
@@ -84,7 +89,7 @@
 					$acf_key = acf_get_field($name)["key"];
 
 					foreach($new_rows as $index => $row) {
-						//METODO: length is set directly to meta data
+						//MENOTE: length is set directly to meta data
 
 						foreach($row as $row_field_name => $row_field) {
 							$new_path = array($name, $index+1, $row_field_name);
@@ -108,6 +113,42 @@
 						update_post_meta($post_id, '_'.$meta_value_name, $acf_key);
 					}
 
+					break;
+				case "flexible_content":
+					
+					$new_rows = $field['value'];
+					$layouts = array();
+
+					$acf_key = acf_get_field($name)["key"];
+
+					foreach($new_rows as $index => $row_and_layout) {
+						//MENOTE: length is set directly to meta data
+						
+						$row = $row_and_layout['fields'];
+						$layouts[] = $row_and_layout['layout'];
+
+						foreach($row as $row_field_name => $row_field) {
+							$new_path = array($name, $index+1, $row_field_name);
+							$new_meta_path = array($name, $index, $row_field_name);
+							if($repeater_path) {
+								$new_path = array_merge($repeater_path, array($index+1, $row_field_name));
+								$new_meta_path = array_merge($meta_path, array($index, $row_field_name));
+							}
+							//echo(implode(',', $new_path).'<br />');
+							$this->update_acf_field($repeater_path, $row_field, $post_id, $resolved_dependencies, $new_path, $new_meta_path);
+						}
+					}
+
+					$meta_value_name = $name;
+					if($meta_path) {
+						$meta_value_name = implode('_', $meta_path);
+					}
+
+					update_post_meta($post_id, $meta_value_name, $layouts);
+					if($acf_key) {
+						update_post_meta($post_id, '_'.$meta_value_name, $acf_key);
+					}
+					
 					break;
 			}
 		}
