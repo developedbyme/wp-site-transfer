@@ -35,6 +35,11 @@
 			$current_post_type->add_meta_box_after_title($post_settings);
 			$this->add_custom_post_type($current_post_type);
 			
+			$current_post_type = new \OddSiteTransfer\OddCore\Admin\CustomPostTypes\AlreadyRegisteredCustomPostTypePost();
+			$current_post_type->set_names('page');
+			$current_post_type->add_meta_box_after_title($post_settings);
+			$this->add_custom_post_type($current_post_type);
+			
 			$this->add_custom_post_type(new \OddSiteTransfer\Admin\CustomPostTypes\ServerTransferCustomPostType());
 		}
 		
