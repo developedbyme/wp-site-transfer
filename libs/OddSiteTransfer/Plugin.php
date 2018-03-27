@@ -24,23 +24,18 @@
 		protected function create_custom_post_types() {
 			//echo("\OddSiteTransfer\Plugin::create_custom_post_types<br />");
 			
+			/*
 			$post_settings = new \OddSiteTransfer\OddCore\Admin\MetaData\ReactPostMetaDataBox();
 			$post_settings->create_simple_meta_fields(array('_odd_server_transfer_id'));
 			$post_settings->set_name('Site transfer settings');
 			$post_settings->set_nonce_name('odd_site_transfer_post_settings');
 			$post_settings->set_component('siteTransferPostSettings', array());
 			
-			/*
-			$current_post_type = new \OddSiteTransfer\OddCore\Admin\CustomPostTypes\AlreadyRegisteredCustomPostTypePost();
-			$current_post_type->set_names('oa_recipe');
-			$current_post_type->add_meta_box_after_title($post_settings);
-			$this->add_custom_post_type($current_post_type);
-			*/
-			
 			$current_post_type = new \OddSiteTransfer\OddCore\Admin\CustomPostTypes\AlreadyRegisteredCustomPostTypePost();
 			$current_post_type->set_names('page');
 			$current_post_type->add_meta_box_after_title($post_settings);
 			$this->add_custom_post_type($current_post_type);
+			*/
 			
 			$this->add_custom_post_type(new \OddSiteTransfer\Admin\CustomPostTypes\ChannelCustomPostType());
 			$this->add_custom_post_type(new \OddSiteTransfer\Admin\CustomPostTypes\TransferCustomPostType());
@@ -50,68 +45,18 @@
 		protected function create_additional_hooks() {
 			//echo("\OddSiteTransfer\Plugin::create_additional_hooks<br />");
 			
+			/*
 			$transfer_hooks = new \OddSiteTransfer\Admin\TransferHooks();
 			
 			$this->external_access['transfer_hooks'] = $transfer_hooks;
 			$this->add_additional_hook($transfer_hooks);
+			*/
 		}
 		
 		protected function create_rest_api_end_points() {
 			//echo("\OddSiteTransfer\Plugin::create_rest_api_end_points<br />");
 			
 			/*
-			$current_end_point = new \OddSiteTransfer\RestApi\GetTransferInfoEndPoint();
-			$current_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
-			$current_end_point->setup('info', 'odd-site-transfer', 1, 'GET');
-			$this->_rest_api_end_points[] = $current_end_point;
-			
-			$this->create_rest_api_end_point(new \OddSiteTransfer\OddCore\RestApi\IdentifyPostEndPoint(), 'identify/(?P<postType>[a-zA-Z0-9_\-.]+)/(?P<searchType>[a-zA-Z0-9_\-.]+)/(?P<identifier>[a-zA-Z0-9_\-.]+)', 'odd-site-transfer', array('Access-Control-Allow-Origin' => '*'));
-			
-			$sync_user_end_point = new \OddSiteTransfer\RestApi\SyncUserEndPoint();
-			$sync_user_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
-			$sync_user_end_point->setup('sync/user', 'odd-site-transfer', 1, 'POST');
-			//METODO: security
-			$this->_rest_api_end_points[] = $sync_user_end_point;	
-			
-			$sync_post_end_point = new \OddSiteTransfer\RestApi\SyncPostEndPoint();
-			$sync_post_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
-			$sync_post_end_point->setup('sync/post', 'odd-site-transfer', 1, 'POST');
-			//METODO: security
-			$this->_rest_api_end_points[] = $sync_post_end_point;
-			
-			
-			$compare_image_end_point = new \OddSiteTransfer\RestApi\CompareImageEndPoint();
-			$compare_image_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
-			$compare_image_end_point->setup('compare/image', 'odd-site-transfer', 1, 'POST');
-			//METODO: security
-			$this->_rest_api_end_points[] = $compare_image_end_point;
-			
-			$sync_image_end_point = new \OddSiteTransfer\RestApi\SyncImageEndPoint();
-			$sync_image_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
-			$sync_image_end_point->setup('sync/image', 'odd-site-transfer', 1, 'POST');
-			//METODO: security
-			$this->_rest_api_end_points[] = $sync_image_end_point;
-			
-			$sync_term_end_point = new \OddSiteTransfer\RestApi\SyncTermEndPoint();
-			$sync_term_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
-			$sync_term_end_point->setup('sync/term', 'odd-site-transfer', 1, 'POST');
-			//METODO: security
-			$this->_rest_api_end_points[] = $sync_term_end_point;
-			
-			
-			$transfer_post_end_point = new \OddSiteTransfer\RestApi\TransferPostEndPoint();
-			$transfer_post_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
-			$transfer_post_end_point->setup('post/(?P<id>\d+)/transfer', 'odd-site-transfer', 1, 'GET');
-			//METODO: security
-			$this->_rest_api_end_points[] = $transfer_post_end_point;
-			
-			$current_end_point = new \OddSiteTransfer\RestApi\LinkExistingPostBySlugEndPoint();
-			$current_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
-			$current_end_point->setup('post/(?P<id>\d+)/link', 'odd-site-transfer', 1, 'GET');
-			$this->_rest_api_end_points[] = $current_end_point;
-			*/
-			
-			
 			//v2
 			$current_end_point = new \OddSiteTransfer\RestApi\GetTransferInfoEndPoint();
 			$current_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
@@ -172,6 +117,16 @@
 			$current_end_point->setup('(?P<postType>[a-zA-Z0-9_\-]+)/remove-missing', 'odd-site-transfer', 2, 'GET');
 			//METODO: security
 			$this->_rest_api_end_points[] = $current_end_point;
+			*/
+			
+			$api_namespace = 'ost';
+			$api_version = 3;
+			
+			//v3
+			$current_end_point = new \OddSiteTransfer\RestApi\CreateTransferForPostEndpoint();
+			$current_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
+			$current_end_point->setup('post/(?P<id>\d+)/transfer', $api_namespace, $api_version, 'GET');
+			$this->_rest_api_end_points[] = $current_end_point;
 			
 			
 		}
@@ -182,6 +137,7 @@
 			
 			parent::hook_admin_enqueue_scripts();
 			
+			/*
 			$screen = get_current_screen();
 			
 			wp_enqueue_script( 'odd-site-transfer-admin-main', ODD_SITE_TRANSFER_URL . '/assets/js/admin-main.js');
@@ -193,6 +149,7 @@
 					'restApiBaseUrl' => get_home_url().'/wp-json/'
 				)
 			);
+			*/
 		}
 		
 		

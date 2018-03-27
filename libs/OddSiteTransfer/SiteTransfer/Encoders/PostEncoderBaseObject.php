@@ -39,11 +39,11 @@
 			return false;
 		}
 		
-		protected function get_post_transfer_id($object) {
-			$id = get_post_meta($object->ID, '_odd_server_transfer_id', true);
+		protected function get_post_transfer_id($post) {
+			$id = get_post_meta($post->ID, 'ost_transfer_id', true);
 			if(!$id) {
 				$id = sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
-				update_post_meta($object->ID, '_odd_server_transfer_id', $id);
+				update_post_meta($post->ID, 'ost_transfer_id', $id);
 			}
 			
 			return $id;
