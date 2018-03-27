@@ -3,16 +3,17 @@
 	
 	use \OddSiteTransfer\OddCore\Admin\CustomPostTypes\CustomPostTypePost;
 	
-	// \OddSiteTransfer\Admin\CustomPostTypes\ServerConnectionCustomPostType
-	class ServerConnectionCustomPostType extends CustomPostTypePost {
+	// \OddSiteTransfer\Admin\CustomPostTypes\ChannelCustomPostType
+	class ChannelCustomPostType extends CustomPostTypePost {
 		
 		function __construct() {
-			//echo("\Admin\CustomPostTypes\ServerConnectionCustomPostType::__construct<br />");
+			//echo("\Admin\CustomPostTypes\ChannelCustomPostType::__construct<br />");
 			
 			parent::__construct();
 			
-			$this->set_names('server-connection', 'server connection');
+			$this->set_names('ost_channel', 'channel');
 			$this->_arguments['supports'] = array('title');
+			$this->_arguments['taxonomies'] = array();
 			
 			$current_box = new \OddSiteTransfer\OddCore\Admin\MetaData\PostMetaDataFieldBox();
 			$current_box->set_name('URL');
@@ -34,7 +35,7 @@
 		}
 		
 		public static function test_import() {
-			echo("Imported \Admin\CustomPostTypes\ServerConnectionCustomPostType<br />");
+			echo("Imported \Admin\CustomPostTypes\ChannelCustomPostType<br />");
 		}
 	}
 ?>

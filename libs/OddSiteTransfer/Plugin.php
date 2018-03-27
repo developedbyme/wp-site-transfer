@@ -30,17 +30,21 @@
 			$post_settings->set_nonce_name('odd_site_transfer_post_settings');
 			$post_settings->set_component('siteTransferPostSettings', array());
 			
+			/*
 			$current_post_type = new \OddSiteTransfer\OddCore\Admin\CustomPostTypes\AlreadyRegisteredCustomPostTypePost();
 			$current_post_type->set_names('oa_recipe');
 			$current_post_type->add_meta_box_after_title($post_settings);
 			$this->add_custom_post_type($current_post_type);
+			*/
 			
 			$current_post_type = new \OddSiteTransfer\OddCore\Admin\CustomPostTypes\AlreadyRegisteredCustomPostTypePost();
 			$current_post_type->set_names('page');
 			$current_post_type->add_meta_box_after_title($post_settings);
 			$this->add_custom_post_type($current_post_type);
 			
-			$this->add_custom_post_type(new \OddSiteTransfer\Admin\CustomPostTypes\ServerConnectionCustomPostType());
+			$this->add_custom_post_type(new \OddSiteTransfer\Admin\CustomPostTypes\ChannelCustomPostType());
+			$this->add_custom_post_type(new \OddSiteTransfer\Admin\CustomPostTypes\TransferCustomPostType());
+			
 		}
 		
 		protected function create_additional_hooks() {
