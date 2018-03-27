@@ -40,7 +40,7 @@
 			$current_post_type->add_meta_box_after_title($post_settings);
 			$this->add_custom_post_type($current_post_type);
 			
-			$this->add_custom_post_type(new \OddSiteTransfer\Admin\CustomPostTypes\ServerTransferCustomPostType());
+			$this->add_custom_post_type(new \OddSiteTransfer\Admin\CustomPostTypes\ServerConnectionCustomPostType());
 		}
 		
 		protected function create_additional_hooks() {
