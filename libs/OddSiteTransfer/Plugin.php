@@ -121,6 +121,11 @@
 			$api_version = 3;
 			
 			//v3
+			$current_end_point = new \OddSiteTransfer\RestApi\GetTransferInfoEndPoint();
+			$current_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
+			$current_end_point->setup('info', $api_namespace, $api_version, 'GET');
+			$this->_rest_api_end_points[] = $current_end_point;
+			
 			$current_end_point = new \OddSiteTransfer\RestApi\CreateTransferForPostEndpoint();
 			$current_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
 			$current_end_point->setup('post/(?P<id>\d+)/create-transfer', $api_namespace, $api_version, 'GET'); //METODO: change to post
@@ -129,6 +134,11 @@
 			$current_end_point = new \OddSiteTransfer\RestApi\BidirectionalTransfer\OutgoingTransferEndpoint();
 			$current_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
 			$current_end_point->setup('outgoing-transfer/(?P<id>.+)', $api_namespace, $api_version, 'GET'); //METODO: change to post
+			$this->_rest_api_end_points[] = $current_end_point;
+			
+			$current_end_point = new \OddSiteTransfer\RestApi\BidirectionalTransfer\IncomingTransferEndpoint();
+			$current_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
+			$current_end_point->setup('incoming-transfer/(?P<id>.+)', $api_namespace, $api_version, 'GET'); //METODO: change to post
 			$this->_rest_api_end_points[] = $current_end_point;
 			
 		}
