@@ -51,6 +51,16 @@
 				);
 				
 				HttpLoading::send_json_request($url, $body);
+				
+				$url = 'http://transfer2.localhost/wp-json/ost/v3/run-imports';
+				
+				$body = array(
+					'ids' => array(
+						$transfer_id
+					)
+				);
+				
+				HttpLoading::send_json_request($url, $body);
 			}
 		}
 		
