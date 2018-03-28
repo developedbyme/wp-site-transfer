@@ -45,12 +45,10 @@
 		protected function create_additional_hooks() {
 			//echo("\OddSiteTransfer\Plugin::create_additional_hooks<br />");
 			
-			/*
 			$transfer_hooks = new \OddSiteTransfer\Admin\TransferHooks();
 			
 			$this->external_access['transfer_hooks'] = $transfer_hooks;
 			$this->add_additional_hook($transfer_hooks);
-			*/
 		}
 		
 		protected function create_rest_api_end_points() {
@@ -125,9 +123,13 @@
 			//v3
 			$current_end_point = new \OddSiteTransfer\RestApi\CreateTransferForPostEndpoint();
 			$current_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
-			$current_end_point->setup('post/(?P<id>\d+)/transfer', $api_namespace, $api_version, 'GET');
+			$current_end_point->setup('post/(?P<id>\d+)/create-transfer', $api_namespace, $api_version, 'GET'); //METODO: change to post
 			$this->_rest_api_end_points[] = $current_end_point;
 			
+			$current_end_point = new \OddSiteTransfer\RestApi\BidirectionalTransfer\OutgoingTransferEndpoint();
+			$current_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
+			$current_end_point->setup('outgoing-transfer/(?P<id>.+)', $api_namespace, $api_version, 'GET'); //METODO: change to post
+			$this->_rest_api_end_points[] = $current_end_point;
 			
 		}
 		

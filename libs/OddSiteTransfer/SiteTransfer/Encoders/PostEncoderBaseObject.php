@@ -164,8 +164,9 @@
 			$return_object['data']['post_name'] = $object->post_name;
 			$return_object['data']['post_date'] = $object->post_date;
 			$return_object['data']['post_date_gmt'] = $object->post_date_gmt;
-			$return_object['data']['post_modified'] = $object->post_modified;
-			$return_object['data']['post_modified_gmt'] = $object->post_modified_gmt;
+			//MENOTE: using the modified makes the hash function break, ignoring for now
+			//$return_object['data']['post_modified'] = $object->post_modified;
+			//$return_object['data']['post_modified_gmt'] = $object->post_modified_gmt;
 			$return_object['data']['comment_status'] = $object->comment_status;
 			$return_object['data']['menu_order'] = $object->menu_order;
 			$return_object['data']['post_mime_type'] = $object->post_mime_type;

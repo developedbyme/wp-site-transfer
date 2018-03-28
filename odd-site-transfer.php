@@ -20,14 +20,29 @@
 	$OddSiteTransferPlugin = new \OddSiteTransfer\Plugin();
 	\OddSiteTransfer\Plugin::$singleton = $OddSiteTransferPlugin;
 	
+	require_once( ODD_SITE_TRANSFER_DIR . "/external-functions.php" );
 	
 	function ost_debug_transfer_type_page($type, $post_id, $post) {
-		switch($post->post_type) {
-			case 'page':
-				return 'post';
+		if($type === null) {
+			switch($post->post_type) {
+				case 'page':
+					return 'post';
+			}
 		}
-		return null;
+		return $type;
 	}
 	
 	add_filter(ODD_SITE_TRANSFER_DOMAIN.'/post_transfer_type', 'ost_debug_transfer_type_page', 10, 3);
+	
+	function ost_debug_transfer_update_type_page($type, $post_id, $post) {
+		if($type === null) {
+			switch($post->post_type) {
+				case 'page':
+					return 'always';
+			}
+		}
+		return $type;
+	}
+	
+	add_filter(ODD_SITE_TRANSFER_DOMAIN.'/post_transfer_update_type', 'ost_debug_transfer_update_type_page', 10, 3);
 ?>
