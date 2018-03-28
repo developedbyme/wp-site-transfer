@@ -141,6 +141,10 @@
 			$current_end_point->setup('incoming-transfer', $api_namespace, $api_version, 'POST');
 			$this->_rest_api_end_points[] = $current_end_point;
 			
+			$current_end_point = new \OddSiteTransfer\RestApi\BidirectionalTransfer\RunImportsEndpoint();
+			$current_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
+			$current_end_point->setup('run-imports', $api_namespace, $api_version, 'POST');
+			$this->_rest_api_end_points[] = $current_end_point;
 		}
 		
 		
