@@ -10,6 +10,28 @@
 		return $id;
 	}
 	
+	function ost_get_post_id_for_transfer($transfer_id) {
+		$args = array(
+			'post_type' => 'any',
+			'fields' => 'ids',
+			'meta_query' => array(
+				array(
+					'key' => 'ost_transfer_id',
+					'value' => $transfer_id,
+					'compare' => '='
+				)
+			)
+		);
+		
+		$posts = get_posts($args);
+		
+		if(empty($posts)) {
+			return -1;
+		}
+		
+		return $posts[0];
+	}
+	
 	function ost_get_transfer_post_id($transfer_id) {
 		$args = array(
 			'post_type' => 'ost_transfer',
@@ -87,16 +109,35 @@
 			update_post_meta($transfer_post_id, 'ost_encoded_data', $encoded_data);
 			update_post_meta($transfer_post_id, 'ost_encoded_data_hash', $encoded_data_hash);
 			
-			update_post_meta($transfer_post_id, 'ost_transfer_status', 0);
+			if($type === 'update') {
+				update_post_meta($transfer_post_id, 'ost_transfer_status', 0);
+			}
+			else if($type === 'incoming') {
+				update_post_meta($transfer_post_id, 'ost_transfer_status', 1);
+				update_post_meta($transfer_post_id, 'ost_import_status', 0);
+			}
+			else {
+				//METODO: error message
+			}
 		}
 	}
 	
 	function ost_import_transfer($transfer_post_id) {
+		
+		$import_status = (int)get_post_meta($transfer_post_id, 'ost_import_status', true);
+		
 		$current_hash = get_post_meta($transfer_post_id, 'ost_encoded_data_hash', true);
 		$imported_hash = get_post_meta($transfer_post_id, 'ost_imported_hash', true);
 		
 		if($imported_hash !== $current_hash || true) { //MEDEBUG: always true
+			//METODO: check depndencies
 			//METODO: do import
+			$transfer_id = get_post_meta($transfer_post_id, 'ost_id', true);
+			$data = get_post_meta($transfer_post_id, 'ost_encoded_data', true);
+			$transfer_type = get_post_meta($transfer_post_id, 'ost_transfer_type', true);
+			
+			do_action(ODD_SITE_TRANSFER_DOMAIN.'/import_'.$transfer_type, $transfer_id, $data);
+			
 			update_post_meta($transfer_post_id, 'ost_imported_hash', $current_hash);
 		}
 	}
