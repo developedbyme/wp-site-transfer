@@ -22,11 +22,21 @@
 			$transfer_id = $data['id'];
 			$transfer_post_id = ost_get_transfer_post_id($transfer_id);
 			
+			$publish_ids = array();
+			
 			if($transfer_post_id === -1) {
-				return $this->output_error("No transfer for id ".$transfer_id);
+				//METODO: create transfer item
+				$transfer_post_id = ost_create_transfer($transfer_id, $data['type'], $data['name']);
+				$publish_ids[] = $transfer_post_id;
 			}
 			
-			return $this->output_success("METODO");
+			ost_update_transfer($transfer_post_id, $data['data']);
+			
+			foreach($publish_ids as $publish_id) {
+				wp_update_post(array('ID' => $publish_id, 'post_status' => 'publish'));
+			}
+			
+			return $this->output_success($transfer_post_id);
 			
 		}
 		

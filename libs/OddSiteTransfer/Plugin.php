@@ -138,7 +138,7 @@
 			
 			$current_end_point = new \OddSiteTransfer\RestApi\BidirectionalTransfer\IncomingTransferEndpoint();
 			$current_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
-			$current_end_point->setup('incoming-transfer/(?P<id>.+)', $api_namespace, $api_version, 'GET'); //METODO: change to post
+			$current_end_point->setup('incoming-transfer/(?P<id>.+)', $api_namespace, $api_version, 'POST');
 			$this->_rest_api_end_points[] = $current_end_point;
 			
 		}
