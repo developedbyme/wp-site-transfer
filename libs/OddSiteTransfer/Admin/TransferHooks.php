@@ -28,6 +28,20 @@
 			//add_action('admin_notices', array($this, 'hook_admin_notices'));
 		}
 		
+		public function send_outgoing_transfer($transfer_post_id) {
+			
+			$transfer_id = get_post_meta($transfer_post_id, 'ost_id', true);
+			
+			if($transfer_post_id) {
+				//METODO: channels
+				$url = 'http://transfer2.localhost/wp-json/ost/v3/incoming-transfer/'.$transfer_id;
+				
+				$body = array('data' => get_post_meta($transfer_post_id, 'ost_encoded_data', true));
+				
+				HttpLoading::send_json_request($url, $body);
+			}
+		}
+		
 		public function hook_save_post($post_id, $post, $update) {
 			//echo("\OddSiteTransfer\Admin\TransferHooks::hook_save_post<br />");
 			
