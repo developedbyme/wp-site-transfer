@@ -19,18 +19,22 @@
 			
 			$plugin = \OddSiteTransfer\Plugin::$singleton;
 			
-			$transfer_id = $data['id'];
-			$transfer_post_id = ost_get_transfer_post_id($transfer_id);
+			$items = $data['items'];
 			
 			$publish_ids = array();
 			
-			if($transfer_post_id === -1) {
-				//METODO: create transfer item
-				$transfer_post_id = ost_create_transfer($transfer_id, $data['type'], $data['name']);
-				$publish_ids[] = $transfer_post_id;
+			foreach($items as $item) {
+				
+				$transfer_id = $item['id'];
+				$transfer_post_id = ost_get_transfer_post_id($transfer_id);
+				
+				if($transfer_post_id === -1) {
+					$transfer_post_id = ost_create_transfer($transfer_id, $item['type'], $item['name']);
+					$publish_ids[] = $transfer_post_id;
+				}
+				
+				ost_update_transfer($transfer_post_id, $item['data']);
 			}
-			
-			ost_update_transfer($transfer_post_id, $data['data']);
 			
 			foreach($publish_ids as $publish_id) {
 				wp_update_post(array('ID' => $publish_id, 'post_status' => 'publish'));
