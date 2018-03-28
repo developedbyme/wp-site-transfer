@@ -32,26 +32,34 @@
 		return $posts[0];
 	}
 	
-	function ost_add_post_transfer($transfer_id, $transfer_type, $post) {
+	function ost_create_transfer($transfer_id, $transfer_type, $name) {
 		$args = array(
 			'post_type' => 'ost_transfer',
 			'post_status' => 'draft',
-			'post_title' => $transfer_type.' - '.($post->post_title)
+			'post_title' => $name
 		);
 		
 		$transfer_post_id = wp_insert_post($args);
+		
+		if($transfer_post_id) {
+			update_post_meta($transfer_post_id, 'ost_id', $transfer_id);
+			update_post_meta($transfer_post_id, 'ost_transfer_type', $transfer_type);
+		}
+		
+		return $transfer_post_id;
+	}
+	
+	function ost_add_post_transfer($transfer_id, $transfer_type, $post) {
+		
+		$publish_ids = array();
+		
+		$transfer_post_id = ost_create_transfer($transfer_id, $transfer_type, $transfer_type.' - '.($post->post_title));
 	
 		if(!$transfer_post_id) {
 			return -1;
 		}
 		
-		$publish_ids = array();
-	
 		$publish_ids[] = $transfer_post_id;
-		
-		update_post_meta($transfer_post_id, 'ost_id', $transfer_id);
-		update_post_meta($transfer_post_id, 'ost_transfer_type', $transfer_type);
-		
 		
 		ost_update_post_transfer($transfer_post_id, $post);
 		
@@ -67,6 +75,10 @@
 		$encoder = new \OddSiteTransfer\SiteTransfer\Encoders\AcfPostEncoder();
 		
 		$encoded_data = $encoder->encode($post);
+		ost_update_transfer($transfer_post_id, $encoded_data);
+	}
+	
+	function ost_update_transfer($transfer_post_id, $encoded_data) {
 		$encoded_data_hash = md5(serialize($encoded_data));
 		
 		$current_hash = get_post_meta($transfer_post_id, 'ost_encoded_data_hash', true);
