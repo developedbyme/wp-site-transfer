@@ -34,15 +34,20 @@
 			
 			if($transfer_post_id) {
 				//METODO: channels
-				$url = 'http://transfer2.localhost/wp-json/ost/v3/incoming-transfer/'.$transfer_id;
+				$url = 'http://transfer2.localhost/wp-json/ost/v3/incoming-transfer';
 				
 				$post = get_post($transfer_post_id);
 				
 				$body = array(
-					'type' => get_post_meta($transfer_post_id, 'ost_transfer_type', true),
-					'name' => $post->post_title,
-					'data' => get_post_meta($transfer_post_id, 'ost_encoded_data', true),
-					'hash' => get_post_meta($transfer_post_id, 'ost_encoded_data_hash', true),
+					'items' => array(
+						array(
+							'id' => $transfer_id,
+							'type' => get_post_meta($transfer_post_id, 'ost_transfer_type', true),
+							'name' => $post->post_title,
+							'data' => get_post_meta($transfer_post_id, 'ost_encoded_data', true),
+							'hash' => get_post_meta($transfer_post_id, 'ost_encoded_data_hash', true)
+						)
+					)
 				);
 				
 				HttpLoading::send_json_request($url, $body);
