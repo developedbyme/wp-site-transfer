@@ -78,7 +78,7 @@
 		ost_update_transfer($transfer_post_id, $encoded_data);
 	}
 	
-	function ost_update_transfer($transfer_post_id, $encoded_data) {
+	function ost_update_transfer($transfer_post_id, $encoded_data, $type = 'update') {
 		$encoded_data_hash = md5(serialize($encoded_data));
 		
 		$current_hash = get_post_meta($transfer_post_id, 'ost_encoded_data_hash', true);
@@ -88,6 +88,16 @@
 			update_post_meta($transfer_post_id, 'ost_encoded_data_hash', $encoded_data_hash);
 			
 			update_post_meta($transfer_post_id, 'ost_transfer_status', 0);
+		}
+	}
+	
+	function ost_import_transfer($transfer_post_id) {
+		$current_hash = get_post_meta($transfer_post_id, 'ost_encoded_data_hash', true);
+		$imported_hash = get_post_meta($transfer_post_id, 'ost_imported_hash', true);
+		
+		if($imported_hash !== $current_hash || true) { //MEDEBUG: always true
+			//METODO: do import
+			update_post_meta($transfer_post_id, 'ost_imported_hash', $current_hash);
 		}
 	}
 ?>
