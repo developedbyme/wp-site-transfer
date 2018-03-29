@@ -12,6 +12,9 @@
 		function __construct() {
 			//echo("\OddSiteTransfer\SiteTransfer\Encoders\PostEncoderBaseObject::__construct<br />");
 			
+			$this->add_meta_field('_wp_attached_file', 'data');
+			$this->add_meta_field('_wp_attachment_metadata', 'data');
+			$this->add_meta_field('_wp_attachment_image_alt', 'data');
 			
 		}
 		

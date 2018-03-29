@@ -10,7 +10,7 @@
 		function __construct() {
 			//echo("\OddSiteTransfer\SiteTransfer\Encoders\AcfPostEncoder::__construct<br />");
 			
-			
+			parent::__construct();
 		}
 		
 		protected function encode_acf_field($acf_field, $post_id, &$dependencies, $override_value = null) {
