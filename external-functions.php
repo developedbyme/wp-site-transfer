@@ -16,6 +16,7 @@
 	function ost_get_post_id_for_transfer($transfer_id) {
 		$args = array(
 			'post_type' => 'any',
+			'post_status' => 'any',
 			'fields' => 'ids',
 			'meta_query' => array(
 				array(
@@ -153,9 +154,24 @@
 	}
 	
 	function ost_get_post_dependency_for_transfer($transfer_id) {
-		//METODO
 		
-		return -1;
+		$post_id = ost_get_post_id_for_transfer($transfer_id);
+		$post = get_post($post_id);
+		
+		$transfer_type = apply_filters(ODD_SITE_TRANSFER_DOMAIN.'/post_transfer_type', null, $post->ID, $post);
+		
+		if($transfer_type) {
+			$transfer_post_id = ost_add_post_transfer($transfer_id, $transfer_type, $post);
+		
+			if($transfer_post_id !== -1) {
+				ost_update_post_transfer($transfer_post_id, $post);
+			}
+		}
+		else {
+			//METODO: Add no-transfers
+		}
+		
+		return $transfer_post_id;
 	}
 	
 	function ost_get_dependency_for_transfer($transfer_id, $object_type) {

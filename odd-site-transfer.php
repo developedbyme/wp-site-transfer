@@ -26,6 +26,7 @@
 		if($type === null) {
 			switch($post->post_type) {
 				case 'page':
+				case 'attachment':
 					return 'post';
 			}
 		}
