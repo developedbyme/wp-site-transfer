@@ -70,15 +70,18 @@
 		
 		public function send_outgoing_transfer($transfer_post_id) {
 			
-			$transfer_id = get_post_meta($transfer_post_id, 'ost_id', true);
+			
 			
 			if($transfer_post_id) {
 				//METODO: channels
 				$transfer_url = 'http://transfer2.localhost/wp-json/ost/v3/incoming-transfer';
+				$import_url = 'http://transfer2.localhost/wp-json/ost/v3/run-imports';
 				
 				$items = array(
 					$transfer_post_id
 				);
+				
+				$import_ids = array();
 				
 				$debug_counter = 0;
 				$current_index = 0;
@@ -94,8 +97,12 @@
 					
 					$items_to_add = min($number_of_items_per_transfer, count($items)-$current_index);
 					for($i = 0; $i < $items_to_add; $i++) {
+						$current_transfer_post_id = $items[$current_index];
+						$body_items[] = $this->create_transfer_data($current_transfer_post_id);
 						
-						$body_items[] = $this->create_transfer_data($items[$current_index]);
+						$current_transfer_id = get_post_meta($current_transfer_post_id, 'ost_id', true);
+						array_unshift($import_ids, $current_transfer_id);
+						
 						$current_index++;
 					}
 					
@@ -106,7 +113,6 @@
 					$transfer_response = HttpLoading::send_json_request($transfer_url, $body);
 					$encoded_transfer_response = json_decode($transfer_response['data'], true);
 					$dependencies_to_update = $this->check_dependencies($encoded_transfer_response['data']['dependencies']);
-					var_dump($dependencies_to_update);
 					
 					foreach($dependencies_to_update as $dependency_to_update) {
 						if(!in_array($dependency_to_update, $items)) {
@@ -115,19 +121,32 @@
 					}
 				}
 				
+				var_dump($import_ids);
 				
+				$debug_counter = 0;
+				$current_index = 0;
+				$number_of_items_per_import = 5;
 				
-				/*
-				$url = 'http://transfer2.localhost/wp-json/ost/v3/run-imports';
+				while($current_index < count($import_ids)) {
+					if($debug_counter++ > 10) {
+						trigger_error('Loop has reached maximum number of times.', E_USER_ERROR);
+						break;
+					}
+					
+					$body_ids = array();
+					
+					$items_to_add = min($number_of_items_per_transfer, count($import_ids)-$current_index);
+					for($i = 0; $i < $items_to_add; $i++) {
+						$body_ids[] = $import_ids[$current_index];
+						$current_index++;
+					}
+					
+					$body = array(
+						'ids' => $body_ids
+					);
 				
-				$body = array(
-					'ids' => array(
-						$transfer_id
-					)
-				);
-				
-				HttpLoading::send_json_request($url, $body);
-				*/
+					HttpLoading::send_json_request($import_url, $body);
+				}
 			}
 		}
 		
