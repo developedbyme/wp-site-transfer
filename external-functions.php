@@ -199,10 +199,14 @@
 			return null;
 		}
 		
+		//METODO: run import if not imported yet
+		
 		$transfer_type = get_post_meta($transfer_post_id, 'ost_transfer_type', true);
 		
 		if($transfer_type === 'post') {
 			return get_post(ost_get_post_id_for_transfer($transfer_id));
 		}
+		
+		return null;
 	}
 ?>
