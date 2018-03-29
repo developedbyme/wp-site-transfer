@@ -121,8 +121,6 @@
 					}
 				}
 				
-				var_dump($import_ids);
-				
 				$debug_counter = 0;
 				$current_index = 0;
 				$number_of_items_per_import = 5;
