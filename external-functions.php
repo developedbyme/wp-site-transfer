@@ -206,6 +206,9 @@
 		if($transfer_type === 'post') {
 			return get_post(ost_get_post_id_for_transfer($transfer_id));
 		}
+		if($transfer_type === 'media') {
+			return get_post(ost_get_post_id_for_transfer($transfer_id));
+		}
 		
 		return null;
 	}

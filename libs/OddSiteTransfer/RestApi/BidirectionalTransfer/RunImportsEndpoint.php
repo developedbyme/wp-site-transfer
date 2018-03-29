@@ -21,8 +21,6 @@
 			
 			$ids = $data['ids'];
 			
-			$publish_ids = array();
-			
 			foreach($ids as $transfer_id) {
 				
 				$transfer_post_id = ost_get_transfer_post_id($transfer_id);

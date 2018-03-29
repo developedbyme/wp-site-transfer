@@ -349,16 +349,15 @@
 					}
 				}
 			}
-
+			
 			if(isset($meta_data['post_thumbnail_id'])) {
 				//METODO: test removal of thumbnail
 
 				$image_post = $this->get_resolved_dependency('post', $meta_data['post_thumbnail_id'], $resolved_dependencies);
-
+				
 				//METODO: test this
-				var_dump($image_post);
+				
 				if($image_post) {
-					var_dump(">>>>>>>>>>>>");
 					set_post_thumbnail($new_id, $image_post->ID);
 				}
 			}

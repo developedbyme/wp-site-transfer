@@ -49,7 +49,7 @@
 	add_filter(ODD_SITE_TRANSFER_DOMAIN.'/post_transfer_update_type', 'ost_debug_transfer_update_type_page', 10, 3);
 	
 	function ost_debug_import_post($transfer_id, $data) {
-		echo('ost_debug_import_post');
+		//echo('ost_debug_import_post');
 		
 		$post_importer = new \OddSiteTransfer\Admin\PostImporter();
 		
