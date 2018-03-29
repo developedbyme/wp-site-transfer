@@ -26,8 +26,9 @@
 		if($type === null) {
 			switch($post->post_type) {
 				case 'page':
-				case 'attachment':
 					return 'post';
+				case 'attachment':
+					return 'media';
 			}
 		}
 		return $type;
@@ -55,6 +56,7 @@
 		$post_importer->import($transfer_id, $data);
 	}
 	add_filter(ODD_SITE_TRANSFER_DOMAIN.'/import_post', 'ost_debug_import_post', 10, 2);
+	add_filter(ODD_SITE_TRANSFER_DOMAIN.'/import_post', 'ost_debug_import_media', 10, 2);
 	
 	function ost_debug_post_dependency($transfer_id, $post_id, $post) {
 		if($transfer_id === null) {
