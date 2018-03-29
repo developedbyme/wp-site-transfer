@@ -50,6 +50,9 @@
 		}
 		
 		protected function create_transfer_data($transfer_post_id) {
+			
+			$transfer_id = get_post_meta($transfer_post_id, 'ost_id', true);
+			
 			$post = get_post($transfer_post_id);
 			
 			$data = get_post_meta($transfer_post_id, 'ost_encoded_data', true);
