@@ -71,19 +71,50 @@
 			
 			if($transfer_post_id) {
 				//METODO: channels
-				$url = 'http://transfer2.localhost/wp-json/ost/v3/incoming-transfer';
+				$transfer_url = 'http://transfer2.localhost/wp-json/ost/v3/incoming-transfer';
 				
-				$body = array(
-					'items' => array(
-						$this->create_transfer_data($transfer_post_id)
-					)
+				$items = array(
+					$transfer_post_id
 				);
 				
-				$transfer_response = HttpLoading::send_json_request($url, $body);
-				$encoded_transfer_response = json_decode($transfer_response['data'], true);
-				$dependencies_to_update = $this->check_dependencies($encoded_transfer_response['data']['dependencies']);
-				var_dump($dependencies_to_update);
+				$debug_counter = 0;
+				$current_index = 0;
+				$number_of_items_per_transfer = 10;
 				
+				while($current_index < count($items)) {
+					if($debug_counter++ > 10) {
+						trigger_error('Loop has reached maximum number of times.', E_USER_ERROR);
+						break;
+					}
+					
+					$body_items = array();
+					
+					$items_to_add = min($number_of_items_per_transfer, count($items)-$current_index);
+					for($i = 0; $i < $items_to_add; $i++) {
+						
+						$body_items[] = $this->create_transfer_data($items[$current_index]);
+						$current_index++;
+					}
+					
+					$body = array(
+						'items' => $body_items
+					);
+				
+					$transfer_response = HttpLoading::send_json_request($transfer_url, $body);
+					$encoded_transfer_response = json_decode($transfer_response['data'], true);
+					$dependencies_to_update = $this->check_dependencies($encoded_transfer_response['data']['dependencies']);
+					var_dump($dependencies_to_update);
+					
+					foreach($dependencies_to_update as $dependency_to_update) {
+						if(!in_array($dependency_to_update, $items)) {
+							array_push($items, $dependency_to_update);
+						}
+					}
+				}
+				
+				
+				
+				/*
 				$url = 'http://transfer2.localhost/wp-json/ost/v3/run-imports';
 				
 				$body = array(
@@ -93,6 +124,7 @@
 				);
 				
 				HttpLoading::send_json_request($url, $body);
+				*/
 			}
 		}
 		
