@@ -229,23 +229,7 @@
 
 			switch($type) {
 				case "post":
-					$post = $this->get_post_by_transfer_id($dependency_data['post_type'], $id);
-					if($post) {
-						if($dependency_data['post_type'] === 'attachment') {
-
-							$file_name = get_post_meta($post->ID, '_wp_attached_file', true);
-							$base_file = wp_upload_dir()['basedir'].'/'.$file_name;
-
-							if($file_name === '' || !file_exists($base_file)) {
-								$missing_dependencies[] = $dependency_data;
-							}
-						}
-
-						$return_array[$type.'_'.$id] = $post;
-					}
-					else {
-						$missing_dependencies[] = $dependency_data;
-					}
+					$return_array[$type.'_'.$id] = ost_get_dependency($id, $type);
 					break;
 				case "term":
 					$taxonomy = $dependency_data['taxonomy'];
@@ -320,12 +304,7 @@
 					$this->get_dependency($dependency, $resolved_dependencies, $missing_dependencies);
 				}
 			}
-
-			var_dump($resolved_dependencies);
-			var_dump($missing_dependencies);
-
-
-
+			
 			$post_data = $data['data'];
 			$meta_data = $data['meta_data'];
 			$taxonomies = $data['taxonomies'];
@@ -377,8 +356,9 @@
 				$image_post = $this->get_resolved_dependency('post', $meta_data['post_thumbnail_id'], $resolved_dependencies);
 
 				//METODO: test this
-				//var_dump($image_post);
+				var_dump($image_post);
 				if($image_post) {
+					var_dump(">>>>>>>>>>>>");
 					set_post_thumbnail($new_id, $image_post->ID);
 				}
 			}
