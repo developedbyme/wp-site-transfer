@@ -144,6 +144,7 @@
 		$encoder = new \OddSiteTransfer\SiteTransfer\Encoders\UserEncoderBaseObject();
 		
 		$encoded_data = $encoder->encode($user);
+		var_dump($encoded_data);
 		ost_update_transfer($transfer_post_id, $encoded_data);
 	}
 	
@@ -213,9 +214,7 @@
 	function ost_get_user_dependency_for_transfer($transfer_id) {
 		
 		$user_id = ost_get_user_id_for_transfer($transfer_id);
-		var_dump($user_id);
 		$user = get_user_by('id', $user_id);
-		var_dump($user);
 		
 		$transfer_type = apply_filters(ODD_SITE_TRANSFER_DOMAIN.'/user_transfer_type', null, $user->ID, $user);
 		
@@ -266,6 +265,9 @@
 		}
 		if($transfer_type === 'media') {
 			return get_post(ost_get_post_id_for_transfer($transfer_id));
+		}
+		if($transfer_type === 'user') {
+			return get_user_by('id', ost_get_user_id_for_transfer($transfer_id));
 		}
 		
 		return null;

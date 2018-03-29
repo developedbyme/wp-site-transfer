@@ -242,13 +242,7 @@
 					}
 					break;
 				case "user":
-					$user = get_user_by('login', $id);
-					if($user) {
-						$return_array[$type.'_'.$id] = $user;
-					}
-					else {
-						$missing_dependencies[] = $dependency_data;
-					}
+					$return_array[$type.'_'.$id] = ost_get_dependency($id, $type);
 					break;
 				default:
 					//METODO: error report
