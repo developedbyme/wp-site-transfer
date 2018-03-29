@@ -126,6 +126,18 @@
 			$current_end_point->setup('info', $api_namespace, $api_version, 'GET');
 			$this->_rest_api_end_points[] = $current_end_point;
 			
+			$current_end_point = new \OddSiteTransfer\RestApi\CompareImageEndPoint();
+			$current_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
+			$current_end_point->setup('compare/image', $api_namespace, $api_version, 'POST');
+			//METODO: security
+			$this->_rest_api_end_points[] = $current_end_point;
+			
+			$current_end_point = new \OddSiteTransfer\RestApi\SyncImageEndPoint();
+			$current_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
+			$current_end_point->setup('incoming-transfer/image', $api_namespace, $api_version, 'POST');
+			//METODO: security
+			$this->_rest_api_end_points[] = $current_end_point;
+			
 			$current_end_point = new \OddSiteTransfer\RestApi\CreateTransferForPostEndpoint();
 			$current_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
 			$current_end_point->setup('post/(?P<id>\d+)/create-transfer', $api_namespace, $api_version, 'GET'); //METODO: change to post
