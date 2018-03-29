@@ -49,21 +49,75 @@
 			return $ids_to_update;
 		}
 		
-		protected function create_transfer_data($transfer_post_id) {
+		protected function compare_image($file_path, $file_size) {
 			
-			$transfer_id = get_post_meta($transfer_post_id, 'ost_id', true);
+			$url = 'http://transfer2.localhost/wp-json/ost/v3/compare/image';
+			
+			$send_data = array('path' => $file_path, 'size' => $file_size);
+			
+			$repsonse_data = HttpLoading::send_request($url, $send_data);
+			$this->http_log[] = $repsonse_data;
+			$result_object = json_decode($repsonse_data['data'], true);
+			
+			return $result_object['data']['match'];
+		}
+		
+		protected function transfer_media($media) {
+			
+			$url = 'http://transfer2.localhost/wp-json/ost/v3/incoming-transfer/image';
+			
+			$file_path = get_post_meta($media->ID, '_wp_attached_file', true);
+			
+			$file_to_load = wp_upload_dir()['basedir'].'/'.$file_path;
+			
+			if(!file_exists($file_to_load)) {
+				return false;
+			}
+			
+			$image_exists = $this->compare_image($file_path, filesize($file_to_load));
+			
+			$image_is_ok = true;
+			
+			if(!$image_exists) {
+				
+				$send_data = array('path' => $file_path, 'file' => new \CURLFile($file_to_load, 'image/jpeg'));
+			
+				$repsonse_data = HttpLoading::send_request_with_file($url, $send_data);
+				
+				if($repsonse_data && $repsonse_data['code'] === 200) {
+					$result_object = json_decode($repsonse_data['data'], true);
+				}
+				else {
+					$image_is_ok = false;
+				}
+			}
+			
+			return $image_is_ok;
+		}
+		
+		protected function create_transfer_data($transfer_post_id) {
 			
 			$post = get_post($transfer_post_id);
 			
+			$transfer_id = get_post_meta($transfer_post_id, 'ost_id', true);
+			$type = get_post_meta($transfer_post_id, 'ost_transfer_type', true);
 			$data = get_post_meta($transfer_post_id, 'ost_encoded_data', true);
 			
 			$return_data = array(
 				'id' => $transfer_id,
-				'type' => get_post_meta($transfer_post_id, 'ost_transfer_type', true),
+				'type' => $type,
 				'name' => $post->post_title,
 				'data' => $data,
 				'hash' => get_post_meta($transfer_post_id, 'ost_encoded_data_hash', true)
 			);
+			
+			if($type === 'media') {
+				$media = get_post(ost_get_post_id_for_transfer($transfer_id));
+				$media_is_ok = $this->transfer_media($media);
+				if(!$media_is_ok) {
+					trigger_error('Media '.$post->post_title.' didn\'t transfer.', E_USER_ERROR);
+				}
+			}
 			
 			return $return_data;
 		}
