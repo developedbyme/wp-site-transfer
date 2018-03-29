@@ -148,12 +148,10 @@
 			
 			if($author_id != 0) {
 				$post_author = get_user_by('id', $author_id);
+				$post_author_transfer_id = ost_get_user_transfer_id($post_author);
 				
-				$author_local_id = $post_author->user_login;
-				
-				//METODO: encode user
-				$this->add_dependency('user', $author_local_id, $return_object['dependencies']);
-				$return_object['author'] = $post_author->user_login;
+				$this->add_dependency('user', $post_author_transfer_id, $return_object['dependencies']);
+				$return_object['author'] = $post_author_transfer_id;
 			}
 		}
 		

@@ -1,16 +1,27 @@
 <?php
 	
-	function ost_get_post_transfer_id($post) {
-		
-		$post = get_post($post);
-		
-		$id = get_post_meta($post->ID, 'ost_transfer_id', true);
-		if(!$id) {
-			$id = sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
-			update_post_meta($post->ID, 'ost_transfer_id', $id);
-		}
+	function ost_create_id() {
+		$id = sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
 		
 		return $id;
+	}
+	
+	function ost_get_object_transfer_id($type, $object) {
+		$id = get_metadata($type, $object, 'ost_transfer_id', true);
+		var_dump($type, $id);
+		if(!$id) {
+			$id = ost_create_id();
+			update_metadata($type, $object, 'ost_transfer_id', $id);
+		}
+		return $id;
+	}
+	
+	function ost_get_post_transfer_id($post) {
+		return ost_get_object_transfer_id('post', $post->ID);
+	}
+	
+	function ost_get_user_transfer_id($user) {
+		return ost_get_object_transfer_id('user', $user->ID);
 	}
 	
 	function ost_get_post_id_for_transfer($transfer_id) {
@@ -174,6 +185,12 @@
 		return $transfer_post_id;
 	}
 	
+	function ost_get_user_dependency_for_transfer($transfer_id) {
+		
+		
+		return $transfer_id;
+	}
+	
 	function ost_get_dependency_for_transfer($transfer_id, $object_type) {
 		$transfer_post_id = ost_get_transfer_post_id($transfer_id);
 		
@@ -184,6 +201,8 @@
 		switch($object_type) {
 			case 'post':
 				return ost_get_post_dependency_for_transfer($transfer_id);
+			case 'user':
+				return ost_get_user_dependency_for_transfer($transfer_id);
 			default:
 				trigger_error('Unknown dependency type '.$object_type, E_USER_WARNING);
 				break;
