@@ -38,19 +38,21 @@
 				
 				$post = get_post($transfer_post_id);
 				
+				$data = get_post_meta($transfer_post_id, 'ost_encoded_data', true);
+				
 				$body = array(
 					'items' => array(
 						array(
 							'id' => $transfer_id,
 							'type' => get_post_meta($transfer_post_id, 'ost_transfer_type', true),
 							'name' => $post->post_title,
-							'data' => get_post_meta($transfer_post_id, 'ost_encoded_data', true),
+							'data' => $data,
 							'hash' => get_post_meta($transfer_post_id, 'ost_encoded_data_hash', true)
 						)
 					)
 				);
 				
-				HttpLoading::send_json_request($url, $body);
+				$transfer_response = HttpLoading::send_json_request($url, $body);
 				
 				$url = 'http://transfer2.localhost/wp-json/ost/v3/run-imports';
 				

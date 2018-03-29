@@ -54,4 +54,20 @@
 		$post_importer->import($transfer_id, $data);
 	}
 	add_filter(ODD_SITE_TRANSFER_DOMAIN.'/import_post', 'ost_debug_import_post', 10, 2);
+	
+	function ost_debug_post_dependency($transfer_id, $post_id, $post) {
+		if($transfer_id === null) {
+			switch($post->post_type) {
+				case 'page':
+				case 'post':
+				case 'attachment':
+					$transfer_id = ost_get_post_transfer_id($post);
+					ost_add_post_transfer($transfer_id, 'post', $post);
+					break;
+			}
+		}
+		return $transfer_id;
+	}
+	
+	add_filter(ODD_SITE_TRANSFER_DOMAIN.'/outgoing_transfer/post_dependency', 'ost_debug_post_dependency', 10, 3);
 ?>

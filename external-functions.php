@@ -1,6 +1,9 @@
 <?php
 	
 	function ost_get_post_transfer_id($post) {
+		
+		$post = get_post($post);
+		
 		$id = get_post_meta($post->ID, 'ost_transfer_id', true);
 		if(!$id) {
 			$id = sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
@@ -73,6 +76,13 @@
 	
 	function ost_add_post_transfer($transfer_id, $transfer_type, $post) {
 		
+		//METODO: check if transfer alread exists
+		
+		$existing_id = ost_get_transfer_post_id($transfer_id);
+		if($existing_id !== -1) {
+			return $existing_id;
+		}
+		
 		$publish_ids = array();
 		
 		$transfer_post_id = ost_create_transfer($transfer_id, $transfer_type, $transfer_type.' - '.($post->post_title));
@@ -139,6 +149,20 @@
 			do_action(ODD_SITE_TRANSFER_DOMAIN.'/import_'.$transfer_type, $transfer_id, $data);
 			
 			update_post_meta($transfer_post_id, 'ost_imported_hash', $current_hash);
+		}
+	}
+	
+	function ost_get_dependency($transfer_id) {
+		$transfer_post_id = ost_get_transfer_post_id($transfer_id);
+		
+		if($transfer_post_id === -1) {
+			return null;
+		}
+		
+		$transfer_type = get_post_meta($transfer_post_id, 'ost_transfer_type', true);
+		
+		if($transfer_type === 'post') {
+			return get_post(ost_get_post_id_for_transfer($transfer_id));
 		}
 	}
 ?>

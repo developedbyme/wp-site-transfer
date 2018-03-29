@@ -7,20 +7,12 @@
 	// \OddSiteTransfer\SiteTransfer\Encoders\PostEncoderBaseObject
 	class PostEncoderBaseObject {
 		
-		protected $qualifier = null;
-		
 		protected $meta_fields = array();
 		
 		function __construct() {
 			//echo("\OddSiteTransfer\SiteTransfer\Encoders\PostEncoderBaseObject::__construct<br />");
 			
 			
-		}
-		
-		public function set_qualifier($qualifier) {
-			$this->qualifier = $qualifier;
-			
-			return $this;
 		}
 		
 		public function add_meta_field($name, $type = 'data') {
@@ -30,33 +22,14 @@
 			return $this;
 		}
 		
-		public function qualify($object) {
-			//echo("\OddSiteTransfer\SiteTransfer\Encoders\PostEncoderBaseObject::qualify<br />");
-			
-			if($object instanceof WP_Post) {
-				return $this->qualifier->qualify($object);
-			}
-			return false;
-		}
-		
 		protected function get_post_transfer_id($post) {
-			$id = get_post_meta($post->ID, 'ost_transfer_id', true);
-			if(!$id) {
-				$id = sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
-				update_post_meta($post->ID, 'ost_transfer_id', $id);
-			}
-			
-			return $id;
+			return ost_get_post_transfer_id($post);
 		}
 		
-		protected function add_dependency($type, $id, $additional_info, &$dependencies) {
+		protected function add_dependency($type, $id, &$dependencies) {
 			//echo("\OddSiteTransfer\SiteTransfer\Encoders\PostEncoderBaseObject::add_dependency<br />");
 			
 			$new_dependency = array('type' => $type, 'id' => $id);
-			
-			foreach($additional_info as $key => $value) {
-				$new_dependency[$key] = $value;
-			}
 			
 			$dependencies[] = $new_dependency;
 		}
@@ -74,7 +47,7 @@
 					
 					if($linked_post) {
 						$linked_post_id = $this->get_post_transfer_id($linked_post);
-						$this->add_dependency('post', $linked_post_id, array('post_type' => $linked_post->post_type), $dependencies);
+						$this->add_dependency('post', $linked_post_id, $dependencies);
 						$return_array[] = $linked_post_id;
 					}
 				}
@@ -92,7 +65,7 @@
 				
 				if($linked_post) {
 					$linked_post_id = $this->get_post_transfer_id($linked_post);
-					$this->add_dependency('post', $linked_post_id, array('post_type' => $linked_post->post_type), $dependencies);
+					$this->add_dependency('post', $linked_post_id, $dependencies);
 				
 					return $linked_post_id;
 				}
@@ -115,7 +88,8 @@
 					if($linked_term) {
 						
 						$return_array[] = $linked_term->slug;
-						$this->add_dependency('term', $linked_term->slug, array('taxonomy' => $linked_term->taxonomy), $dependencies);
+						//METODO: encode term
+						$this->add_dependency('term', $linked_term->slug, $dependencies);
 					}
 				}
 				return $return_array;
@@ -131,7 +105,8 @@
 				$linked_term = get_term($term_id);
 				
 				if($linked_term) {
-					$this->add_dependency('term', $linked_term->slug, array('taxonomy' => $linked_term->taxonomy), $dependencies);
+					//METODO: encode term
+					$this->add_dependency('term', $linked_term->slug, $dependencies);
 				
 					return $linked_term->slug;
 				}
@@ -144,12 +119,6 @@
 			//echo("\OddSiteTransfer\SiteTransfer\Encoders\PostEncoderBaseObject::encode_id<br />");
 			
 			$return_object['id'] = $this->get_post_transfer_id($object);
-		}
-		
-		protected function encode_status($object, &$return_object) {
-			//echo("\OddSiteTransfer\SiteTransfer\Encoders\PostEncoderBaseObject::encode_status<br />");
-			
-			$return_object['status'] = 'existing';
 		}
 		
 		protected function encode_content($object, &$return_object) {
@@ -179,7 +148,8 @@
 				
 				$author_local_id = $post_author->user_login;
 				
-				$this->add_dependency('user', $author_local_id, array(), $return_object['dependencies']);
+				//METODO: encode user
+				$this->add_dependency('user', $author_local_id, $return_object['dependencies']);
 				$return_object['author'] = $post_author->user_login;
 			}
 		}
@@ -193,7 +163,7 @@
 				$media_post = get_post($media_post_id);
 				
 				$local_thumbnail_id = $this->get_post_transfer_id($media_post);
-				$this->add_dependency('post', $local_thumbnail_id, array('post_type' => $media_post->post_type), $return_object['dependencies']);
+				$this->add_dependency('post', $local_thumbnail_id, $return_object['dependencies']);
 				$return_object['meta_data']['post_thumbnail_id'] = $local_thumbnail_id;
 			}
 		}
@@ -254,7 +224,8 @@
 				if($current_terms) {
 					foreach($current_terms as $current_term) {
 						$local_term_ids[] = $current_term->slug;
-						$return_object['dependencies'][] = array('type' => 'term', 'id' => $current_term->slug, 'taxonomy' => $taxonomy);
+						//METODO: encode term
+						$return_object['dependencies'][] = array('type' => 'term', 'id' => $current_term->slug);
 					}
 				}
 				else {
@@ -271,12 +242,10 @@
 			//echo("\OddSiteTransfer\SiteTransfer\Encoders\PostEncoderBaseObject::encode_parts<br />");
 			
 			$this->encode_id($object, $return_object);
-			$this->encode_status($object, $return_object);
-			if($return_object['status'] !== 'non-existing') {
-				$this->encode_content($object, $return_object);
-				$this->encode_meta_data($object, $return_object);
-				$this->encode_taxonomies($object, $return_object);
-			}
+			$this->encode_content($object, $return_object);
+			$this->encode_meta_data($object, $return_object);
+			$this->encode_taxonomies($object, $return_object);
+			
 		}
 		
 		public function encode($object) {
