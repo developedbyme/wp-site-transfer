@@ -152,7 +152,31 @@
 		}
 	}
 	
-	function ost_get_dependency($transfer_id) {
+	function ost_get_post_dependency_for_transfer($transfer_id) {
+		//METODO
+		
+		return -1;
+	}
+	
+	function ost_get_dependency_for_transfer($transfer_id, $object_type) {
+		$transfer_post_id = ost_get_transfer_post_id($transfer_id);
+		
+		if($transfer_post_id !== -1) {
+			return $transfer_post_id;
+		}
+		
+		switch($object_type) {
+			case 'post':
+				return ost_get_post_dependency_for_transfer($transfer_id);
+			default:
+				trigger_error('Unknown dependency type '.$object_type, E_USER_WARNING);
+				break;
+		}
+		
+		return -1;
+	}
+	
+	function ost_get_dependency($transfer_id, $type) {
 		$transfer_post_id = ost_get_transfer_post_id($transfer_id);
 		
 		if($transfer_post_id === -1) {

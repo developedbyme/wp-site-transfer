@@ -28,6 +28,43 @@
 			//add_action('admin_notices', array($this, 'hook_admin_notices'));
 		}
 		
+		protected function check_dependencies($dependencies) {
+			
+			$ids_to_update = array();
+			
+			foreach($dependencies as $dependency) {
+				
+				$transfer_post_id = ost_get_dependency_for_transfer($dependency['id'], $dependency['type']);
+				if($transfer_post_id !== -1) {
+					$current_hash = get_post_meta($transfer_post_id, 'ost_encoded_data_hash', true);
+					if($current_hash !== $dependency['hash']) {
+						$ids_to_update[] = $transfer_post_id;
+					}
+				}
+				else {
+					trigger_error('Dependency for '.$dependency['id'].' can\'t be created.', E_USER_WARNING);
+				}
+			}
+			
+			return $ids_to_update;
+		}
+		
+		protected function create_transfer_data($transfer_post_id) {
+			$post = get_post($transfer_post_id);
+			
+			$data = get_post_meta($transfer_post_id, 'ost_encoded_data', true);
+			
+			$return_data = array(
+				'id' => $transfer_id,
+				'type' => get_post_meta($transfer_post_id, 'ost_transfer_type', true),
+				'name' => $post->post_title,
+				'data' => $data,
+				'hash' => get_post_meta($transfer_post_id, 'ost_encoded_data_hash', true)
+			);
+			
+			return $return_data;
+		}
+		
 		public function send_outgoing_transfer($transfer_post_id) {
 			
 			$transfer_id = get_post_meta($transfer_post_id, 'ost_id', true);
@@ -36,23 +73,16 @@
 				//METODO: channels
 				$url = 'http://transfer2.localhost/wp-json/ost/v3/incoming-transfer';
 				
-				$post = get_post($transfer_post_id);
-				
-				$data = get_post_meta($transfer_post_id, 'ost_encoded_data', true);
-				
 				$body = array(
 					'items' => array(
-						array(
-							'id' => $transfer_id,
-							'type' => get_post_meta($transfer_post_id, 'ost_transfer_type', true),
-							'name' => $post->post_title,
-							'data' => $data,
-							'hash' => get_post_meta($transfer_post_id, 'ost_encoded_data_hash', true)
-						)
+						$this->create_transfer_data($transfer_post_id)
 					)
 				);
 				
 				$transfer_response = HttpLoading::send_json_request($url, $body);
+				$encoded_transfer_response = json_decode($transfer_response['data'], true);
+				$dependencies_to_update = $this->check_dependencies($encoded_transfer_response['data']['dependencies']);
+				var_dump($dependencies_to_update);
 				
 				$url = 'http://transfer2.localhost/wp-json/ost/v3/run-imports';
 				
