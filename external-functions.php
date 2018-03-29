@@ -8,7 +8,6 @@
 	
 	function ost_get_object_transfer_id($type, $object) {
 		$id = get_metadata($type, $object, 'ost_transfer_id', true);
-		var_dump($type, $id);
 		if(!$id) {
 			$id = ost_create_id();
 			update_metadata($type, $object, 'ost_transfer_id', $id);
@@ -47,6 +46,28 @@
 		return $posts[0];
 	}
 	
+	function ost_get_user_id_for_transfer($transfer_id) {
+		$args = array(
+			'fields' => 'ids',
+			'meta_query' => array(
+				array(
+					'key' => 'ost_transfer_id',
+					'value' => $transfer_id,
+					'compare' => '='
+				)
+			)
+
+		); 
+		$users = get_users( $args );
+		
+		if(empty($users)) {
+			return -1;
+		}
+		
+		return $users[0];
+	}
+	
+	
 	function ost_get_transfer_post_id($transfer_id) {
 		$args = array(
 			'post_type' => 'ost_transfer',
@@ -70,9 +91,14 @@
 	}
 	
 	function ost_create_transfer($transfer_id, $transfer_type, $name) {
+		$existing_id = ost_get_transfer_post_id($transfer_id);
+		if($existing_id !== -1) {
+			return $existing_id;
+		}
+		
 		$args = array(
 			'post_type' => 'ost_transfer',
-			'post_status' => 'draft',
+			'post_status' => 'publish',
 			'post_title' => $name
 		);
 		
@@ -88,28 +114,13 @@
 	
 	function ost_add_post_transfer($transfer_id, $transfer_type, $post) {
 		
-		//METODO: check if transfer alread exists
-		
-		$existing_id = ost_get_transfer_post_id($transfer_id);
-		if($existing_id !== -1) {
-			return $existing_id;
-		}
-		
-		$publish_ids = array();
-		
 		$transfer_post_id = ost_create_transfer($transfer_id, $transfer_type, $transfer_type.' - '.($post->post_title));
 	
 		if(!$transfer_post_id) {
 			return -1;
 		}
 		
-		$publish_ids[] = $transfer_post_id;
-		
 		ost_update_post_transfer($transfer_post_id, $post);
-		
-		foreach($publish_ids as $publish_id) {
-			wp_update_post(array('ID' => $publish_id, 'post_status' => 'publish'));
-		}
 		
 		return $transfer_post_id;
 	}
@@ -119,6 +130,20 @@
 		$encoder = new \OddSiteTransfer\SiteTransfer\Encoders\AcfPostEncoder();
 		
 		$encoded_data = $encoder->encode($post);
+		ost_update_transfer($transfer_post_id, $encoded_data);
+	}
+	
+	function ost_add_user_transfer($transfer_id, $transfer_type, $user) {
+		
+		$transfer_post_id = ost_create_transfer($transfer_id, $transfer_type, $transfer_type.' - '.($user->user_login));
+		
+		ost_update_user_transfer($transfer_post_id, $user);
+	}
+	
+	function ost_update_user_transfer($transfer_post_id, $user) {
+		$encoder = new \OddSiteTransfer\SiteTransfer\Encoders\UserEncoderBaseObject();
+		
+		$encoded_data = $encoder->encode($user);
 		ost_update_transfer($transfer_post_id, $encoded_data);
 	}
 	
@@ -187,6 +212,20 @@
 	
 	function ost_get_user_dependency_for_transfer($transfer_id) {
 		
+		$user_id = ost_get_user_id_for_transfer($transfer_id);
+		var_dump($user_id);
+		$user = get_user_by('id', $user_id);
+		var_dump($user);
+		
+		$transfer_type = apply_filters(ODD_SITE_TRANSFER_DOMAIN.'/user_transfer_type', null, $user->ID, $user);
+		
+		if($transfer_type) {
+			$transfer_post_id = ost_add_user_transfer($transfer_id, $transfer_type, $user);
+		
+			if($transfer_post_id !== -1) {
+				ost_update_user_transfer($transfer_post_id, $user);
+			}
+		}
 		
 		return $transfer_id;
 	}

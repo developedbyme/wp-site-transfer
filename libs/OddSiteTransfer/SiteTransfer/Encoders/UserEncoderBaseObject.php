@@ -6,8 +6,6 @@
 	// \OddSiteTransfer\SiteTransfer\Encoders\UserEncoderBaseObject
 	class UserEncoderBaseObject {
 		
-		protected $qualifier = null;
-		
 		protected $meta_fields = array();
 		
 		function __construct() {
@@ -16,26 +14,11 @@
 			
 		}
 		
-		public function set_qualifier($qualifier) {
-			$this->qualifier = $qualifier;
-			
-			return $this;
-		}
-		
 		public function add_meta_field($name, $type = 'data') {
 			//echo("\OddSiteTransfer\SiteTransfer\Encoders\UserEncoderBaseObject::add_meta_field<br />");
 			$this->meta_fields[] = array('name' => $name, 'type' => $type);
 			
 			return $this;
-		}
-		
-		public function qualify($object) {
-			//echo("\OddSiteTransfer\SiteTransfer\Encoders\UserEncoderBaseObject::qualify<br />");
-			
-			if($object instanceof WP_User) {
-				return $this->qualifier->qualify($object);
-			}
-			return false;
 		}
 		
 		protected function add_dependency($type, $id, $additional_info, &$dependencies) {
@@ -53,14 +36,8 @@
 		protected function encode_id($object, &$return_object) {
 			//echo("\OddSiteTransfer\SiteTransfer\Encoders\UserEncoderBaseObject::encode_id<br />");
 			
-			$return_object['id'] = $object->user_login;
+			$return_object['id'] = ost_get_user_transfer_id($object);
 			
-		}
-		
-		protected function encode_status($object, &$return_object) {
-			//echo("\OddSiteTransfer\SiteTransfer\Encoders\UserEncoderBaseObject::encode_status<br />");
-			
-			$return_object['status'] = 'existing';
 		}
 		
 		protected function encode_content($object, &$return_object) {
@@ -115,10 +92,8 @@
 			//METODO
 			$this->encode_id($object, $return_object);
 			$this->encode_status($object, $return_object);
-			if($return_object['status'] !== 'non-existing') {
-				$this->encode_content($object, $return_object);
-				$this->encode_meta_data($object, $return_object);
-			}
+			$this->encode_content($object, $return_object);
+			$this->encode_meta_data($object, $return_object);
 		}
 		
 		public function encode($object) {

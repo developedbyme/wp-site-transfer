@@ -36,6 +36,15 @@
 	
 	add_filter(ODD_SITE_TRANSFER_DOMAIN.'/post_transfer_type', 'ost_debug_transfer_type_page', 10, 3);
 	
+	function ost_debug_transfer_type_user($type, $user_id, $user) {
+		if($type === null) {
+			return 'user';
+		}
+		return $type;
+	}
+	
+	add_filter(ODD_SITE_TRANSFER_DOMAIN.'/user_transfer_type', 'ost_debug_transfer_type_user', 10, 3);
+	
 	function ost_debug_transfer_update_type_page($type, $post_id, $post) {
 		if($type === null) {
 			switch($post->post_type) {
