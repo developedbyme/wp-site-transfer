@@ -26,6 +26,7 @@
 		if($type === null) {
 			switch($post->post_type) {
 				case 'page':
+				case 'post':
 					return 'post';
 				case 'attachment':
 					return 'media';
@@ -58,6 +59,7 @@
 		if($type === null) {
 			switch($post->post_type) {
 				case 'page':
+				case 'post':
 					return 'always';
 			}
 		}
