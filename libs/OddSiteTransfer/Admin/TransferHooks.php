@@ -103,6 +103,7 @@
 			$type = get_post_meta($transfer_post_id, 'ost_transfer_type', true);
 			$data = get_post_meta($transfer_post_id, 'ost_encoded_data', true);
 			
+			
 			$return_data = array(
 				'id' => $transfer_id,
 				'type' => $type,

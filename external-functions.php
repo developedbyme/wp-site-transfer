@@ -167,6 +167,8 @@
 		$transfer_post_id = ost_create_transfer($transfer_id, $transfer_type, $transfer_type.' - '.($user->user_login));
 		
 		ost_update_user_transfer($transfer_post_id, $user);
+		
+		return $transfer_post_id;
 	}
 	
 	function ost_update_user_transfer($transfer_post_id, $user) {
@@ -180,6 +182,8 @@
 		$transfer_post_id = ost_create_transfer($transfer_id, $transfer_type, $transfer_type.' - '.($term->name));
 		
 		ost_update_term_transfer($transfer_post_id, $term);
+		
+		return $transfer_post_id;
 	}
 	
 	function ost_update_term_transfer($transfer_post_id, $term) {
@@ -267,12 +271,10 @@
 			}
 		}
 		
-		return $transfer_id;
+		return $transfer_post_id;
 	}
 	
 	function ost_get_term_dependency_for_transfer($transfer_id) {
-		
-		//METODO: solve taxonomy
 		
 		$term = ost_get_term_for_transfer($transfer_id);
 		$term_id = $term->term_id;
@@ -287,7 +289,7 @@
 			}
 		}
 		
-		return $transfer_id;
+		return $transfer_post_id;
 	}
 	
 	function ost_get_dependency_for_transfer($transfer_id, $object_type) {
