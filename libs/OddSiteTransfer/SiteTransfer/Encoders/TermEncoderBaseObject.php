@@ -76,9 +76,11 @@
 			$parent_id = $object->parent;
 			if($parent_id) {
 				$parent = get_term_by('id', $parent_id, $object->taxonomy);
-				$return_object['parent'] = $parent->slug;
 				
-				$return_object['dependencies'][] = array('type' => 'term', 'id' => $parent->slug, 'taxonomy' => $parent->taxonomy);
+				$term_transfer_id = ost_get_term_transfer_id($parent);
+				$return_object['parent'] = $term_transfer_id;
+				
+				$return_object['dependencies'][] = array('type' => 'term', 'id' => $term_transfer_id);
 			}
 		}
 		

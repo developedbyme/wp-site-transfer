@@ -177,7 +177,6 @@
 	}
 	
 	function ost_add_term_transfer($transfer_id, $transfer_type, $term) {
-		var_dump($term);
 		$transfer_post_id = ost_create_transfer($transfer_id, $transfer_type, $transfer_type.' - '.($term->name));
 		
 		ost_update_term_transfer($transfer_post_id, $term);
