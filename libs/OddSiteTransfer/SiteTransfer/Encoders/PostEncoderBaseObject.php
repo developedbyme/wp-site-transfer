@@ -225,9 +225,9 @@
 				
 				if($current_terms) {
 					foreach($current_terms as $current_term) {
-						$local_term_ids[] = $current_term->slug;
-						//METODO: encode term
-						$return_object['dependencies'][] = array('type' => 'term', 'id' => $current_term->slug);
+						$term_transfer_id = ost_get_term_transfer_id($current_term);
+						$local_term_ids[] = $term_transfer_id;
+						$return_object['dependencies'][] = array('type' => 'term', 'id' => $term_transfer_id);
 					}
 				}
 				else {

@@ -71,6 +71,31 @@
 		return $users[0];
 	}
 	
+	function ost_get_term_for_transfer($transfer_id) {
+		$args = array(
+			'fields' => 'ids',
+			'hide_empty' => false,
+			'meta_query' => array(
+				array(
+					'key' => 'ost_transfer_id',
+					'value' => $transfer_id,
+					'compare' => '='
+				)
+			)
+		); 
+		
+		
+		$taxonomies = get_taxonomies();
+		foreach($taxonomies as $taxonomy) {
+			$terms = get_terms($taxonomy, $args);
+			if(!empty($terms)) {
+				return get_term_by('id', $terms[0], $taxonomy);
+			}
+		}
+		
+		return -1;
+	}
+	
 	
 	function ost_get_transfer_post_id($transfer_id) {
 		$args = array(
@@ -148,7 +173,20 @@
 		$encoder = new \OddSiteTransfer\SiteTransfer\Encoders\UserEncoderBaseObject();
 		
 		$encoded_data = $encoder->encode($user);
-		var_dump($encoded_data);
+		ost_update_transfer($transfer_post_id, $encoded_data);
+	}
+	
+	function ost_add_term_transfer($transfer_id, $transfer_type, $term) {
+		var_dump($term);
+		$transfer_post_id = ost_create_transfer($transfer_id, $transfer_type, $transfer_type.' - '.($term->name));
+		
+		ost_update_term_transfer($transfer_post_id, $term);
+	}
+	
+	function ost_update_term_transfer($transfer_post_id, $term) {
+		$encoder = new \OddSiteTransfer\SiteTransfer\Encoders\TermEncoderBaseObject();
+		
+		$encoded_data = $encoder->encode($term);
 		ost_update_transfer($transfer_post_id, $encoded_data);
 	}
 	
@@ -233,6 +271,26 @@
 		return $transfer_id;
 	}
 	
+	function ost_get_term_dependency_for_transfer($transfer_id) {
+		
+		//METODO: solve taxonomy
+		
+		$term = ost_get_term_for_transfer($transfer_id);
+		$term_id = $term->term_id;
+		
+		$transfer_type = apply_filters(ODD_SITE_TRANSFER_DOMAIN.'/term_transfer_type', null, $term_id, $term);
+		
+		if($transfer_type) {
+			$transfer_post_id = ost_add_term_transfer($transfer_id, $transfer_type, $term);
+		
+			if($transfer_post_id !== -1) {
+				ost_update_term_transfer($transfer_post_id, $term);
+			}
+		}
+		
+		return $transfer_id;
+	}
+	
 	function ost_get_dependency_for_transfer($transfer_id, $object_type) {
 		$transfer_post_id = ost_get_transfer_post_id($transfer_id);
 		
@@ -245,6 +303,8 @@
 				return ost_get_post_dependency_for_transfer($transfer_id);
 			case 'user':
 				return ost_get_user_dependency_for_transfer($transfer_id);
+			case 'term':
+				return ost_get_term_dependency_for_transfer($transfer_id);
 			default:
 				trigger_error('Unknown dependency type '.$object_type, E_USER_WARNING);
 				break;

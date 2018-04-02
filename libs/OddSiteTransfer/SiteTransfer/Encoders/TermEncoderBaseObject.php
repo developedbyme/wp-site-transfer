@@ -119,11 +119,8 @@
 			
 			//METODO
 			$this->encode_id($object, $return_object);
-			$this->encode_status($object, $return_object);
-			if($return_object['status'] !== 'non-existing') {
-				$this->encode_content($object, $return_object);
-				$this->encode_meta_data($object, $return_object);
-			}
+			$this->encode_content($object, $return_object);
+			$this->encode_meta_data($object, $return_object);
 		}
 		
 		public function encode($object) {
