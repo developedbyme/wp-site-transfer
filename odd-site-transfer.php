@@ -67,6 +67,15 @@
 	add_filter(ODD_SITE_TRANSFER_DOMAIN.'/import_post', 'ost_debug_import_post', 10, 2);
 	add_filter(ODD_SITE_TRANSFER_DOMAIN.'/import_media', 'ost_debug_import_post', 10, 2);
 	
+	function ost_debug_import_user($transfer_id, $data) {
+		echo('ost_debug_import_user');
+		
+		$post_importer = new \OddSiteTransfer\Admin\UserImporter();
+		
+		$post_importer->import($transfer_id, $data);
+	}
+	add_filter(ODD_SITE_TRANSFER_DOMAIN.'/import_user', 'ost_debug_import_user', 10, 2);
+	
 	function ost_debug_post_dependency($transfer_id, $post_id, $post) {
 		if($transfer_id === null) {
 			switch($post->post_type) {
