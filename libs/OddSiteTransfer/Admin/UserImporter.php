@@ -117,9 +117,15 @@
 					else {
 						$user_id = wp_insert_user($user_data);
 						if(is_wp_error($user_id)) {
-							//METODO: error message
+							$error_string = '';
+							$errors = $new_id->get_error_messages();
+							foreach ($errors as $error) {
+								$error_string .= $error;
+							}
+							trigger_error('Error while creating user: '.$errors, E_USER_WARNING);
 							return array('missingDependencies' => $missing_dependencies);
 						}
+						update_metadata('user', $user_id, 'ost_transfer_id', $transfer_id);
 					}
 				}
 			}
