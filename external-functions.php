@@ -23,6 +23,10 @@
 		return ost_get_object_transfer_id('user', $user->ID);
 	}
 	
+	function ost_get_term_transfer_id($term) {
+		return ost_get_object_transfer_id('term', $term->term_id);
+	}
+	
 	function ost_get_post_id_for_transfer($transfer_id) {
 		$args = array(
 			'post_type' => 'any',

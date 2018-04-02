@@ -84,15 +84,16 @@
 				$return_array = array();
 				foreach($term_ids as $term_id) {
 					if($term_id instanceof WP_Term) {
-						$term_id = $post_id->term_id;
+						$term_id = $term_id->term_id;
 					}
 					$linked_term = get_term($term_id);
 					
 					if($linked_term) {
 						
-						$return_array[] = $linked_term->slug;
-						//METODO: encode term
-						$this->add_dependency('term', $linked_term->slug, $dependencies);
+						$term_transfer_id = ost_get_term_transfer_id($linked_term);
+						$return_array[] = $term_transfer_id;
+						
+						$this->add_dependency('term', $term_transfer_id, $dependencies);
 					}
 				}
 				return $return_array;
@@ -103,15 +104,15 @@
 				}
 				$term_id = $term_ids;
 				if($term_id instanceof WP_Term) {
-					$term_id = $post_id->term_id;
+					$term_id = $term_id->term_id;
 				}
 				$linked_term = get_term($term_id);
 				
 				if($linked_term) {
-					//METODO: encode term
-					$this->add_dependency('term', $linked_term->slug, $dependencies);
+					$term_transfer_id = ost_get_term_transfer_id($linked_term);
+					$this->add_dependency('term', $term_transfer_id, $dependencies);
 				
-					return $linked_term->slug;
+					return $term_transfer_id;
 				}
 			}
 			
