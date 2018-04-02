@@ -229,18 +229,7 @@
 
 			switch($type) {
 				case "post":
-					$return_array[$type.'_'.$id] = ost_get_dependency($id, $type);
-					break;
 				case "term":
-					$taxonomy = $dependency_data['taxonomy'];
-					$term = get_term_by('slug', $id, $dependency_data['taxonomy']);
-					if($term) {
-						$return_array[$type.'_'.$taxonomy.'_'.$id] = $term;
-					}
-					else {
-						$missing_dependencies[] = $dependency_data;
-					}
-					break;
 				case "user":
 					$return_array[$type.'_'.$id] = ost_get_dependency($id, $type);
 					break;
@@ -260,10 +249,10 @@
 
 		protected function get_resolved_term_dependencies($ids, $taxonomy, $resolved_dependencies) {
 			$return_array = array();
-
+			
 			foreach($ids as $id) {
 				if($id !== '') {
-					$term = $this->get_resolved_dependency('term_'.$taxonomy, $id, $resolved_dependencies);
+					$term = $this->get_resolved_dependency('term', $id, $resolved_dependencies);
 					if($term) {
 						$return_array[] = intval($term->term_id);
 					}

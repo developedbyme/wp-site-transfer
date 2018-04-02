@@ -93,7 +93,7 @@
 			}
 		}
 		
-		return -1;
+		return null;
 	}
 	
 	
@@ -331,6 +331,9 @@
 		}
 		if($transfer_type === 'user') {
 			return get_user_by('id', ost_get_user_id_for_transfer($transfer_id));
+		}
+		if($transfer_type === 'term') {
+			return ost_get_term_for_transfer($transfer_id);
 		}
 		
 		return null;
