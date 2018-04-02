@@ -124,7 +124,7 @@
 		
 		public function send_outgoing_transfer($transfer_post_id) {
 			
-			
+			$return_log = array();
 			
 			if($transfer_post_id) {
 				//METODO: channels
@@ -165,6 +165,8 @@
 					);
 				
 					$transfer_response = HttpLoading::send_json_request($transfer_url, $body);
+					$return_log[] = $transfer_response;
+					
 					$encoded_transfer_response = json_decode($transfer_response['data'], true);
 					$dependencies_to_update = $this->check_dependencies($encoded_transfer_response['data']['dependencies']);
 					
@@ -197,9 +199,12 @@
 						'ids' => $body_ids
 					);
 				
-					HttpLoading::send_json_request($import_url, $body);
+					$import_response = HttpLoading::send_json_request($import_url, $body);
+					$return_log[] = $import_response;
 				}
 			}
+			
+			return $return_log;
 		}
 		
 		public function hook_save_post($post_id, $post, $update) {

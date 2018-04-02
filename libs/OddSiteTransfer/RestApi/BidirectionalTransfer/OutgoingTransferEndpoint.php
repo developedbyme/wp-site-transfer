@@ -26,9 +26,9 @@
 				return $this->output_error("No transfer for id ".$transfer_id);
 			}
 			
-			$plugin->external_access['transfer_hooks']->send_outgoing_transfer($transfer_post_id);
+			$log = $plugin->external_access['transfer_hooks']->send_outgoing_transfer($transfer_post_id);
 			
-			return $this->output_success("METODO");
+			return $this->output_success(array('log' => $log));
 			
 		}
 		

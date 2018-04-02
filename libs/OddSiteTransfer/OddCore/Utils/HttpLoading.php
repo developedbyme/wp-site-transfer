@@ -79,12 +79,14 @@
 			$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 			curl_close($ch);
 			
+			/*
 			echo($url);
 			echo("\n");
 			echo($httpcode);
 			echo("\n");
 			echo($data);
 			echo("\n\n");
+			*/
 			
 			return array('url' => $url, 'code' => $httpcode, 'data' => $data);
 		}
