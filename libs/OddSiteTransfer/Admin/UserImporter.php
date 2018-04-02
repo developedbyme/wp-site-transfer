@@ -49,18 +49,7 @@
 
 			switch($type) {
 				case "post":
-					$return_array[$type.'_'.$id] = ost_get_dependency($id, $type);
-					break;
 				case "term":
-					$taxonomy = $dependency_data['taxonomy'];
-					$term = get_term_by('slug', $id, $dependency_data['taxonomy']);
-					if($term) {
-						$return_array[$type.'_'.$taxonomy.'_'.$id] = $term;
-					}
-					else {
-						$missing_dependencies[] = $dependency_data;
-					}
-					break;
 				case "user":
 					$return_array[$type.'_'.$id] = ost_get_dependency($id, $type);
 					break;
