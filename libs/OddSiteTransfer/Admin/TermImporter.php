@@ -101,7 +101,7 @@
 					$existing_term = get_term_by('id', $result->error_data['term_exists'], $taxonomy);
 				}
 				else {
-					$existing_term = $result;
+					$existing_term = get_term_by('id', $result['term_id'], $taxonomy);
 				}
 				
 				update_metadata('term', $existing_term->term_id, 'ost_transfer_id', $transfer_id);
