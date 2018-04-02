@@ -71,9 +71,7 @@
 		}
 		
 		public function import($transfer_id, $data) {
-			echo("\OddSiteTransfer\Admin\UserImporter::import<br />");
-			
-			//METODO
+			//echo("\OddSiteTransfer\Admin\UserImporter::import<br />");
 			
 			$dependencies = $data['dependencies'];
 			
@@ -91,34 +89,46 @@
 			$transfer_id = $data['id'];
 			$user_data = $data['data'];
 			
-			$existing_user = get_user_by('login', $transfer_id);
+			$user_id = ost_get_user_id_for_transfer($transfer_id);
 			
-			if($existing_user) {
-				$user_data['ID'] = $existing_user->ID;
-				$new_id = wp_update_user($user_data);
+			$user_email = $user_data['user_email'];
+			$user_login = $user_data['user_login'];
+			
+			if(!isset($user_data['user_pass'])) {
+				$user_data['user_pass'] = wp_generate_password();
 			}
-			else {
-				$transfer_email = $user_data['user_email'];
-				$existing_user = get_user_by('email', $transfer_email);
 			
+			$user = null;
+			
+			if($user_id === -1) {
+				$existing_user = get_user_by('login', $user_login);
 				if($existing_user) {
-					$user_data['ID'] = $existing_user->ID;
-					$new_id = wp_update_user($user_data);
+					$user_id = $existing_user->ID;
+					//METODO: should we check if it's imported as something else
+					update_metadata('user', $user_id, 'ost_transfer_id', $transfer_id);
 				}
 				else {
-					$new_id = wp_insert_user($user_data);
-					if(is_wp_error($new_id)) {
-						$error_string = '';
-						$errors = $new_id->get_error_messages();
-						foreach ($errors as $error) {
-							$error_string .= $error;
+					$existing_user = get_user_by('email', $user_email);
+					if($existing_user) {
+						$user_id = $existing_user->ID;
+						//METODO: should we check if it's imported as something else
+						update_metadata('user', $user_id, 'ost_transfer_id', $transfer_id);
+					}
+					else {
+						$user_id = wp_insert_user($user_data);
+						if(is_wp_error($user_id)) {
+							//METODO: error message
+							return array('missingDependencies' => $missing_dependencies);
 						}
-						return $this->output_error($error_string);
 					}
 				}
 			}
 			
-			return $this->output_success(array('missingDependencies' => $missing_dependencies));
+			$user = get_user_by('id', $user_id);
+			
+			wp_update_user($user_data);
+			
+			return array('missingDependencies' => $missing_dependencies);
 		}
 
 		public static function test_import() {

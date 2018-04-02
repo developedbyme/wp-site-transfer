@@ -144,7 +144,6 @@
 		$encoder = new \OddSiteTransfer\SiteTransfer\Encoders\UserEncoderBaseObject();
 		
 		$encoded_data = $encoder->encode($user);
-		var_dump($encoded_data);
 		ost_update_transfer($transfer_post_id, $encoded_data);
 	}
 	

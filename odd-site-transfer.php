@@ -68,7 +68,7 @@
 	add_filter(ODD_SITE_TRANSFER_DOMAIN.'/import_media', 'ost_debug_import_post', 10, 2);
 	
 	function ost_debug_import_user($transfer_id, $data) {
-		echo('ost_debug_import_user');
+		//echo('ost_debug_import_user');
 		
 		$post_importer = new \OddSiteTransfer\Admin\UserImporter();
 		
