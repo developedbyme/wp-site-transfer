@@ -49,9 +49,11 @@
 			return $ids_to_update;
 		}
 		
-		protected function compare_image($file_path, $file_size) {
+		protected function compare_image($file_path, $file_size, $channel_id) {
 			
-			$url = 'http://transfer2.localhost/wp-json/ost/v3/compare/image';
+			$base_url = get_post_meta($channel_id, 'url', true);
+			
+			$url = $base_url.'compare/image';
 			
 			$send_data = array('path' => $file_path, 'size' => $file_size);
 			
@@ -62,9 +64,11 @@
 			return $result_object['data']['match'];
 		}
 		
-		protected function transfer_media($media) {
+		protected function transfer_media($media, $channel_id) {
 			
-			$url = 'http://transfer2.localhost/wp-json/ost/v3/incoming-transfer/image';
+			$base_url = get_post_meta($channel_id, 'url', true);
+			
+			$url = $base_url.'incoming-transfer/image';
 			
 			$file_path = get_post_meta($media->ID, '_wp_attached_file', true);
 			
@@ -74,7 +78,7 @@
 				return false;
 			}
 			
-			$image_exists = $this->compare_image($file_path, filesize($file_to_load));
+			$image_exists = $this->compare_image($file_path, filesize($file_to_load), $channel_id);
 			
 			$image_is_ok = true;
 			
@@ -95,7 +99,7 @@
 			return $image_is_ok;
 		}
 		
-		protected function create_transfer_data($transfer_post_id) {
+		protected function create_transfer_data($transfer_post_id, $channel_id) {
 			
 			$post = get_post($transfer_post_id);
 			
@@ -114,7 +118,7 @@
 			
 			if($type === 'media') {
 				$media = get_post(ost_get_post_id_for_transfer($transfer_id));
-				$media_is_ok = $this->transfer_media($media);
+				$media_is_ok = $this->transfer_media($media, $channel_id);
 				if(!$media_is_ok) {
 					trigger_error('Media '.$post->post_title.' didn\'t transfer.', E_USER_ERROR);
 				}
@@ -182,7 +186,7 @@
 					$items_to_add = min($number_of_items_per_transfer, count($items)-$current_index);
 					for($i = 0; $i < $items_to_add; $i++) {
 						$current_transfer_post_id = $items[$current_index];
-						$body_items[] = $this->create_transfer_data($current_transfer_post_id);
+						$body_items[] = $this->create_transfer_data($current_transfer_post_id, $channel_id);
 						
 						$current_transfer_id = get_post_meta($current_transfer_post_id, 'ost_id', true);
 						array_unshift($import_ids, $current_transfer_id);

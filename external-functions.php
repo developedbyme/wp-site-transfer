@@ -143,7 +143,7 @@
 	
 	function ost_add_post_transfer($transfer_id, $transfer_type, $post) {
 		
-		$transfer_post_id = ost_create_transfer($transfer_id, $transfer_type, $transfer_type.' - '.($post->post_title));
+		$transfer_post_id = ost_create_transfer($transfer_id, $transfer_type, $transfer_type.' - '.($post->post_title).' - '.$transfer_id);
 	
 		if(!$transfer_post_id) {
 			return -1;
@@ -158,13 +158,17 @@
 		
 		$encoder = new \OddSiteTransfer\SiteTransfer\Encoders\AcfPostEncoder();
 		
+		$transfer_id = get_post_meta($transfer_post_id, 'ost_id', true);
+		$transfer_type = apply_filters(ODD_SITE_TRANSFER_DOMAIN.'/post_transfer_type', null, $post->ID, $post);
+		$transfer_title = $transfer_type.' - '.($post->post_title).' - '.$transfer_id;
+		
 		$encoded_data = $encoder->encode($post);
-		ost_update_transfer($transfer_post_id, $encoded_data);
+		ost_update_transfer($transfer_post_id, $encoded_data, $transfer_type, $transfer_title);
 	}
 	
 	function ost_add_user_transfer($transfer_id, $transfer_type, $user) {
 		
-		$transfer_post_id = ost_create_transfer($transfer_id, $transfer_type, $transfer_type.' - '.($user->user_login));
+		$transfer_post_id = ost_create_transfer($transfer_id, $transfer_type, $transfer_type.' - '.($user->user_login).' - '.$transfer_id);
 		
 		ost_update_user_transfer($transfer_post_id, $user);
 		
@@ -174,12 +178,16 @@
 	function ost_update_user_transfer($transfer_post_id, $user) {
 		$encoder = new \OddSiteTransfer\SiteTransfer\Encoders\UserEncoderBaseObject();
 		
+		$transfer_id = get_post_meta($transfer_post_id, 'ost_id', true);
+		$transfer_type = apply_filters(ODD_SITE_TRANSFER_DOMAIN.'/user_transfer_type', null, $user->ID, $user);
+		$transfer_title = $transfer_type.' - '.($user->user_login).' - '.$transfer_id;
+		
 		$encoded_data = $encoder->encode($user);
-		ost_update_transfer($transfer_post_id, $encoded_data);
+		ost_update_transfer($transfer_post_id, $encoded_data, $transfer_type, $transfer_title);
 	}
 	
 	function ost_add_term_transfer($transfer_id, $transfer_type, $term) {
-		$transfer_post_id = ost_create_transfer($transfer_id, $transfer_type, $transfer_type.' - '.($term->name));
+		$transfer_post_id = ost_create_transfer($transfer_id, $transfer_type, $transfer_type.' - '.($term->name).' - '.$transfer_id);
 		
 		ost_update_term_transfer($transfer_post_id, $term);
 		
@@ -189,14 +197,22 @@
 	function ost_update_term_transfer($transfer_post_id, $term) {
 		$encoder = new \OddSiteTransfer\SiteTransfer\Encoders\TermEncoderBaseObject();
 		
+		$transfer_id = get_post_meta($transfer_post_id, 'ost_id', true);
+		$transfer_type = apply_filters(ODD_SITE_TRANSFER_DOMAIN.'/term_transfer_type', null, $term->term_id, $term);
+		$transfer_title = $transfer_type.' - '.($term->name).' - '.$transfer_id;
+		
 		$encoded_data = $encoder->encode($term);
-		ost_update_transfer($transfer_post_id, $encoded_data);
+		ost_update_transfer($transfer_post_id, $encoded_data, $transfer_type, $transfer_title);
 	}
 	
-	function ost_update_transfer($transfer_post_id, $encoded_data, $type = 'update') {
+	function ost_update_transfer($transfer_post_id, $encoded_data, $transfer_type, $title, $type = 'update') {
 		$encoded_data_hash = md5(serialize($encoded_data));
 		
 		$current_hash = get_post_meta($transfer_post_id, 'ost_encoded_data_hash', true);
+		if($title !== get_the_title($transfer_post_id)) {
+			wp_update_post(array('ID' => $transfer_post_id, 'post_title' => $title));
+		}
+		update_post_meta($transfer_post_id, 'ost_transfer_type', $transfer_type);
 		
 		if($encoded_data_hash !== $current_hash) {
 			update_post_meta($transfer_post_id, 'ost_encoded_data', $encoded_data);
