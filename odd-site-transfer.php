@@ -22,52 +22,6 @@
 	
 	require_once( ODD_SITE_TRANSFER_DIR . "/external-functions.php" );
 	
-	function ost_debug_transfer_type_page($type, $post_id, $post) {
-		if($type === null) {
-			switch($post->post_type) {
-				case 'page':
-				case 'post':
-					return 'post';
-				case 'attachment':
-					return 'media';
-			}
-		}
-		return $type;
-	}
-	
-	add_filter(ODD_SITE_TRANSFER_DOMAIN.'/post_transfer_type', 'ost_debug_transfer_type_page', 10, 3);
-	
-	function ost_debug_transfer_type_user($type, $user_id, $user) {
-		if($type === null) {
-			return 'user';
-		}
-		return $type;
-	}
-	
-	add_filter(ODD_SITE_TRANSFER_DOMAIN.'/user_transfer_type', 'ost_debug_transfer_type_user', 10, 3);
-	
-	function ost_debug_transfer_type_term($type, $term_id, $term) {
-		if($type === null) {
-			return 'term';
-		}
-		return $type;
-	}
-	
-	add_filter(ODD_SITE_TRANSFER_DOMAIN.'/term_transfer_type', 'ost_debug_transfer_type_term', 10, 3);
-	
-	function ost_debug_transfer_update_type_page($type, $post_id, $post) {
-		if($type === null) {
-			switch($post->post_type) {
-				case 'page':
-				case 'post':
-					return 'always';
-			}
-		}
-		return $type;
-	}
-	
-	add_filter(ODD_SITE_TRANSFER_DOMAIN.'/post_transfer_update_type', 'ost_debug_transfer_update_type_page', 10, 3);
-	
 	function ost_debug_import_post($transfer_id, $data) {
 		//echo('ost_debug_import_post');
 		

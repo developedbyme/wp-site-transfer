@@ -248,6 +248,10 @@
 				return;
 			}
 			
+			if($post->post_status === 'auto-draft') {
+				return;
+			}
+			
 			$transfer_type = apply_filters(ODD_SITE_TRANSFER_DOMAIN.'/post_transfer_type', null, $post->ID, $post);
 			
 			if($transfer_type !== null) {
