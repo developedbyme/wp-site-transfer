@@ -155,7 +155,6 @@
 			$return_log = array();
 			
 			if($transfer_post_id) {
-				//METODO: channels
 				
 				$base_url = get_post_meta($channel_id, 'url', true);
 				
