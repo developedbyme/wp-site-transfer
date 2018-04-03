@@ -239,14 +239,14 @@
 		$imported_hash = get_post_meta($transfer_post_id, 'ost_imported_hash', true);
 		
 		if($imported_hash !== $current_hash || true) { //MEDEBUG: always true
-			//METODO: check depndencies
-			//METODO: do import
+			//METODO: check dependencies
 			$transfer_id = get_post_meta($transfer_post_id, 'ost_id', true);
 			$data = get_post_meta($transfer_post_id, 'ost_encoded_data', true);
 			$transfer_type = get_post_meta($transfer_post_id, 'ost_transfer_type', true);
 			
 			do_action(ODD_SITE_TRANSFER_DOMAIN.'/import_'.$transfer_type, $transfer_id, $data);
 			
+			update_post_meta($transfer_post_id, 'ost_import_status', 1);
 			update_post_meta($transfer_post_id, 'ost_imported_hash', $current_hash);
 		}
 	}
