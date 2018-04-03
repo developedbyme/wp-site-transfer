@@ -35,7 +35,7 @@
 					$publish_ids[] = $transfer_post_id;
 				}
 				
-				ost_update_transfer($transfer_post_id, $item['data']);
+				ost_update_transfer($transfer_post_id, $item['data'], 'incoming');
 				
 				foreach($item['data']['dependencies'] as $dependency) {
 					$dependency_transfer_id = $dependency['id'];
