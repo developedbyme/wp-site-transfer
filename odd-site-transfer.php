@@ -22,48 +22,4 @@
 	
 	require_once( ODD_SITE_TRANSFER_DIR . "/external-functions.php" );
 	
-	function ost_debug_import_post($transfer_id, $data) {
-		//echo('ost_debug_import_post');
-		
-		$post_importer = new \OddSiteTransfer\Admin\PostImporter();
-		
-		$post_importer->import($transfer_id, $data);
-	}
-	add_filter(ODD_SITE_TRANSFER_DOMAIN.'/import_post', 'ost_debug_import_post', 10, 2);
-	add_filter(ODD_SITE_TRANSFER_DOMAIN.'/import_media', 'ost_debug_import_post', 10, 2);
-	
-	function ost_debug_import_user($transfer_id, $data) {
-		//echo('ost_debug_import_user');
-		
-		$post_importer = new \OddSiteTransfer\Admin\UserImporter();
-		
-		$post_importer->import($transfer_id, $data);
-	}
-	add_filter(ODD_SITE_TRANSFER_DOMAIN.'/import_user', 'ost_debug_import_user', 10, 2);
-	
-	function ost_debug_import_term($transfer_id, $data) {
-		//echo('ost_debug_import_user');
-		//var_dump($data);
-		
-		$post_importer = new \OddSiteTransfer\Admin\TermImporter();
-		
-		$post_importer->import($transfer_id, $data);
-	}
-	add_filter(ODD_SITE_TRANSFER_DOMAIN.'/import_term', 'ost_debug_import_term', 10, 2);
-	
-	function ost_debug_post_dependency($transfer_id, $post_id, $post) {
-		if($transfer_id === null) {
-			switch($post->post_type) {
-				case 'page':
-				case 'post':
-				case 'attachment':
-					$transfer_id = ost_get_post_transfer_id($post);
-					ost_add_post_transfer($transfer_id, 'post', $post);
-					break;
-			}
-		}
-		return $transfer_id;
-	}
-	
-	add_filter(ODD_SITE_TRANSFER_DOMAIN.'/outgoing_transfer/post_dependency', 'ost_debug_post_dependency', 10, 3);
 ?>
