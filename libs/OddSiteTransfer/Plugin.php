@@ -165,7 +165,6 @@
 			
 			parent::hook_admin_enqueue_scripts();
 			
-			/*
 			$screen = get_current_screen();
 			
 			wp_enqueue_script( 'odd-site-transfer-admin-main', ODD_SITE_TRANSFER_URL . '/assets/js/admin-main.js');
@@ -177,7 +176,6 @@
 					'restApiBaseUrl' => get_home_url().'/wp-json/'
 				)
 			);
-			*/
 		}
 		
 		

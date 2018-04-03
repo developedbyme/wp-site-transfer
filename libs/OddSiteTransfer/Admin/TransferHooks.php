@@ -25,7 +25,7 @@
 			add_action('edited_term', array($this, 'hook_edited_term'), 10, 3);
 			add_action('delete_term', array($this, 'hook_delete_term'), 10, 3);
 			
-			//add_action('admin_notices', array($this, 'hook_admin_notices'));
+			add_action('admin_notices', array($this, 'hook_admin_notices'));
 		}
 		
 		protected function check_dependencies($dependencies) {
@@ -125,12 +125,42 @@
 		
 		public function send_outgoing_transfer($transfer_post_id) {
 			
+			$return_data = array();
+			
+			$args = array(
+				'post_type' => 'ost_channel',
+				'fields' => 'ids',
+				'posts_per_page' => -1,
+				'meta_query' => array(
+					array(
+						'key' => 'settings_name',
+						'value' => 'outgoing',
+						'compare' => '='
+					)
+				)
+			);
+			
+			$channel_ids = get_posts($args);
+			
+			foreach($channel_ids as $channel_id) {
+				$current_log = $this->send_outgoing_transfer_to_channel($transfer_post_id, $channel_id);
+				$return_data[] = array('id' => $channel_id, 'name' => get_the_title($channel_id), 'log' => $current_log);
+			}
+			
+			return $return_data;
+		}
+		
+		protected function send_outgoing_transfer_to_channel($transfer_post_id, $channel_id) {
+			
 			$return_log = array();
 			
 			if($transfer_post_id) {
 				//METODO: channels
-				$transfer_url = 'http://transfer2.localhost/wp-json/ost/v3/incoming-transfer';
-				$import_url = 'http://transfer2.localhost/wp-json/ost/v3/run-imports';
+				
+				$base_url = get_post_meta($channel_id, 'url', true);
+				
+				$transfer_url = $base_url.'incoming-transfer';
+				$import_url = $base_url.'run-imports';
 				
 				$items = array(
 					$transfer_post_id
@@ -252,7 +282,6 @@
 			//METODO
 		}
 		
-		/*
 		protected function output_notice($module_name, $data, $type = '') {
 			$element_id = sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
 			?>
@@ -280,7 +309,7 @@
 			
 			global $post;
 			
-			if($screen->base === 'post' && $screen->post_type === 'server-transfer') {
+			if($screen->base === 'post' && $screen->post_type === 'ost_channel') {
 				
 				if($post->post_status === 'publish' || $post->post_status === 'draft') {
 					
@@ -320,7 +349,7 @@
 				}
 			}
 			else if($screen->base === 'post') {
-				
+				/*
 				$is_incoming_link = get_post_meta($post->ID, '_odd_server_transfer_is_incoming', true);
 				
 				if($is_incoming_link) {
@@ -338,9 +367,9 @@
 						$this->output_notice('checkSyncNotice', $module_data);
 					}
 				}
+		*/
 			}
 		}
-		*/
 		
 		public static function test_import() {
 			echo("Imported \OddSiteTransfer\Admin\TransferHooks<br />");

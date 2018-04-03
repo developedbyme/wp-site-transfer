@@ -14,6 +14,7 @@
 			$this->set_names('ost_transfer', 'transfer');
 			$this->_arguments['supports'] = array('title');
 			$this->_arguments['taxonomies'] = array();
+			$this->set_argument('public', false);
 			
 		}
 		

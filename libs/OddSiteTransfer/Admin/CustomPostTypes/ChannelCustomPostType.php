@@ -14,6 +14,7 @@
 			$this->set_names('ost_channel', 'channel');
 			$this->_arguments['supports'] = array('title');
 			$this->_arguments['taxonomies'] = array();
+			$this->set_argument('public', false);
 			
 			$current_box = new \OddSiteTransfer\OddCore\Admin\MetaData\PostMetaDataFieldBox();
 			$current_box->set_name('URL');
@@ -26,8 +27,10 @@
 			
 			$select_field = new \OddSiteTransfer\OddCore\Admin\MetaData\SelectMetaField();
 			$select_field->set_name('settings_name');
-			$select_field->set_default_value('default');
-			$select_field->add_option('Default', 'default');
+			$select_field->set_default_value('outgoing');
+			$select_field->add_option('Outgoing', 'outgoing');
+			$select_field->add_option('Incoming', 'incoming');
+			$select_field->add_option('API', 'api');
 			$current_box->add_meta_field($select_field);
 			
 			$this->add_meta_box_after_title($current_box);
