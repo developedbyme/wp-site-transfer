@@ -162,6 +162,8 @@
 		$transfer_type = apply_filters(ODD_SITE_TRANSFER_DOMAIN.'/post_transfer_type', null, $post->ID, $post);
 		$transfer_title = $transfer_type.' - '.($post->post_title).' - '.$transfer_id;
 		
+		$encoder = apply_filters(ODD_SITE_TRANSFER_DOMAIN.'/encoder_setup/post', $encoder, $transfer_type, $post->ID, $post);
+		
 		$encoded_data = $encoder->encode($post);
 		ost_update_transfer($transfer_post_id, $encoded_data, $transfer_type, $transfer_title);
 		
