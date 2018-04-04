@@ -267,6 +267,7 @@
 		
 		$transfer_type = apply_filters(ODD_SITE_TRANSFER_DOMAIN.'/post_transfer_type', null, $post->ID, $post);
 		
+		$transfer_post_id = -1;
 		if($transfer_type) {
 			$transfer_post_id = ost_add_post_transfer($transfer_id, $transfer_type, $post);
 		
@@ -288,6 +289,7 @@
 		
 		$transfer_type = apply_filters(ODD_SITE_TRANSFER_DOMAIN.'/user_transfer_type', null, $user->ID, $user);
 		
+		$transfer_post_id = -1;
 		if($transfer_type) {
 			$transfer_post_id = ost_add_user_transfer($transfer_id, $transfer_type, $user);
 		
@@ -306,6 +308,7 @@
 		
 		$transfer_type = apply_filters(ODD_SITE_TRANSFER_DOMAIN.'/term_transfer_type', null, $term_id, $term);
 		
+		$transfer_post_id = -1;
 		if($transfer_type) {
 			$transfer_post_id = ost_add_term_transfer($transfer_id, $transfer_type, $term);
 		
