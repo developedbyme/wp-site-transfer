@@ -305,6 +305,8 @@
 			}
 
 			$new_id = NULL;
+			
+			$post_data = apply_filters(ODD_SITE_TRANSFER_DOMAIN.'/import_post/'.$transfer_type.'/post_data', $post_data, $data, $transfer_id);
 
 			//$this->_disable_save_hooks($post_type);
 
@@ -390,7 +392,6 @@
 			}
 			
 			foreach($meta_data as $category_name => $fields) {
-				//METODO: category should be the transfer type
 				do_action(ODD_SITE_TRANSFER_DOMAIN.'/import_post/'.$transfer_type.'/meta/'.$category_name, $new_id, $fields, $transfer_id);
 			}
 
