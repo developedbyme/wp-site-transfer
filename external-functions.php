@@ -164,6 +164,13 @@
 		
 		$encoded_data = $encoder->encode($post);
 		ost_update_transfer($transfer_post_id, $encoded_data, $transfer_type, $transfer_title);
+		
+		$encoded_meta_data = array();
+		$meta_data = get_post_meta($post->ID);
+		foreach($meta_data as $key => $value) {
+			$encoded_meta_data[$key] = get_post_meta($post->ID, $key, false);
+		}
+		update_post_meta($transfer_post_id, 'ost_raw_meta', $encoded_meta_data);
 	}
 	
 	function ost_add_user_transfer($transfer_id, $transfer_type, $user) {
