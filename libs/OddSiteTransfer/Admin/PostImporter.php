@@ -272,8 +272,9 @@
 			//echo("\OddSiteTransfer\Admin\PostImporter::import<br />");
 
 			add_filter('wp_kses_allowed_html', array($this, 'filter_wp_kses_allowed_html'), 10, 1);
-
 			
+			$transfer_post_id = ost_get_transfer_post_id($transfer_id);
+			$transfer_type = get_post_meta($transfer_post_id, 'ost_transfer_type', true);
 
 			$dependencies = $data['dependencies'];
 
@@ -390,7 +391,7 @@
 			
 			foreach($meta_data as $category_name => $fields) {
 				//METODO: category should be the transfer type
-				do_action(ODD_SITE_TRANSFER_DOMAIN.'/import/'.'post'.'/meta/'.$category_name, $new_id, $fields, $transfer_id);
+				do_action(ODD_SITE_TRANSFER_DOMAIN.'/import_post/'.$transfer_type.'/meta/'.$category_name, $new_id, $fields, $transfer_id);
 			}
 
 			update_post_meta($new_id, 'ost_transfer_id', $transfer_id);
