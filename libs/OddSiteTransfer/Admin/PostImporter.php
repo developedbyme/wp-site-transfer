@@ -387,6 +387,11 @@
 					update_post_meta($new_id, $key, $this->get_resolved_post_ids($value, $resolved_dependencies));
 				}
 			}
+			
+			foreach($meta_data as $category_name => $fields) {
+				//METODO: category should be the transfer type
+				do_action(ODD_SITE_TRANSFER_DOMAIN.'/import/'.'post'.'/meta/'.$category_name, $new_id, $fields, $transfer_id);
+			}
 
 			update_post_meta($new_id, 'ost_transfer_id', $transfer_id);
 			update_post_meta($new_id, 'ost_import_date', date(DATE_ATOM));
