@@ -22,16 +22,24 @@
 			
 			$raw_order_data = $order->get_data();
 			
+			
+			
 			$order_customer_linked_id = ost_get_user_transfer_id(get_user_by('id', $raw_order_data['customer_id']));
 			$this->add_dependency('user', $order_customer_linked_id, $return_object['dependencies']);
+			
+			$properties_to_copy = array("currency", "version", "prices_include_tax", "discount_total", "discount_tax", "shipping_total", "shipping_tax", "cart_tax", "total", "cart_tax", "cart_tax", "total", "total_tax", "order_key");
+			
+			$properties = array();
+			foreach($properties_to_copy as $property_name) {
+				$properties[$property_name] = $raw_order_data[$property_name];
+			}
 			
 			$order_data = array(
 				'billing' => $raw_order_data['billing'],
 				'shipping' => $raw_order_data['shipping'],
-				'customer_id' => $order_customer_linked_id
+				'customer_id' => $order_customer_linked_id,
+				'properties' => $properties
 			);
-			
-			//METODO: more fields
 			
 			$items_data = array();
 			foreach ($order->get_items() as $item_key => $item_values) {
