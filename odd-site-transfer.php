@@ -26,6 +26,9 @@
 		if($post->post_type === 'shop_order') {
 			return new \OddSiteTransfer\SiteTransfer\Encoders\WcOrderPostEncoder();
 		}
+		if($post->post_type === 'shop_subscription') {
+			return new \OddSiteTransfer\SiteTransfer\Encoders\WcSubscriptionPostEncoder();
+		}
 		return $encoder;
 	}
 	
