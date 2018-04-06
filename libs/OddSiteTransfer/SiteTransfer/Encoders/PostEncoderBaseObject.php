@@ -146,12 +146,10 @@
 			
 			$parent_id = $object->post_parent;
 			
-			var_dump($parent_id);
-			
 			if($parent_id != 0) {
 				$linked_post = get_post($parent_id);
 				$linked_post_id = $this->get_post_transfer_id($linked_post);
-				$this->add_dependency('post', $linked_post_id, $dependencies);
+				$this->add_dependency('post', $linked_post_id, $return_object['dependencies']);
 				$return_object['parent'] = $linked_post_id;
 			}
 			else {
