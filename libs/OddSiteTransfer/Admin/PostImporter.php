@@ -334,6 +334,8 @@
 				//METODO: error message
 				return null;
 			}
+			
+			do_action(ODD_SITE_TRANSFER_DOMAIN.'/import_post/'.$transfer_type.'/after_post_data', $new_id, $post_data, $data, $transfer_id);
 
 			if($post_data['post_type'] === 'attachment') {
 
