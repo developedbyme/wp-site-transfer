@@ -36,9 +36,16 @@
 			$properties['billing_period'] = $subscription->billing_period;
 			$properties['billing_interval'] = $subscription->billing_interval;
 			
+			$date_properties = array();
+			$date_properties_to_copy = array('trial_end', 'next_payment', 'last_order_date_created', 'cancelled', 'payment_retry', 'end');
+			foreach($date_properties_to_copy as $date_property_to_copy) {
+				$date_properties[$date_property_to_copy] = $subscription->get_date($date_property_to_copy);
+			}
+			
 			$return_object['meta_data']['woocommerce']['subscription'] = array(
 				'properties' => $properties,
-				'related_orders' => $related_orders
+				'related_orders' => $related_orders,
+				'date_properties' => $date_properties
 			);
 		}
 		
