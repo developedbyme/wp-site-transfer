@@ -303,6 +303,18 @@
 			if($author) {
 				$post_data['post_author'] = $author->ID;
 			}
+			
+			$parent_id = $data['parent'];
+			
+			$post_data['post_parent'] = 0;
+			
+			if($parent_id !== null) {
+				$parent = $this->get_resolved_dependency('post', $parent_id, $resolved_dependencies);
+				if($parent) {
+					$post_data['post_parent'] = $parent->ID;
+				}
+			}
+			
 
 			$new_id = NULL;
 			
