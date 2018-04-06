@@ -358,7 +358,8 @@
 		
 		$transfer_type = get_post_meta($transfer_post_id, 'ost_transfer_type', true);
 		
-		if($transfer_type === 'post') {
+		//METODO: move out these to be mor flexible
+		if($transfer_type === 'post' || $transfer_type === 'legacy_order' || $transfer_type === 'legacy_subscription') {
 			return get_post(ost_get_post_id_for_transfer($transfer_id));
 		}
 		if($transfer_type === 'media') {
