@@ -262,12 +262,6 @@
 			return $return_array;
 		}
 
-		protected function _disable_save_hooks($post_type) {
-			remove_all_actions("save_post_{$post_type}");
-			remove_all_actions('save_post');
-			remove_all_actions('wp_insert_post');
-		}
-
 		public function import($transfer_id, $data) {
 			//echo("\OddSiteTransfer\Admin\PostImporter::import<br />");
 
@@ -292,8 +286,6 @@
 			$post_data = $data['data'];
 			$meta_data = $data['meta_data'];
 			$taxonomies = $data['taxonomies'];
-
-			$post_type = $post_data['post_type'];
 			
 			$existing_post = null;
 			$existing_post_id = ost_get_post_id_for_transfer($transfer_id);
@@ -323,8 +315,6 @@
 			$new_id = NULL;
 			
 			$post_data = apply_filters(ODD_SITE_TRANSFER_DOMAIN.'/import_post/'.$transfer_type.'/post_data', $post_data, $data, $transfer_id);
-
-			//$this->_disable_save_hooks($post_type);
 
 			if($existing_post) {
 				$post_data['ID'] = $existing_post->ID;
