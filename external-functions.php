@@ -34,7 +34,7 @@
 		remove_all_actions('pre_get_posts');
 		
 		$args = array(
-			'post_type' => array('any', 'shop_order', 'shop_subscription'),
+			'post_type' => array('any', 'shop_order', 'shop_subscription', 'quiz_response'),
 			'post_status' => $post_types,
 			'fields' => 'ids',
 			'meta_query' => array(
