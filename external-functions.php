@@ -29,13 +29,15 @@
 	
 	function ost_get_post_id_for_transfer($transfer_id) {
 		
-		$post_types = array("any", "draft", "pending", "private", "publish", "wc-pending", "wc-customer-loss", "wc-investigate", "wc-produced", "wc-on-hold", "wc-completed", "wc-refunded", "wc-cancelled", "wc-failed", "wc-goodwill", "wc-processing", "wc-kco-incomplete");
+		$post_statuses = array("any", "draft", "pending", "private", "publish", "wc-pending", "wc-customer-loss", "wc-investigate", "wc-produced", "wc-on-hold", "wc-completed", "wc-refunded", "wc-cancelled", "wc-failed", "wc-goodwill", "wc-processing", "wc-kco-incomplete");
 		
 		remove_all_actions('pre_get_posts');
 		
+		$post_types = get_post_types(array(), 'names');
+		
 		$args = array(
-			'post_type' => array('any', 'shop_order', 'shop_subscription', 'quiz_response'),
-			'post_status' => $post_types,
+			'post_type' => $post_types,
+			'post_status' => $post_statuses,
 			'fields' => 'ids',
 			'meta_query' => array(
 				array(

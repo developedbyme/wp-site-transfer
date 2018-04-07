@@ -294,8 +294,12 @@
 			$taxonomies = $data['taxonomies'];
 
 			$post_type = $post_data['post_type'];
-
-			$existing_post = $this->get_post_by_transfer_id($post_type, $transfer_id);
+			
+			$existing_post = null;
+			$existing_post_id = ost_get_post_id_for_transfer($transfer_id);
+			if($existing_post_id > 0) {
+				$existing_post = get_post($existing_post_id);
+			}
 
 			$author_id = $data['author'];
 			
