@@ -262,13 +262,15 @@
 			
 		}
 		
-		public function encode($object) {
+		public function encode($object, $transfer_type) {
 			//echo("\OddSiteTransfer\SiteTransfer\Encoders\PostEncoderBaseObject::encode<br />");
 			
 			$return_data = array();
 			$return_data['dependencies'] = array();
 			
 			$this->encode_parts($object, $return_data);
+			
+			$return_data = apply_filters(ODD_SITE_TRANSFER_DOMAIN.'/encode_post/'.$transfer_type, $return_data, $object, $transfer_type);
 			
 			return $return_data;
 		}
