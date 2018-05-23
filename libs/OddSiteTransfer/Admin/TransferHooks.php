@@ -23,7 +23,7 @@
 			//METODO: delete post
 			add_action('created_term', array($this, 'hook_created_term'), 100, 3);
 			add_action('edited_term', array($this, 'hook_edited_term'), 100, 3);
-			add_action('delete_term', array($this, 'hook_delete_term'), 100, 3);
+			add_action('delete_term', array($this, 'hook_delete_term'), 1, 4);
 			
 			add_action('admin_notices', array($this, 'hook_admin_notices'));
 		}
@@ -315,21 +315,21 @@
 			}
 		}
 		
-		public function hook_delete_term($term_id, $tt_id, $taxonomy) {
+		public function hook_delete_term($term_id, $tt_id, $taxonomy, $deleted_term) {
 			echo("\OddSiteTransfer\Admin\TransferHooks::hook_delete_term<br />");
 			var_dump($term_id);
 			
 			$term = get_term_by('id', $term_id, $taxonomy);
-			var_dump($term);
+			var_dump($deleted_term);
 			
-			$transfer_type = apply_filters(ODD_SITE_TRANSFER_DOMAIN.'/term_transfer_type', null, $term_id, $term);
+			$transfer_type = apply_filters(ODD_SITE_TRANSFER_DOMAIN.'/term_transfer_type', null, $term_id, $deleted_term);
 			
 			if($transfer_type !== null) {
-				$transfer_id = ost_get_term_transfer_id($term);
+				$transfer_id = ost_get_term_transfer_id($deleted_term);
 				$transfer_post_id = ost_get_transfer_post_id($transfer_id);
 				
 				if($transfer_post_id !== -1) {
-					ost_update_term_transfer_for_deleted($transfer_post_id, $term);
+					ost_update_term_transfer_for_deleted($transfer_post_id, $deleted_term);
 				}
 			}
 			
