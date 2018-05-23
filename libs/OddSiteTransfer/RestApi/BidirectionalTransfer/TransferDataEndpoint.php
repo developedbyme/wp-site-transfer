@@ -21,11 +21,11 @@
 			
 			$transfer_post_id = ost_get_transfer_post_id($transfer_id);
 			
-			if($transfer_post_id > 0) {
-				$this->output_success($transfer_post_id);
+			if($transfer_post_id === -1) {
+				return $this->output_error("No transfer for id ".$transfer_id);
 			}
 			
-			return $this->output_error('No transfer');
+			return $this->output_success($transfer_post_id);
 			
 		}
 		
