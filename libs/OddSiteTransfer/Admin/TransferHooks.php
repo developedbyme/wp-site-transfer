@@ -244,11 +244,7 @@
 		public function hook_save_post($post_id, $post, $update) {
 			//echo("\OddSiteTransfer\Admin\TransferHooks::hook_save_post<br />");
 			
-			if(wp_is_post_revision($post_id)) {
-				return;
-			}
-			
-			if($post->post_status === 'auto-draft') {
+			if(wp_is_post_revision($post_id) || $post->post_status === 'auto-draft') {
 				return;
 			}
 			
@@ -274,7 +270,26 @@
 		public function hook_created_term($term_id, $tt_id, $taxonomy) {
 			//echo("\OddSiteTransfer\Admin\TransferHooks::hook_created_term<br />");
 			
-			//METODO
+			$term = get_term_by('id', $term_id, $taxonomy);
+			
+			$transfer_type = apply_filters(ODD_SITE_TRANSFER_DOMAIN.'/term_transfer_type', null, $term_id, $term);
+			
+			if($transfer_type !== null) {
+				$transfer_id = ost_get_term_transfer_id($term);
+				$transfer_post_id = ost_get_transfer_post_id($transfer_id);
+				
+				if($transfer_post_id === -1) {
+					$transfer_update_type = apply_filters(ODD_SITE_TRANSFER_DOMAIN.'/term_transfer_update_type', null, $term_id, $term);
+					if($transfer_update_type === 'always') {
+						$transfer_post_id = ost_add_term_transfer($transfer_id, $transfer_type, $term);
+					}
+				}
+				
+				var_dump($transfer_post_id);
+				if($transfer_post_id !== -1) {
+					ost_update_term_transfer($transfer_post_id, $term);
+				}
+			}
 		}
 		
 		public function hook_edited_term($term_id, $tt_id, $taxonomy) {
