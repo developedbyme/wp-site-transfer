@@ -90,13 +90,12 @@
 			
 			if(isset($data['parent'])) {
 				$parent_term = $this->get_resolved_dependency('term', $data['parent'], $resolved_dependencies);
-				var_dump($parent_term);
 				if($parent_term) {
 					$term_data['parent'] = intval($parent_term->term_id);
 				}
 			}
 			
-			var_dump($data);
+			var_dump($term_data);
 			
 			if(!$existing_term) {
 				$result = wp_insert_term($term_data['name'], $taxonomy, $term_data);
