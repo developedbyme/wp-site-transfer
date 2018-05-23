@@ -316,9 +316,11 @@
 		}
 		
 		public function hook_delete_term($term_id, $tt_id, $taxonomy) {
-			//echo("\OddSiteTransfer\Admin\TransferHooks::hook_delete_term<br />");
+			echo("\OddSiteTransfer\Admin\TransferHooks::hook_delete_term<br />");
+			var_dump($term_id);
 			
 			$term = get_term_by('id', $term_id, $taxonomy);
+			var_dump($term);
 			
 			$transfer_type = apply_filters(ODD_SITE_TRANSFER_DOMAIN.'/term_transfer_type', null, $term_id, $term);
 			
@@ -330,6 +332,8 @@
 					ost_update_term_transfer_for_deleted($transfer_post_id, $term);
 				}
 			}
+			
+			die();
 		}
 		
 		protected function output_notice($module_name, $data, $type = '') {
