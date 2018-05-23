@@ -221,6 +221,17 @@
 		ost_update_transfer($transfer_post_id, $encoded_data, $transfer_type, $transfer_title);
 	}
 	
+	function ost_update_term_transfer_for_deleted($transfer_post_id, $term) {
+		$encoder = new \OddSiteTransfer\SiteTransfer\Encoders\TermEncoderBaseObject();
+		
+		$transfer_id = get_post_meta($transfer_post_id, 'ost_id', true);
+		$transfer_type = apply_filters(ODD_SITE_TRANSFER_DOMAIN.'/term_transfer_type', null, $term->term_id, $term);
+		$transfer_title = $transfer_type.' - '.($term->name).' - '.$transfer_id;
+		
+		$encoded_data = array('status' => 'non-existing');
+		ost_update_transfer($transfer_post_id, $encoded_data, $transfer_type, $transfer_title);
+	}
+	
 	function ost_update_transfer($transfer_post_id, $encoded_data, $transfer_type, $title, $type = 'update') {
 		$encoded_data_hash = md5(serialize($encoded_data));
 		
