@@ -95,8 +95,6 @@
 				}
 			}
 			
-			var_dump($existing_term);
-			
 			if(!$existing_term) {
 				$result = wp_insert_term($term_data['name'], $taxonomy, $term_data);
 				if(is_wp_error($result)) {
