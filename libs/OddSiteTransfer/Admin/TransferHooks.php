@@ -19,11 +19,11 @@
 		public function register() {
 			//echo("\OddSiteTransfer\Admin\TransferHooks::register<br />");
 			
-			add_action('save_post', array($this, 'hook_save_post'), 10, 3);
+			add_action('save_post', array($this, 'hook_save_post'), 100, 3);
 			//METODO: delete post
-			add_action('created_term', array($this, 'hook_created_term'), 10, 3);
-			add_action('edited_term', array($this, 'hook_edited_term'), 10, 3);
-			add_action('delete_term', array($this, 'hook_delete_term'), 10, 3);
+			add_action('created_term', array($this, 'hook_created_term'), 100, 3);
+			add_action('edited_term', array($this, 'hook_edited_term'), 100, 3);
+			add_action('delete_term', array($this, 'hook_delete_term'), 100, 3);
 			
 			add_action('admin_notices', array($this, 'hook_admin_notices'));
 		}
