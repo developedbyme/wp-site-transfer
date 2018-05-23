@@ -23,7 +23,7 @@
 			//METODO: delete post
 			add_action('created_term', array($this, 'hook_created_term'), 100, 3);
 			add_action('edited_term', array($this, 'hook_edited_term'), 100, 3);
-			add_action('pre_delete_term', array($this, 'hook_delete_term'), 1, 2);
+			add_action('pre_delete_term', array($this, 'hook_delete_term'), 100, 2);
 			
 			add_action('admin_notices', array($this, 'hook_admin_notices'));
 		}
@@ -316,11 +316,9 @@
 		}
 		
 		public function hook_delete_term($term_id, $taxonomy) {
-			echo("\OddSiteTransfer\Admin\TransferHooks::hook_delete_term<br />");
-			var_dump($term_id);
+			//echo("\OddSiteTransfer\Admin\TransferHooks::hook_delete_term<br />");
 			
 			$term = get_term_by('id', $term_id, $taxonomy);
-			var_dump($term);
 			
 			$transfer_type = apply_filters(ODD_SITE_TRANSFER_DOMAIN.'/term_transfer_type', null, $term_id, $term);
 			
@@ -332,8 +330,6 @@
 					ost_update_term_transfer_for_deleted($transfer_post_id, $term);
 				}
 			}
-			
-			die();
 		}
 		
 		protected function output_notice($module_name, $data, $type = '') {
