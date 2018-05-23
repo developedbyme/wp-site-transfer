@@ -228,7 +228,7 @@
 		$transfer_type = apply_filters(ODD_SITE_TRANSFER_DOMAIN.'/term_transfer_type', null, $term->term_id, $term);
 		$transfer_title = '(DELETED) '.$transfer_type.' - '.($term->name).' - '.$transfer_id;
 		
-		$encoded_data = array('status' => 'non-existing');
+		$encoded_data = array('status' => 'non-existing', 'data' => array('taxonomy' => $term->taxonomy), 'dependencies' => array());
 		ost_update_transfer($transfer_post_id, $encoded_data, $transfer_type, $transfer_title);
 	}
 	
