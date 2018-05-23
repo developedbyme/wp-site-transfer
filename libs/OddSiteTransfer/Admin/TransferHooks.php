@@ -285,7 +285,6 @@
 					}
 				}
 				
-				var_dump($transfer_post_id);
 				if($transfer_post_id !== -1) {
 					ost_update_term_transfer($transfer_post_id, $term);
 				}
