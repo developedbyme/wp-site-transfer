@@ -294,7 +294,25 @@
 		public function hook_edited_term($term_id, $tt_id, $taxonomy) {
 			//echo("\OddSiteTransfer\Admin\TransferHooks::hook_edited_term<br />");
 			
-			//METODO
+			$term = get_term_by('id', $term_id, $taxonomy);
+			
+			$transfer_type = apply_filters(ODD_SITE_TRANSFER_DOMAIN.'/term_transfer_type', null, $term_id, $term);
+			
+			if($transfer_type !== null) {
+				$transfer_id = ost_get_term_transfer_id($term);
+				$transfer_post_id = ost_get_transfer_post_id($transfer_id);
+				
+				if($transfer_post_id === -1) {
+					$transfer_update_type = apply_filters(ODD_SITE_TRANSFER_DOMAIN.'/term_transfer_update_type', null, $term_id, $term);
+					if($transfer_update_type === 'always') {
+						$transfer_post_id = ost_add_term_transfer($transfer_id, $transfer_type, $term);
+					}
+				}
+				
+				if($transfer_post_id !== -1) {
+					ost_update_term_transfer($transfer_post_id, $term);
+				}
+			}
 		}
 		
 		public function hook_delete_term($term_id, $tt_id, $taxonomy) {
