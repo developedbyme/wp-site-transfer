@@ -163,6 +163,11 @@
 			$current_end_point->setup('import-transfer/(?P<id>.+)', $api_namespace, $api_version, 'GET'); //METODO: change to post
 			$this->_rest_api_end_points[] = $current_end_point;
 			
+			$current_end_point = new \OddSiteTransfer\RestApi\BidirectionalTransfer\TransferDataEndpoint();
+			$current_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
+			$current_end_point->setup('transfer/(?P<id>.+)', $api_namespace, $api_version, 'GET');
+			$this->_rest_api_end_points[] = $current_end_point;
+			//METODO: add security
 			
 		}
 		
