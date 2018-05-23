@@ -163,7 +163,7 @@
 			
 			$post_id = $object->ID;
 			setup_postdata($object); 
-			$acf_fields = get_field_objects($post_id);
+			$acf_fields = get_field_objects($post_id, false, true);
 			
 			if($acf_fields) {
 				foreach($acf_fields as $name => $acf_field) {
