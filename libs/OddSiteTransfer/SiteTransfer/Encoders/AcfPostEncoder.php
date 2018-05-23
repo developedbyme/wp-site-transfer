@@ -137,6 +137,7 @@
 				case "select":
 				case "oembed":
 				case 'bool':
+				case 'button_group':
 					$current_send_field = array(
 						'type' => $acf_field['type'],
 						'value' => $acf_field['value']
