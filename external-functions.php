@@ -374,6 +374,6 @@
 			return ost_get_term_for_transfer($transfer_id);
 		}
 		
-		return null;
+		return apply_filters(ODD_SITE_TRANSFER_DOMAIN.'/get_dependency/'.$transfer_type, null, $transfer_id, $transfer_type);
 	}
 ?>

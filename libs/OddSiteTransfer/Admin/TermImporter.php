@@ -13,7 +13,7 @@
 		}
 		
 		protected function get_post_by_transfer_id($post_type, $id) {
-			//echo("\TermImporter\PostImporter::perform_call<br />");
+			//echo("\OddSiteTransfer\Admin\TermImporter::perform_call<br />");
 			//var_dump($id);
 
 			remove_all_actions('pre_get_posts');
