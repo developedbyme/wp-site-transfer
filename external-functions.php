@@ -226,7 +226,7 @@
 		
 		$transfer_id = get_post_meta($transfer_post_id, 'ost_id', true);
 		$transfer_type = apply_filters(ODD_SITE_TRANSFER_DOMAIN.'/term_transfer_type', null, $term->term_id, $term);
-		$transfer_title = $transfer_type.' - '.($term->name).' - '.$transfer_id;
+		$transfer_title = $transfer_type.' - '.($term->name).' (DELETED) - '.$transfer_id;
 		
 		$encoded_data = array('status' => 'non-existing');
 		ost_update_transfer($transfer_post_id, $encoded_data, $transfer_type, $transfer_title);
