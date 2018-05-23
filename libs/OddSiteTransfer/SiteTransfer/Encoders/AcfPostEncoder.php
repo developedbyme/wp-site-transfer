@@ -125,13 +125,13 @@
 					}
 					break;
 				default:
+				case "number":
 					echo("Unknown type: ".$acf_field['type']."<br />");
 					var_dump($acf_field);
 				case "radio":
 				case "textarea":
 				case "url":
 				case "text":
-				case "number":
 				case "wysiwyg":
 				case "true_false":
 				case "select":
