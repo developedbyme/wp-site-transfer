@@ -123,7 +123,7 @@
 			return -1;
 		}
 		
-		return $posts[0];
+		return (int)$posts[0];
 	}
 	
 	function ost_create_transfer($transfer_id, $transfer_type, $name) {
