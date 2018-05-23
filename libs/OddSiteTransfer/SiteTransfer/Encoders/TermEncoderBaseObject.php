@@ -50,12 +50,6 @@
 			$dependencies[] = $new_dependency;
 		}
 		
-		protected function encode_id($object, &$return_object) {
-			//echo("\OddSiteTransfer\SiteTransfer\Encoders\PostEncoderBaseObject::encode_id<br />");
-			
-			$return_object['id'] = $object->slug;
-		}
-		
 		protected function encode_status($object, &$return_object) {
 			//echo("\OddSiteTransfer\SiteTransfer\Encoders\PostEncoderBaseObject::encode_status<br />");
 			
@@ -119,8 +113,7 @@
 		public function encode_parts($object, &$return_object) {
 			//echo("\OddSiteTransfer\SiteTransfer\Encoders\TermEncoderBaseObject::encode_parts<br />");
 			
-			//METODO
-			$this->encode_id($object, $return_object);
+			$this->encode_status($object, $return_object);
 			$this->encode_content($object, $return_object);
 			$this->encode_meta_data($object, $return_object);
 		}
