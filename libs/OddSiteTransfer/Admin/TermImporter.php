@@ -21,6 +21,14 @@
 			
 			$existing_term = ost_get_term_for_transfer($transfer_id);
 			
+			if($data['status'] === 'non-existing') {
+				if($existing_term) {
+					wp_delete_term( $existing_term->term_id, $taxonomy );
+				}
+				
+				return array();
+			}
+			
 			if(isset($data['parent'])) {
 				$parent_term = ost_get_dependency($data['parent'], 'term');
 				if($parent_term) {
