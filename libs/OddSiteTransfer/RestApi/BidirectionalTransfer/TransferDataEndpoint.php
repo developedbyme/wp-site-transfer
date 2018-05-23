@@ -25,7 +25,21 @@
 				return $this->output_error("No transfer for id ".$transfer_id);
 			}
 			
-			return $this->output_success($transfer_post_id);
+			$post = get_post($transfer_id);
+			
+			$transfer_id = get_post_meta($transfer_id, 'ost_id', true);
+			$type = get_post_meta($transfer_id, 'ost_transfer_type', true);
+			$data = get_post_meta($transfer_id, 'ost_encoded_data', true);
+			
+			$return_data = array(
+				'id' => $transfer_id,
+				'type' => $type,
+				'name' => $post->post_title,
+				'data' => $data,
+				'hash' => get_post_meta($transfer_id, 'ost_encoded_data_hash', true)
+			);
+			
+			return $this->output_success($return_data);
 			
 		}
 		
