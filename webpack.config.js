@@ -1,32 +1,78 @@
-var path = require('path');
+var webpack = require("webpack");
+var path = require("path");
+var ExtractTextPlugin = require("extract-text-webpack-plugin");
 
-module.exports = {
+var configuration = {
+	mode: "development",
+	context: __dirname + "/private/jsapp",
 	entry: {
-		'admin-main': './assets/js/_src/admin-main.js'
+		"admin": "./admin.js",
+		"admin-style": "../css/admin.css",
 	},
+
 	output: {
-		filename: './assets/js/[name].js'
+		path: __dirname + "/assets/js",
+		filename: "[name].js"
 	},
+
 	module: {
-		loaders: [
+		rules: [
 			{
-				test: /.jsx?$/,
-				loader: 'babel-loader',
+				test: /\.js$/,
 				exclude: /node_modules/,
-				query: {
+				loader: 'babel-loader',
+				options: {
 					presets: ['es2015', 'react']
 				}
+			},
+			{
+				test: /\.json$/,
+				exclude: /node_modules/,
+				loader: 'json-loader'
+			},
+			{
+				test: /\.css$/,
+				exclude: /node_modules/,
+				loader: ExtractTextPlugin.extract({"use": ["css-loader"]})
+			},
+			{
+				test: /\.(jpe?g|gif|png|svg)$/,
+				loader: 'file-loader?emitFile=true&name=../css/[path][name].[ext]'
 			}
 		]
 	},
-	externals: {
-		'jQuery': 'jQuery',
-		'wp': 'wp'
-	},
+	
 	resolve: {
-		root: [
-			path.resolve('./assets/js/_src/')
-		],
-		extensions: ['', '.js', '.jsx']
+		modules: [path.resolve(__dirname, "private/jsapp"), path.resolve(__dirname, "private/css"), "node_modules"]
 	}
-}
+};
+
+configuration.plugins = new Array();
+
+
+
+configuration.plugins.push(new ExtractTextPlugin({
+	"filename": "../css/[name].css",
+	"allChunks": true
+}));
+
+//MENOTE: production plugins
+configuration.plugins.push(new webpack.DefinePlugin({
+	"process.env": {
+		"NODE_ENV": JSON.stringify("development")
+	}
+}));
+/*
+configuration.plugins.push(new webpack.optimize.UglifyJsPlugin({
+	"compress": {
+		
+		"warnings": false,
+		"drop_console": true,
+		"drop_debugger": true
+		
+	}
+}));
+*/
+
+
+module.exports = configuration;
