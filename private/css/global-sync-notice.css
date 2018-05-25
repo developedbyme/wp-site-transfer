@@ -1,0 +1,17 @@
+.global-sync-notice {
+	position: fixed;
+	right: 20px;
+	bottom: 0;
+}
+
+.global-sync-notice-box {
+	background: #FFFFFF;
+	border-top: 1px solid #000000;
+	border-left: 1px solid #000000;
+	border-right: 1px solid #000000;
+	width: 350px;
+}
+
+.global-sync-notice-box-padding {
+	padding: 20px;
+}

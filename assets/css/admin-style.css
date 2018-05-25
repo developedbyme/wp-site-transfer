@@ -1,0 +1,63 @@
+.transfer-log .log-item {
+	border-left: 3px solid #dedede;
+	padding-left: 3px;
+	font-size: 10px;
+	font-family: monospace;
+}
+
+.transfer-log .log-item.type-result {
+	border-left: 3px solid #46b450;
+}
+
+.transfer-log .log-item.type-error {
+	border-left: 3px solid #FF0000;
+}
+
+.transfer-log .log-item.type-warning {
+	border-left: 3px solid #ffba00;
+}
+
+.transfer-log .toggle-button {
+	font-size: 8px;
+	padding: 0px 3px;
+	height: 16px;
+	line-height: inherit;
+}
+
+.transfer-log .title {
+	border-left: 6px solid #FF0000;
+}
+
+.transfer-log.status-sent .title {
+	border-left: 6px solid #46b450;
+}
+
+.transfer-log .server-name {
+	padding-left: 3px;
+	padding-right: 3px;
+}
+
+.transfer-log .transfer-status {
+	padding-right: 3px;
+}
+
+.sync-date,
+.sync-id {
+	display: block;
+}.global-sync-notice {
+	position: fixed;
+	right: 20px;
+	bottom: 0;
+}
+
+.global-sync-notice-box {
+	background: #FFFFFF;
+	border-top: 1px solid #000000;
+	border-left: 1px solid #000000;
+	border-right: 1px solid #000000;
+	width: 350px;
+}
+
+.global-sync-notice-box-padding {
+	padding: 20px;
+}

@@ -13,7 +13,22 @@
 			
 			parent::__construct();
 			
-			$this->add_css('oddsitetransfer-sync-notice', ODD_SITE_TRANSFER_URL.'/assets/css/sync-notices.css');
+			$this->add_css('oddsitetransfer-sync-notice', ODD_SITE_TRANSFER_URL.'/assets/css/admin-style.css');
+		}
+		
+		public function register_hooks() {
+			//echo("\OddSiteTransfer\Plugin::register_hooks<br />");
+			
+			parent::register_hooks();
+			
+			add_action('admin_footer', array($this, 'hook_admin_footer'), $this->_default_hook_priority);
+		}
+		
+		protected function create_filters() {
+			//echo("\MRouterData\Plugin::create_filters<br />");
+			
+			add_filter('wprr/range_query/transfers-to-send', array($this, 'filter_range_query_transfers_to_send'), 10, 2);
+			add_filter('wprr/range_encoding/transfer', array($this, 'filter_range_encoding_transfer'), 10, 2);
 		}
 		
 		protected function create_pages() {
@@ -177,20 +192,36 @@
 			
 			parent::hook_admin_enqueue_scripts();
 			
-			$screen = get_current_screen();
-			
-			wp_enqueue_script( 'odd-site-transfer-admin-main', ODD_SITE_TRANSFER_URL . '/assets/js/admin-main.js');
-			wp_localize_script(
-				'odd-site-transfer-admin-main',
-				'oaWpAdminData',
-				array(
-					'screen' => $screen,
-					'restApiBaseUrl' => get_home_url().'/wp-json/'
-				)
-			);
+			wp_enqueue_script( 'odd-site-transfer-admin-main', ODD_SITE_TRANSFER_URL . '/assets/js/admin.js');
 		}
 		
+		public function hook_admin_footer() {
+			if(function_exists('wprr_output_module')) {
+				wprr_output_module('globalSync');
+			}
+		}
 		
+		public function filter_range_query_transfers_to_send($query_args, $data) {
+			
+			$query_args['meta_query'] = array(
+				array(
+					'key' => 'ost_transfer_status',
+					'value' => 0,
+					'compare' => '=',
+					'type' => 'NUMERIC'
+				)
+			);
+			
+			return $query_args;
+		}
+		
+		public function filter_range_encoding_transfer($return_object, $post_id) {
+			
+			$return_object['transferId'] = get_post_meta($post_id, 'ost_id', true);
+			$return_object['hash'] = get_post_meta($post_id, 'ost_encoded_data_hash', true);
+			
+			return $return_object;
+		}
 		
 		public static function test_import() {
 			echo("Imported \OddSiteTransfer\Plugin<br />");
