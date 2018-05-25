@@ -199,6 +199,9 @@
 			if(function_exists('wprr_output_module')) {
 				wprr_output_module('globalSync');
 			}
+			else {
+				trigger_error('WPRR API is not active. Can\'t create transfer module.', E_USER_WARNING);
+			}
 		}
 		
 		public function filter_range_query_transfers_to_send($query_args, $data) {
