@@ -48,8 +48,16 @@ export default class SyncTransfers extends WprrBaseObject {
 		
 		let numberOfTransfers = this.getSourcedProp("transfers").length;
 		
+		let syncingText;
+		if(this.state["numberOfLoadedItems"] === numberOfTransfers) {
+			syncingText = "Transfer completed";
+		}
+		else {
+			syncingText = "Transfering " + this.state["numberOfLoadedItems"] + " / " +numberOfTransfers;
+		}
+		
 		return <wrapper>
-			Synced {this.state["numberOfLoadedItems"]} / {numberOfTransfers}
+			{syncingText}
 		</wrapper>
 	}
 }

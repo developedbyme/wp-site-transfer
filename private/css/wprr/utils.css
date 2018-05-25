@@ -1,0 +1,199 @@
+.image.background-cover {
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-size: cover;
+}
+
+.image.background-contain {
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-size: contain;
+}
+
+.image.background-center {
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+
+.image.background-top-left {
+	background-position: top left;
+	background-repeat: no-repeat;
+}
+
+.full-size {
+	height: 100%;
+	width: 100%;
+}
+
+.full-width {
+	width: 100%;
+}
+
+.full-height {
+	height: 100%;
+}
+
+.no-height {
+	height: 0 !important;
+}
+
+.no-min-height {
+	min-height: 0 !important;
+}
+
+.min-screen-height {
+	min-height: 100vh;
+}
+
+.centered-block {
+	margin: auto;
+}
+
+.no-margin {
+	margin: 0;
+}
+
+.absolute-container {
+	position: relative;
+}
+
+.position-relative {
+	position: relative;
+}
+
+.position-absolute {
+	position: absolute;
+}
+
+.position-absolute.top-left {
+	left: 0;
+	top: 0;
+}
+
+.absolute-overlay {
+	position: absolute;
+}
+
+.absolute-overlay { position: absolute; }
+.fixed-overlay { position: fixed; }
+
+.absolute-overlay,
+.fixed-overlay {
+	bottom: 0;
+	left: 0;
+	right: 0;
+	top: 0;
+}
+
+.absolute-for-transform {
+	position: absolute;
+	left: 0;
+	top: 0;
+}
+
+.absolute-right {
+	position: absolute;
+	right: 0;
+}
+
+.no-pointer-events {pointer-events: none; }
+.all-pointer-events {pointer-events: all; }
+
+.cursor-pointer { cursor: pointer; }
+.cursor-default { cursor: default; }
+
+.display-block { display: block; }
+.display-inline { display: inline; }
+.display-inline-block { display: inline-block; }
+
+.float-left { float: left; }
+.float-right { float: right; }
+
+.clear-both { clear: both; }
+.clear-left { clear: left; }
+.clear-right { clear: right; }
+
+.opacity-three-quarters { opacity: .25; }
+.opacity-half { opacity: .5; }
+.opacity-quarter { opacity: .25; }
+
+.hidden-space {
+	width: 0;
+	display: inline-block;
+}
+
+.visibility-hidden {
+	visibility: hidden;
+}
+
+.layer-order-high {
+	z-index: 3;
+}
+
+.overflow-auto { overflow: auto; }
+.overflow-hidden { overflow: hidden; }
+
+.no-outline {
+	outline: none;
+}
+
+.border-box-sizing {
+	box-sizing: border-box;
+}
+
+a.custom-styled-link {
+	text-decoration: none;
+	color: inherit;
+}
+
+.screen-reader-text {
+	clip: rect( .1rem, .1rem, .1rem, .1rem );
+	height: .1rem;
+	overflow: hidden;
+	position: absolute !important;
+	width: .1rem;
+}
+
+.screen-reader-text:focus {
+	background-color: #f1f1f1;
+	border-radius: .3rem;
+	box-shadow: 0 0 .2rem .2rem rgba( 0, 0, 0, 0.6 );
+	clip: auto !important;
+	display: block;
+	font-size: 1.4rem;
+	font-weight: 700;
+	height: auto;
+	left: .5rem;
+	line-height: normal;
+	padding: 1.5rem 2.3rem 1.4rem 2.3rem;
+	text-decoration: none;
+	top: .5rem;
+	width: auto;
+	z-index: 100000;
+}
+
+.metodo {
+	color: red;
+	font-size: .8rem;
+	font-weight: 700;
+	text-transform: uppercase;
+}
+
+
+/* TRANSITIONS */
+
+.transition-all {
+	transition: all .15s linear;
+}
+
+.transition-color { transition: color .15s linear; }
+.transition-bg-color { transition: background-color .15s linear; }
+
+.transition-timing-linear { transition-timing-function: linear; }
+.transition-timing-ease-in { transition-timing-function: ease-in; }
+.transition-timing-ease-out { transition-timing-function: ease-out; }
+.transition-timing-ease-in-out { transition-timing-function: ease-in-out; }
+
+.transition-duration-short { transition-duration: .1s; }
+.transition-duration-medium { transition-duration: .25s; }
+.transition-duration-long { transition-duration: .5s; }

@@ -1,0 +1,67 @@
+.text-align-center {
+	text-align: center;
+}
+
+.text-align-left {
+	text-align: left;
+}
+
+.text-align-right {
+	text-align: right;
+}
+
+.vertical-text-top {
+	vertical-align: text-top;
+}
+
+.line-height-paragraph {
+	line-height: 1.45;
+}
+
+.line-height-single {
+	line-height: 1;
+}
+
+.font-italic {
+	font-style: italic;
+}
+
+.smallcaps {
+	text-transform: uppercase;
+}
+
+.capitalize {
+	text-transform: capitalize;
+}
+
+.no-text-decoration {
+	text-decoration: none;
+}
+
+.underline {
+	text-decoration: underline;
+}
+
+.weight-bold { font-weight: 700; }
+.weight-semibold { font-weight: 600; }
+.weight-medium { font-weight: 500; }
+.weight-regular { font-weight: 400; }
+.weight-light { font-weight: 300; }
+.weight-thin { font-weight: 200; }
+
+.text-size-1 { font-size: 2.8rem; }
+.text-size-2 { font-size: 2.4rem; }
+.text-size-3 { font-size: 2.1rem; }
+.text-size-4 { font-size: 1.9rem; }
+.text-size-5 { font-size: 1.5rem; }
+.text-size-6 { font-size: 1.4rem; }
+.text-size-7 { font-size: 1.2rem; }
+
+.link-style {
+	color: #598EDC;
+	text-decoration: underline;	
+}
+
+.link-style:hover { 
+	color: #4B78BB;
+}
