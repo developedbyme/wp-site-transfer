@@ -151,7 +151,7 @@
 				$return_data[] = array('id' => $channel_id, 'name' => get_the_title($channel_id), 'log' => $current_log);
 			}
 			
-			//update_post_meta($transfer_post_id, 'ost_transfer_status', 1); //MEDEBUG: //
+			update_post_meta($transfer_post_id, 'ost_transfer_status', 1); //MEDEBUG: //
 			
 			return $return_data;
 		}
