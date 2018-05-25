@@ -158,6 +158,11 @@
 			$current_end_point->setup('post/(?P<id>\d+)/create-transfer', $api_namespace, $api_version, 'GET'); //METODO: change to post
 			$this->_rest_api_end_points[] = $current_end_point;
 			
+			$current_end_point = new \OddSiteTransfer\RestApi\UpdateTransferForPostEndpoint();
+			$current_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
+			$current_end_point->setup('post/(?P<id>\d+)/update-transfer', $api_namespace, $api_version, 'GET'); //METODO: change to post
+			$this->_rest_api_end_points[] = $current_end_point;
+			
 			$current_end_point = new \OddSiteTransfer\RestApi\BidirectionalTransfer\OutgoingTransferEndpoint();
 			$current_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
 			$current_end_point->setup('outgoing-transfer/(?P<id>.+)', $api_namespace, $api_version, 'GET'); //METODO: change to post
