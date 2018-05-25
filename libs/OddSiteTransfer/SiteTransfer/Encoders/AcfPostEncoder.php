@@ -124,9 +124,6 @@
 						$current_send_field['value'] = $raw_field['value'];
 					}
 					break;
-				default:
-					echo("Unknown type: ".$acf_field['type']."<br />");
-					var_dump($acf_field);
 				case "number":
 					$current_send_field = array(
 						'type' => $acf_field['type'],
@@ -136,6 +133,9 @@
 						$current_send_field['value'] = (float)$override_value;
 					}
 					break;
+				default:
+					echo("Unknown type: ".$acf_field['type']."<br />");
+					var_dump($acf_field);
 				case "radio":
 				case "textarea":
 				case "url":
