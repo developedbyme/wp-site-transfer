@@ -19,41 +19,45 @@
 			
 			$current_send_field = NULL;
 			
+			//METODO: replace all override switches inside of the switch
+			$field_value = $acf_field['value'];
+			if($override_value) {
+				$field_value = $override_value;
+			}
+			
 			switch($acf_field['type']) {
 				case "flexible_content":
 					$rows_array = array();
-					
-					$current_key = $acf_field['key'];
-					
-					if(have_rows($current_key, $post_id)) {
-						while(have_rows($current_key, $post_id)) {
-						
-							the_row();
-							$current_row = get_row();
-						
-							$row_result = array();
-							
-							$layout = get_row_layout();
-						
-							foreach($current_row as $key => $value) {
-								if($key === 'acf_fc_layout') {
-									continue;
-								}
-								
-								$current_row_field = get_field_object($key, $post_id, false, true);
-								
-								$row_result[$current_row_field['name']] = $this->encode_acf_field($current_row_field, $post_id, $dependencies, $value);
-							}
-							
-							array_push($rows_array, array('layout' => $layout, 'fields' => $row_result));
-						}
+				
+					$repeater_value = $acf_field['value'];
+					if($override_value) {
+						$repeater_value = $override_value;
 					}
 					
 					$current_send_field = array(
 						'type' => $acf_field['type'],
-						'value' => $rows_array
 					);
+				
+					foreach($repeater_value as $index => $current_row) {
+						
+						$row_layout = null;
+						$row_result = array();
+						foreach($current_row as $key => $value) {
+							
+							if($key === 'acf_fc_layout') {
+								$row_layout = $value;
+								continue;
+							}
+							
+							$current_row_field = get_field_object($key, $post_id, false, true);
+							$row_result[$current_row_field['name']] = $this->encode_acf_field($current_row_field, $post_id, $dependencies, $value);
+						}
 					
+						$rows_array[] = array('layout' => $row_layout, 'fields' => $row_result);
+					}
+				
+					$current_send_field['value'] = $rows_array;
+				
 					break;
 				case "repeater":
 					
@@ -152,6 +156,16 @@
 						$current_send_field['value'] = (float)$override_value;
 					}
 					break;
+				case 'bool':
+				case 'true_false':
+					$current_send_field = array(
+						'type' => $acf_field['type'],
+						'value' => ($acf_field['value'] == 1)
+					);
+					if($override_value) {
+						$current_send_field['value'] = ($acf_field['value'] == 1);
+					}
+					break;
 				default:
 					echo("Unknown type: ".$acf_field['type']."<br />");
 					var_dump($acf_field);
@@ -163,7 +177,6 @@
 				case "true_false":
 				case "select":
 				case "oembed":
-				case 'bool':
 				case 'button_group':
 					$current_send_field = array(
 						'type' => $acf_field['type'],
@@ -197,7 +210,6 @@
 				foreach($acf_fields as $name => $acf_field) {
 					$send_fields[$name] = $this->encode_acf_field($acf_field, $post_id, $return_object['dependencies']);
 				}
-				var_dump('----', $send_fields);
 			}
 			wp_reset_postdata();
 			
