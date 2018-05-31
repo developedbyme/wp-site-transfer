@@ -3,6 +3,7 @@
 
 	use \WP_Query;
 	use OddSiteTransfer\OddCore\RestApi\EndPoint as EndPoint;
+	use \OddSiteTransfer\Admin\AcfFieldImporter;
 
 	// \OddSiteTransfer\Admin\PostImporter
 	class PostImporter {
@@ -10,147 +11,6 @@
 		function __construct() {
 			//echo("\OddSiteTransfer\Admin\PostImporter::__construct<br />");
 
-
-		}
-
-		protected function update_acf_field($name, $field, $post_id, $resolved_dependencies, $repeater_path = NULL, $meta_path = null) {
-			//echo("\OddSiteTransfer\Admin\PostImporter::update_acf_field<br />");
-			//var_dump($field);
-
-			if(!isset($field['value'])) return; //METODO: check that this is correct
-
-			switch($field['type']) {
-				default:
-					echo('Unknown type:'.$field['type']);
-				case "textarea":
-				case "text":
-				case "number":
-				case "url":
-				case "radio":
-				case "wysiwyg":
-				case "true_false":
-				case "select":
-				case "oembed":
-				case "date_picker":
-					if($repeater_path) {
-						update_sub_field($repeater_path, $field['value'], $post_id);
-						update_post_meta($post_id, implode('_', $meta_path), $field['value']);
-					}
-					else {
-						update_field($name, $field['value'], $post_id);
-					}
-					break;
-				case "post_object":
-				case "image":
-				case "relationship":
-					$resolved_ids = $this->get_resolved_post_ids($field['value'], $resolved_dependencies);
-					if($repeater_path) {
-						update_sub_field($repeater_path, $resolved_ids, $post_id);
-						update_post_meta($post_id, implode('_', $meta_path), $resolved_ids);
-					}
-					else {
-						update_field($name, $resolved_ids, $post_id);
-					}
-					break;
-				case "taxonomy":
-					if(isset($field['value']['ids'])) {
-						$ids = $field['value']['ids'];
-					}
-					else {
-						$ids = array();
-					}
-					$taxonomy = $field['value']['taxonomy'];
-
-					if(is_array($ids)) {
-						$resolved_ids = $this->get_resolved_term_dependencies($ids, $taxonomy, $resolved_dependencies);
-					}
-					else {
-						$resolved_ids = null;
-						if(!empty($ids)) {
-							$term = $this->get_resolved_dependency('term_'.$taxonomy, $ids, $resolved_dependencies);
-							if($term) {
-								$resolved_ids = intval($term->term_id);
-							}
-						}
-					}
-
-					if($repeater_path) {
-						update_sub_field($repeater_path, $resolved_ids, $post_id);
-						update_post_meta($post_id, implode('_', $meta_path), $resolved_ids);
-					}
-					else {
-						update_field($name, $resolved_ids, $post_id);
-					}
-					break;
-				case "repeater":
-
-					$new_rows = $field['value'];
-
-					$acf_key = acf_get_field($name)["key"];
-
-					foreach($new_rows as $index => $row) {
-						//MENOTE: length is set directly to meta data
-
-						foreach($row as $row_field_name => $row_field) {
-							$new_path = array($name, $index+1, $row_field_name);
-							$new_meta_path = array($name, $index, $row_field_name);
-							if($repeater_path) {
-								$new_path = array_merge($repeater_path, array($index+1, $row_field_name));
-								$new_meta_path = array_merge($meta_path, array($index, $row_field_name));
-							}
-							//echo(implode(',', $new_path).'<br />');
-							$this->update_acf_field($repeater_path, $row_field, $post_id, $resolved_dependencies, $new_path, $new_meta_path);
-						}
-					}
-
-					$meta_value_name = $name;
-					if($meta_path) {
-						$meta_value_name = implode('_', $meta_path);
-					}
-
-					update_post_meta($post_id, $meta_value_name, count($new_rows));
-					if($acf_key) {
-						update_post_meta($post_id, '_'.$meta_value_name, $acf_key);
-					}
-
-					break;
-				case "flexible_content":
-					
-					$new_rows = $field['value'];
-					$layouts = array();
-
-					$acf_key = acf_get_field($name)["key"];
-
-					foreach($new_rows as $index => $row_and_layout) {
-						//MENOTE: length is set directly to meta data
-						
-						$row = $row_and_layout['fields'];
-						$layouts[] = $row_and_layout['layout'];
-
-						foreach($row as $row_field_name => $row_field) {
-							$new_path = array($name, $index+1, $row_field_name);
-							$new_meta_path = array($name, $index, $row_field_name);
-							if($repeater_path) {
-								$new_path = array_merge($repeater_path, array($index+1, $row_field_name));
-								$new_meta_path = array_merge($meta_path, array($index, $row_field_name));
-							}
-							//echo(implode(',', $new_path).'<br />');
-							$this->update_acf_field($repeater_path, $row_field, $post_id, $resolved_dependencies, $new_path, $new_meta_path);
-						}
-					}
-
-					$meta_value_name = $name;
-					if($meta_path) {
-						$meta_value_name = implode('_', $meta_path);
-					}
-
-					update_post_meta($post_id, $meta_value_name, $layouts);
-					if($acf_key) {
-						update_post_meta($post_id, '_'.$meta_value_name, $acf_key);
-					}
-					
-					break;
-			}
 		}
 
 		public function filter_wp_kses_allowed_html($allowed_post_tags) {
@@ -369,7 +229,7 @@
 				\OddSiteTransfer\OddCore\Utils\AcfFunctions::ensure_post_has_fields(get_post($new_id));
 				
 				foreach($meta_data['acf'] as $name => $field) {
-					$this->update_acf_field($name, $field, $new_id, $resolved_dependencies);
+					AcfFieldImporter::update_acf_field($name, $field, $new_id);
 				}
 			}
 
