@@ -367,21 +367,7 @@
 
 			if(isset($meta_data['acf'])) {
 				\OddSiteTransfer\OddCore\Utils\AcfFunctions::ensure_post_has_fields(get_post($new_id));
-
-				// Fix for updating ingrident repeater on recipe sites
-				// Get all the post meta
-				$post_meta_old = get_post_meta($new_id);
-
-				// Loop over post meta
-				if ($post_meta_old) {
-					foreach ($post_meta_old as $post_meta_key => $post_meta) {
-						// Based on prefix remove post_meta ingredient
-						if (strpos($post_meta_key, 'recipe_ingredient') !== false) {
-							delete_post_meta($new_id, $post_meta_key);
-						}
-					}
-				}
-
+				
 				foreach($meta_data['acf'] as $name => $field) {
 					$this->update_acf_field($name, $field, $new_id, $resolved_dependencies);
 				}
