@@ -2,6 +2,7 @@
 	namespace OddSiteTransfer\Admin;
 	
 	use \WP_Query;
+	use \OddSiteTransfer\Admin\AcfFieldImporter;
 	
 	// \OddSiteTransfer\Admin\TermImporter
 	class TermImporter {
@@ -51,6 +52,15 @@
 			wp_update_term(intval($existing_term->term_id), $existing_term->taxonomy, $term_data);
 			
 			//METODO: set meta data
+			$meta_data = $data['meta_data'];
+			
+			if(isset($meta_data['acf'])) {
+				//\OddSiteTransfer\OddCore\Utils\AcfFunctions::ensure_post_has_fields(get_post($new_id));
+				
+				foreach($meta_data['acf'] as $name => $field) {
+					AcfFieldImporter::update_acf_field($name, $field, $existing_term);
+				}
+			}
 			
 			return array();
 		}

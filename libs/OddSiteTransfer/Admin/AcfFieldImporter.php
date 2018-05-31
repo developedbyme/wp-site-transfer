@@ -24,11 +24,37 @@
 				
 				return $return_object;
 			}
+			else if($field['type'] === 'group') {
+				$return_object = array();
+			
+				foreach($field['value'] as $name => $sub_field) {
+					$return_object[$name] = self::get_field_value($sub_field);
+				}
+				
+				return $return_object;
+			}
+			else if($field['type'] === 'flexible_content') {
+				$return_object = array();
+			
+				foreach($field['value'] as $index => $row) {
+					$row_object = array();
+					
+					$row_object['acf_fc_layout'] = $row['layout'];
+					
+					foreach($row['fields'] as $name => $sub_field) {
+						$row_object[$name] = self::get_field_value($sub_field);
+					}
+					
+					$return_object[] = $row_object;
+				}
+				
+				return $return_object;
+			}
 			
 			return $field['value'];
 		}
 		
-		static function update_acf_field($name, $field, $object, $resolved_dependencies) {
+		static function update_acf_field($name, $field, $object) {
 			//echo("\OddSiteTransfer\Admin\AcfFieldImporter::update_acf_field<br />");
 			//var_dump($field);
 
@@ -47,12 +73,13 @@
 				case "select":
 				case "oembed":
 				case "date_picker":
+				case 'date_time_picker':
 					update_field($name, $field['value'], $object);
 					break;
 				case "post_object":
 				case "image":
 				case "relationship":
-					$resolved_ids = self::get_dependency_post_ids($field['value'], $resolved_dependencies);
+					$resolved_ids = self::get_dependency_post_ids($field['value']);
 					update_field($name, $resolved_ids, $object);
 					break;
 				case "taxonomy":
@@ -80,51 +107,14 @@
 					update_field($name, $resolved_ids, $object);
 					break;
 				case "repeater":
-					update_field($name, get_field_value($field), $object);
-					break;
-				case "flexible_content":
 				case "group":
-					echo('Implement:'.$field['type']);
-				/*
-					$new_rows = $field['value'];
-					$layouts = array();
-
-					$acf_key = acf_get_field($name)["key"];
-
-					foreach($new_rows as $index => $row_and_layout) {
-						//MENOTE: length is set directly to meta data
-						
-						$row = $row_and_layout['fields'];
-						$layouts[] = $row_and_layout['layout'];
-
-						foreach($row as $row_field_name => $row_field) {
-							$new_path = array($name, $index+1, $row_field_name);
-							$new_meta_path = array($name, $index, $row_field_name);
-							if($repeater_path) {
-								$new_path = array_merge($repeater_path, array($index+1, $row_field_name));
-								$new_meta_path = array_merge($meta_path, array($index, $row_field_name));
-							}
-							//echo(implode(',', $new_path).'<br />');
-							$this->update_acf_field($repeater_path, $row_field, $post_id, $resolved_dependencies, $new_path, $new_meta_path);
-						}
-					}
-
-					$meta_value_name = $name;
-					if($meta_path) {
-						$meta_value_name = implode('_', $meta_path);
-					}
-
-					update_post_meta($post_id, $meta_value_name, $layouts);
-					if($acf_key) {
-						update_post_meta($post_id, '_'.$meta_value_name, $acf_key);
-					}
-				*/
-					
+				case "flexible_content":
+					update_field($name, self::get_field_value($field), $object);
 					break;
 			}
 		}
 		
-		protected function get_dependency_post_ids($ids) {
+		static function get_dependency_post_ids($ids) {
 			//echo("\OddSiteTransfer\Admin\AcfFieldImporter::get_dependency_post_ids<br />");
 			//var_dump($ids);
 
