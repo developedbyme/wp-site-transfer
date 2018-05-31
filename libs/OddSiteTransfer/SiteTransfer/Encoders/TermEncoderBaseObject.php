@@ -2,6 +2,7 @@
 	namespace OddSiteTransfer\SiteTransfer\Encoders;
 	
 	use \WP_Term;
+	use \OddSiteTransfer\SiteTransfer\Encoders\AcfFieldEncoder;
 	
 	// \OddSiteTransfer\SiteTransfer\Encoders\TermEncoderBaseObject
 	class TermEncoderBaseObject {
@@ -108,6 +109,16 @@
 				
 				$return_object['meta_data']['meta'][$meta_field_name] = $meta_field_data;
 			}
+			
+			$acf_fields = get_field_objects($object, false, true);
+			
+			if($acf_fields) {
+				foreach($acf_fields as $name => $acf_field) {
+					$send_fields[$name] = AcfFieldEncoder::encode_acf_field($acf_field['value'], $acf_field, $object, $return_object['dependencies']);
+				}
+			}
+			
+			$return_object['meta_data']['acf'] = $send_fields;
 		}
 		
 		public function encode_parts($object, &$return_object) {
