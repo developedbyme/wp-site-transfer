@@ -37,23 +37,25 @@
 					$current_send_field = array(
 						'type' => $acf_field['type'],
 					);
-				
-					foreach($repeater_value as $index => $current_row) {
-						
-						$row_layout = null;
-						$row_result = array();
-						foreach($current_row as $key => $value) {
-							
-							if($key === 'acf_fc_layout') {
-								$row_layout = $value;
-								continue;
-							}
-							
-							$current_row_field = get_field_object($key, $post_id, false, true);
-							$row_result[$current_row_field['name']] = $this->encode_acf_field($current_row_field, $post_id, $dependencies, $value);
-						}
 					
-						$rows_array[] = array('layout' => $row_layout, 'fields' => $row_result);
+					if(is_array($repeater_value)) {
+						foreach($repeater_value as $index => $current_row) {
+						
+							$row_layout = null;
+							$row_result = array();
+							foreach($current_row as $key => $value) {
+							
+								if($key === 'acf_fc_layout') {
+									$row_layout = $value;
+									continue;
+								}
+							
+								$current_row_field = get_field_object($key, $post_id, false, true);
+								$row_result[$current_row_field['name']] = $this->encode_acf_field($current_row_field, $post_id, $dependencies, $value);
+							}
+					
+							$rows_array[] = array('layout' => $row_layout, 'fields' => $row_result);
+						}
 					}
 				
 					$current_send_field['value'] = $rows_array;
@@ -68,15 +70,17 @@
 						$repeater_value = $override_value;
 					}
 					
-					foreach($repeater_value as $index => $current_row) {
+					if(is_array($repeater_value)) {
+						foreach($repeater_value as $index => $current_row) {
 						
-						$row_result = array();
-						foreach($current_row as $key => $value) {
-							$current_row_field = get_field_object($key, $post_id, false, true);
-							$row_result[$current_row_field['name']] = $this->encode_acf_field($current_row_field, $post_id, $dependencies, $value);
+							$row_result = array();
+							foreach($current_row as $key => $value) {
+								$current_row_field = get_field_object($key, $post_id, false, true);
+								$row_result[$current_row_field['name']] = $this->encode_acf_field($current_row_field, $post_id, $dependencies, $value);
+							}
+						
+							$rows_array[] = $row_result;
 						}
-						
-						$rows_array[] = $row_result;
 					}
 					
 					$current_send_field = array(
@@ -84,16 +88,19 @@
 						'value' => $rows_array
 					);
 					
+					
 					break;
 				case "group":
 					$value_object = array();
 					
-					foreach($acf_field['value'] as $key => $value) {
+					if(is_array($acf_field['value'])) {
+						foreach($acf_field['value'] as $key => $value) {
 						
-						$current_row_field = get_field_object($key, $post_id, false, true);
-						$encoded_value = $this->encode_acf_field($current_row_field, $post_id, $dependencies, $value);
+							$current_row_field = get_field_object($key, $post_id, false, true);
+							$encoded_value = $this->encode_acf_field($current_row_field, $post_id, $dependencies, $value);
 						
-						$value_object[$current_row_field['name']] =  $encoded_value;
+							$value_object[$current_row_field['name']] =  $encoded_value;
+						}
 					}
 					
 					$current_send_field = array(
