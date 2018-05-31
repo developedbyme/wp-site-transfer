@@ -26,36 +26,6 @@
 
 		}
 
-		protected function get_post_by_transfer_id($post_type, $id) {
-			//echo("\OddSiteTransfer\Admin\PostImporter::perform_call<br />");
-			//var_dump($id);
-
-			remove_all_actions('pre_get_posts');
-
-			if($post_type === 'any') {
-				$post_type = get_post_types(array(), 'names');
-			}
-
-			$args = array(
-				'post_type' => $post_type,
-				'post_status' => array('any', 'trash'),
-				'meta_key'     => 'ost_transfer_id',
-				'meta_value'   => $id,
-				'meta_compare' => '='
-			);
-			$query = new WP_Query( $args );
-
-			//var_dump($query);
-			//var_dump($query->have_posts());
-
-			if($query->have_posts()) {
-				//METODO: warn for more than 1 match
-				return $query->get_posts()[0];
-			}
-
-			return null;
-		}
-
 
 		protected function get_resolved_post_ids($ids, $resolved_dependencies) {
 			//echo("\OddSiteTransfer\Admin\PostImporter::get_resolved_post_ids<br />");
