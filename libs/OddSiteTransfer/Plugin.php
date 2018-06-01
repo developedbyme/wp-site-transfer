@@ -22,6 +22,7 @@
 			parent::register_hooks();
 			
 			add_action('admin_footer', array($this, 'hook_admin_footer'), $this->_default_hook_priority);
+			
 		}
 		
 		protected function create_filters() {
@@ -29,11 +30,54 @@
 			
 			add_filter('wprr/range_query/transfers-to-send', array($this, 'filter_range_query_transfers_to_send'), 10, 2);
 			add_filter('wprr/range_encoding/transfer', array($this, 'filter_range_encoding_transfer'), 10, 2);
+			
+			add_filter('parent_file', array($this, 'filter_parent_file'), 999, 1);
 		}
 		
 		protected function create_pages() {
 			//echo("\OddSiteTransfer\Plugin::create_pages<br />");
 			
+			$current_page = new \OddSiteTransfer\OddCore\Admin\Pages\ReactPage();
+			$current_page->set_names('Site transfer', 'Site transfer', 'site_transfer');
+			
+			$this->add_page($current_page);
+		}
+		
+		public function hook_admin_menu() {
+			
+			parent::hook_admin_menu();
+			
+			remove_menu_page('edit.php?post_type=ost_channel');
+			remove_menu_page('edit.php?post_type=ost_transfer');
+			
+			add_submenu_page(
+				'site_transfer',
+				'Channels',
+				'Channels',
+				'edit_posts',
+				'edit.php?post_type=ost_channel'
+			);
+			
+			add_submenu_page(
+				'site_transfer',
+				'Transfers',
+				'Transfers',
+				'edit_posts',
+				'edit.php?post_type=ost_transfer'
+			);
+		}
+		
+		public function filter_parent_file($parent_file) {
+			global $current_screen;
+			
+			$base = $current_screen->base;
+			$post_type = $current_screen->post_type;
+			
+			if($base === 'edit' && ($post_type === 'ost_channel' || $post_type === 'ost_transfer')) {
+				$parent_file = 'site_transfer';
+			}
+			
+			return $parent_file;
 		}
 		
 		protected function create_custom_post_types() {
