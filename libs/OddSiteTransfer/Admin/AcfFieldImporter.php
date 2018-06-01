@@ -72,9 +72,17 @@
 				case "true_false":
 				case "select":
 				case "oembed":
-				case "date_picker":
 				case 'date_time_picker':
 					update_field($name, $field['value'], $object);
+					break;
+				case "date_picker":
+					$date_value = \DateTime::createFromFormat('Y-m-d', $field['value']);
+					if($date_value) {
+						update_field($name, $date_value->format('Ymd'), $object);
+					}
+					else {
+						update_field($name, $field['value'], $object);
+					}
 					break;
 				case "post_object":
 				case "image":

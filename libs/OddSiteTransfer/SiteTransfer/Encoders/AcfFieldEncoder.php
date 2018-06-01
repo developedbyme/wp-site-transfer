@@ -217,12 +217,17 @@
 						'value' => array('ids' => $linked_taxonomy_ids, 'taxonomy' => $acf_field['taxonomy'])
 					);
 					break;
-				case "oembed":
 				case "date_picker":
 					$current_send_field = array(
 						'type' => $acf_field['type']
 					);
-					$current_send_field['value'] = $field_value;
+					$date_value = \DateTime::createFromFormat('Ymd', $field_value);
+					if($date_value) {
+						$current_send_field['value'] = $date_value->format('Y-m-d');
+					}
+					else {
+						$current_send_field['value'] = $field_value;
+					}
 					break;
 				case "number":
 					$current_send_field = array(
@@ -240,6 +245,7 @@
 				default:
 					echo("Unknown type: ".$acf_field['type']."<br />");
 					var_dump($acf_field);
+				case "oembed":
 				case "radio":
 				case "textarea":
 				case "url":
