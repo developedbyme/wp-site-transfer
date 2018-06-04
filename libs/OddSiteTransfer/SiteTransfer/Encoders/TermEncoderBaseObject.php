@@ -112,6 +112,7 @@
 			
 			$acf_fields = get_field_objects($object, false, true);
 			
+			$send_fields = array();
 			if($acf_fields) {
 				foreach($acf_fields as $name => $acf_field) {
 					$send_fields[$name] = AcfFieldEncoder::encode_acf_field($acf_field['value'], $acf_field, $object, $return_object['dependencies']);
