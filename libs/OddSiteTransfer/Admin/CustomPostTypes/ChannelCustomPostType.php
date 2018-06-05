@@ -15,6 +15,9 @@
 			$this->_arguments['supports'] = array('title');
 			$this->_arguments['taxonomies'] = array();
 			$this->set_argument('public', false);
+			$this->set_argument('publicly_queryable', false);
+			$this->set_argument('exclude_from_search', true);
+			$this->set_argument('has_archive', false);
 			
 			$current_box = new \OddSiteTransfer\OddCore\Admin\MetaData\PostMetaDataFieldBox();
 			$current_box->set_name('URL');
