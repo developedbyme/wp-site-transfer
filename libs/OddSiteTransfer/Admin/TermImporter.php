@@ -20,6 +20,9 @@
 			
 			$taxonomy = $term_data['taxonomy'];
 			
+			$transfer_post_id = ost_get_transfer_post_id($transfer_id);
+			$transfer_type = get_post_meta($transfer_post_id, 'ost_transfer_type', true);
+			
 			$existing_term = ost_get_term_for_transfer($transfer_id);
 			
 			if($data['status'] === 'non-existing') {
