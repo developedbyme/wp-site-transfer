@@ -14,7 +14,7 @@
 		}
 		
 		public function import($transfer_id, $data) {
-			//echo("\OddSiteTransfer\Admin\TermImporter::perform_call<br />");
+			echo("\OddSiteTransfer\Admin\TermImporter::perform_call<br />");
 			
 			$term_data = $data['data'];
 			
@@ -62,7 +62,11 @@
 				}
 			}
 			
-			return $existing_term->term_id;
+			foreach($meta_data as $category_name => $fields) {
+				do_action(ODD_SITE_TRANSFER_DOMAIN.'/import_term/'.$transfer_type.'/meta/'.$category_name, intval($existing_term->term_id), $fields, $transfer_id);
+			}
+			
+			return intval($existing_term->term_id);
 		}
 		
 		public static function test_import() {
