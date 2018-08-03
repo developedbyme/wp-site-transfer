@@ -14,7 +14,7 @@
 		}
 		
 		public function import($transfer_id, $data) {
-			echo("\OddSiteTransfer\Admin\TermImporter::perform_call<br />");
+			//echo("\OddSiteTransfer\Admin\TermImporter::perform_call<br />");
 			
 			$term_data = $data['data'];
 			
