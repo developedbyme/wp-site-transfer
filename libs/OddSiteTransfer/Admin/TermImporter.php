@@ -27,7 +27,7 @@
 					wp_delete_term( $existing_term->term_id, $taxonomy );
 				}
 				
-				return array();
+				return null;
 			}
 			
 			if(isset($data['parent'])) {
