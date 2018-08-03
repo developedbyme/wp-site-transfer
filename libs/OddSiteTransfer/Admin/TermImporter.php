@@ -62,7 +62,7 @@
 				}
 			}
 			
-			return array();
+			return $existing_term->term_id;
 		}
 		
 		public static function test_import() {
