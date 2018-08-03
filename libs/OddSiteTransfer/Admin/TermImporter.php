@@ -66,6 +66,8 @@
 				do_action(ODD_SITE_TRANSFER_DOMAIN.'/import_term/'.$transfer_type.'/meta/'.$category_name, intval($existing_term->term_id), $fields, $transfer_id);
 			}
 			
+			do_action(ODD_SITE_TRANSFER_DOMAIN.'/import_term/'.$transfer_type.'/after_import', intval($existing_term->term_id), $term_data, $data, $transfer_id);
+			
 			return intval($existing_term->term_id);
 		}
 		
