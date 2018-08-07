@@ -387,4 +387,8 @@
 		
 		return apply_filters(ODD_SITE_TRANSFER_DOMAIN.'/get_dependency/'.$transfer_type, null, $transfer_id, $transfer_type);
 	}
+	
+	function ost_get_acf_field_value($field) {
+		return \OddSiteTransfer\Admin\AcfFieldImporter::get_field_value($field);
+	}
 ?>
