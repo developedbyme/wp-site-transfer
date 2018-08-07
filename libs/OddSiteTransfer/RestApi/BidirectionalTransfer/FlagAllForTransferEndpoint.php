@@ -22,6 +22,7 @@
 			$arguments = array(
 				'post_type' => 'ost_transfer',
 				'fields' => 'ids',
+				'posts_per_page' => -1,
 				'meta_query' => array(
 					array(
 						'key' => 'ost_transfer_type',
