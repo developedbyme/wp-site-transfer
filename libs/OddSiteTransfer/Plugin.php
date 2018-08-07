@@ -233,6 +233,11 @@
 			$this->_rest_api_end_points[] = $current_end_point;
 			//METODO: add security
 			
+			$current_end_point = new \OddSiteTransfer\RestApi\BidirectionalTransfer\FlagAllForTransferEndpoint();
+			$current_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
+			$current_end_point->setup('batch/(?P<transfer_type>.+)/flag-all-for-transfer', $api_namespace, $api_version, 'GET'); //METODO: change to post
+			$this->_rest_api_end_points[] = $current_end_point;
+			
 		}
 		
 		
