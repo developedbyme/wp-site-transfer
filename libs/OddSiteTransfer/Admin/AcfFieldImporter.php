@@ -50,6 +50,30 @@
 				
 				return $return_object;
 			}
+			else if($field['type'] === 'taxonomy') {
+				if(isset($field['value']['ids'])) {
+					$ids = $field['value']['ids'];
+				}
+				else {
+					$ids = array();
+				}
+				$taxonomy = $field['value']['taxonomy'];
+
+				if(is_array($ids)) {
+					$resolved_ids = self::get_term_dependencies($ids);
+				}
+				else {
+					$resolved_ids = null;
+					if(!empty($ids)) {
+						$term = ost_get_dependency($ids, 'term');
+						if($term) {
+							$resolved_ids = intval($term->term_id);
+						}
+					}
+				}
+				
+				return $resolved_ids;
+			}
 			
 			return $field['value'];
 		}
