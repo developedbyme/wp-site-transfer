@@ -118,10 +118,16 @@
 			
 			if($type === 'media') {
 				$media = get_post(ost_get_post_id_for_transfer($transfer_id));
-				var_dump($media);
-				$media_is_ok = $this->transfer_media($media, $channel_id);
-				if(!$media_is_ok) {
-					trigger_error('Media '.$post->post_title.' didn\'t transfer.', E_USER_ERROR);
+				if($media) {
+					$media_is_ok = $this->transfer_media($media, $channel_id);
+					if(!$media_is_ok) {
+						trigger_error('Media '.$post->post_title.' didn\'t transfer.', E_USER_WARNING);
+						return null;
+					}
+				}
+				else {
+					trigger_error('Media '.$post->post_title.' doesn\'t exist.', E_USER_WARNING);
+					return null;
 				}
 			}
 			
@@ -189,7 +195,10 @@
 					$items_to_add = min($number_of_items_per_transfer, count($items)-$current_index);
 					for($i = 0; $i < $items_to_add; $i++) {
 						$current_transfer_post_id = $items[$current_index];
-						$body_items[] = $this->create_transfer_data($current_transfer_post_id, $channel_id);
+						$new_body_item = $this->create_transfer_data($current_transfer_post_id, $channel_id);
+						if($new_body_item) {
+							$body_items[] = $new_body_item;
+						}
 						
 						$current_transfer_id = get_post_meta($current_transfer_post_id, 'ost_id', true);
 						array_unshift($import_ids, $current_transfer_id);
