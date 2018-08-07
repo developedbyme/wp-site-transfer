@@ -118,6 +118,7 @@
 			
 			if($type === 'media') {
 				$media = get_post(ost_get_post_id_for_transfer($transfer_id));
+				var_dump($media);
 				$media_is_ok = $this->transfer_media($media, $channel_id);
 				if(!$media_is_ok) {
 					trigger_error('Media '.$post->post_title.' didn\'t transfer.', E_USER_ERROR);
