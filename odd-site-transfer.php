@@ -3,7 +3,7 @@
 	Plugin Name: Odd Site transfer
 	Plugin URI: http://oddalice.se
 	Description: Transferring data between sites
-	Version: 3.2.2
+	Version: 3.2.3
 	Author: Odd alice
 	Author URI: http://oddalice.se
 	*/
@@ -13,7 +13,7 @@
 	define("ODD_SITE_TRANSFER_MAIN_FILE", __FILE__);
 	define("ODD_SITE_TRANSFER_DIR", untrailingslashit( dirname( __FILE__ )  ) );
 	define("ODD_SITE_TRANSFER_URL", untrailingslashit( plugins_url('',  __FILE__ )  ) );
-	define("ODD_SITE_TRANSFER_VERSION", '3.2.2');
+	define("ODD_SITE_TRANSFER_VERSION", '3.2.3');
 
 	require_once( ODD_SITE_TRANSFER_DIR . "/libs/OddSiteTransfer/bootstrap.php" );
 
