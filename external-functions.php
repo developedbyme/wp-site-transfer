@@ -29,32 +29,19 @@
 	
 	function ost_get_post_id_for_transfer($transfer_id) {
 		
-		$post_statuses = array("any", "draft", "pending", "private", "publish", "wc-pending", "wc-customer-loss", "wc-investigate", "wc-produced", "wc-on-hold", "wc-completed", "wc-refunded", "wc-cancelled", "wc-failed", "wc-goodwill", "wc-processing", "wc-kco-incomplete");
+		$post_statuses = array("draft", "pending", "private", "publish", "wc-pending", "wc-customer-loss", "wc-investigate", "wc-produced", "wc-on-hold", "wc-completed", "wc-refunded", "wc-cancelled", "wc-failed", "wc-goodwill", "wc-processing", "wc-kco-incomplete");
 		
 		remove_all_actions('pre_get_posts');
 		
 		$post_types = get_post_types(array(), 'names');
 		
-		$args = array(
-			'post_type' => $post_types,
-			'post_status' => $post_statuses,
-			'fields' => 'ids',
-			'meta_query' => array(
-				array(
-					'key' => 'ost_transfer_id',
-					'value' => $transfer_id,
-					'compare' => '='
-				)
-			)
-		);
+		$ids = dbm_new_query(array('post_type' => $post_types))->set_field('post_status', $post_statuses)->add_meta_query('ost_transfer_id', $transfer_id)->get_post_ids();
 		
-		$posts = get_posts($args);
-		
-		if(empty($posts)) {
+		if(empty($ids)) {
 			return -1;
 		}
 		
-		return $posts[0];
+		return $ids[0];
 	}
 	
 	function ost_get_user_id_for_transfer($transfer_id) {
@@ -232,18 +219,21 @@
 		ost_update_transfer($transfer_post_id, $encoded_data, $transfer_type, $transfer_title);
 	}
 	
-	function ost_update_transfer($transfer_post_id, $encoded_data, $transfer_type, $title, $type = 'update') {
+	function ost_update_transfer($transfer_post_id, $encoded_data, $transfer_type = null, $title = null, $type = 'update') {
 		$encoded_data_hash = md5(serialize($encoded_data));
 		
 		$current_hash = get_post_meta($transfer_post_id, 'ost_encoded_data_hash', true);
-		if($title !== get_the_title($transfer_post_id)) {
+		if($title && $title !== get_the_title($transfer_post_id)) {
 			wp_update_post(array('ID' => $transfer_post_id, 'post_title' => $title));
 		}
-		update_post_meta($transfer_post_id, 'ost_transfer_type', $transfer_type);
+		if($transfer_type) {
+			update_post_meta($transfer_post_id, 'ost_transfer_type', $transfer_type);
+		}
 		
 		if($encoded_data_hash !== $current_hash) {
 			update_post_meta($transfer_post_id, 'ost_encoded_data', $encoded_data);
 			update_post_meta($transfer_post_id, 'ost_encoded_data_hash', $encoded_data_hash);
+			update_post_meta($transfer_post_id, 'ost_updated_at', time());
 			
 			if($type === 'update') {
 				update_post_meta($transfer_post_id, 'ost_transfer_status', 0);
@@ -275,6 +265,7 @@
 			
 			update_post_meta($transfer_post_id, 'ost_import_status', 1);
 			update_post_meta($transfer_post_id, 'ost_imported_hash', $current_hash);
+			update_post_meta($transfer_post_id, 'ost_imported_at', time());
 		}
 	}
 	

@@ -246,7 +246,7 @@
 			
 			parent::hook_admin_enqueue_scripts();
 			
-			wp_enqueue_script( 'odd-site-transfer-admin-main', ODD_SITE_TRANSFER_URL . '/assets/js/admin.js');
+			//wp_enqueue_script( 'odd-site-transfer-admin-main', ODD_SITE_TRANSFER_URL . '/assets/js/admin.js');
 		}
 		
 		public function hook_admin_footer() {
