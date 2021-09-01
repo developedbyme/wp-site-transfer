@@ -10,7 +10,7 @@
     "document-offset": "^1.0.4",
     "isomorphic-fetch": "^2.2.1",
     "moment": "^2.20.1",
-    "object-path": "^0.11.4",
+    "object-path": "^0.11.6",
     "prop-types": "^15.6.0",
     "query-string": "^6.1.0",
     "react": "^16.2.0",
