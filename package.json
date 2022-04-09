@@ -9,7 +9,7 @@
     "detect-browser": "^2.0.0",
     "document-offset": "^1.0.4",
     "isomorphic-fetch": "^2.2.1",
-    "moment": "^2.20.1",
+    "moment": "^2.29.2",
     "object-path": "^0.11.4",
     "prop-types": "^15.6.0",
     "query-string": "^6.1.0",
